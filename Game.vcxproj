@@ -81,7 +81,8 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>copy $(OutDir)Game.exe $(SolutionDir)</Command>
+      <Command>
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
