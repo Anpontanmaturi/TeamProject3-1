@@ -168,6 +168,9 @@
     <ClInclude Include="Source\MathUtils.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\EnemyGomi.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -297,6 +300,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\MathUtils.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EnemyGomi.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

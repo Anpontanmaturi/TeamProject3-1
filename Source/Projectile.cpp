@@ -22,7 +22,7 @@ void Projectile::UpdateTransform()
 	//transform._12 = 0.0f * scale.x;
 	//transform._13 = 0.0f * scale.x;
 	//transform._14 = 0.0f;
-	//transform._21 = 0.0f * scale.y;
+	//transform._21 = 0.0f * cale.y;
 	//transform._22 = 1.0f * scale.y;
 	//transform._23 = 0.0f * scale.y;
 	//transform._24 = 0.0f;
