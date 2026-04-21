@@ -11,6 +11,7 @@ void EnemyManager::Remove(Enemy* enemy)
 //XVˆ—
 void EnemyManager::Update(float elapsedTime)
 {
+
 	for (Enemy* enemy : enemies)
 	{
 		enemy->Update(elapsedTime);

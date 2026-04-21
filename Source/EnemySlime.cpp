@@ -27,6 +27,7 @@ EnemySlime::~EnemySlime()
 //更新処理
 void EnemySlime::Update(float elapsedTime)
 {
+	Enemy::Update(elapsedTime);
 	//ステート毎の更新処理
 	switch (state)
 	{

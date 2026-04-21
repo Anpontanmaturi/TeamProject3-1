@@ -4,13 +4,20 @@
 #include "EnemyManager.h"
 #include "EnemySlime.h"
 #include "Player.h"
-
+#include"gomi.h"
+#include <cstdlib>
+#include <ctime>
+float GetRandom(float min, float max)
+{
+	return min + (float)rand() / RAND_MAX * (max - min);
+}
 // 初期化
 void SceneGame::Initialize()
 {
+	srand((unsigned int)time(nullptr));
 	//ステージ初期化
 	stage = new Stage();
-
+	instance = this;
 	//プレイヤー初期化
 	//player = new Player();
 	Player::Instance().Initialize();
@@ -47,6 +54,22 @@ void SceneGame::Initialize()
 
 		enemyManager.Register(slime);
 	}
+	// =========================
+   // ゴミ生成（ここが本命）
+   // =========================
+	gomis.clear();
+
+	for (int i = 0; i < 20; i++)
+	{
+		Gomi* g = new Gomi(); // ← ポインタで生成
+
+		float x = GetRandom(-10.0f, 10.0f);
+		float z = GetRandom(-10.0f, 10.0f);
+
+		g->Init({ x, 0.0f, z });
+
+		gomis.push_back(g);
+	}
 }
 
 // 終了化
@@ -61,7 +84,12 @@ void SceneGame::Finalize()
 		delete stage;
 		stage = nullptr;
 	}
-
+	// ゴミ解放（重要）
+	for (auto& g : gomis)
+	{
+		delete g;
+	}
+	gomis.clear();
 	//プレイヤー終了化
 	/*if (player != nullptr)
 	{
@@ -97,6 +125,11 @@ void SceneGame::Update(float elapsedTime)
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
+	// ゴミ更新処理
+	for (auto& g : gomis)
+	{
+		g->Update(elapsedTime);
+	}
 }
 
 // 描画処理
@@ -120,6 +153,12 @@ void SceneGame::Render()
 	Camera& camera = Camera::Instance();
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
+
+	// ゴミ描画
+	for (auto& g : gomis)
+	{
+		g->Render(rc, modelRenderer);
+	}
 
 	// 3Dモデル描画
 	{
@@ -149,7 +188,19 @@ void SceneGame::Render()
 
 	}
 }
+SceneGame* SceneGame::instance = nullptr;
 
+SceneGame& SceneGame::Instance()
+{
+	return *instance;
+}
+
+void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
+{
+	Gomi* g = new Gomi();
+	g->Init(pos);
+	gomis.push_back(g);
+}
 // GUI描画
 void SceneGame::DrawGUI()
 {

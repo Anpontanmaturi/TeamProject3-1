@@ -9,12 +9,12 @@ class Enemy : public Character
 public:
 	Enemy(){}
 	~Enemy()override{}
-
+	virtual void Update(float elapsedTime);
 	//”jŠü
 	void Destroy();
-
+	float gomiTimer = 0.0f;
 	//XVˆ—
-	virtual void Update(float elapsedTime) = 0;
+	
 
 	//•`‰æˆ—
 	virtual void Render(const RenderContext& rc, ModelRenderer* renderer) = 0;
