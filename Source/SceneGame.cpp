@@ -3,13 +3,16 @@
 #include "Camera.h"
 #include "EnemyManager.h"
 #include "EnemySlime.h"
-//#include "Player.h"
+#include "Player.h"
 #include"gomi.h"
 #include <cstdlib>
 #include <ctime>
-#include <algorithm> // ← これ追加
-#include <cmath>
+
 #include <imgui.h>
+#include <algorithm> 
+#include <cmath>
+#include<SceneResult.h>
+#include <SceneManager.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -19,6 +22,7 @@ float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 
 	return sqrtf(dx * dx + dy * dy + dz * dz);
 }
+
 
 float GetRandom(float min, float max)
 {
@@ -83,6 +87,11 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+
+
+	//タイマー初期化
+	currentTime = timeLimit;
+	isTimeUp = false;
 }
 
 // 終了化
@@ -122,6 +131,22 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+
+	if (isTimeUp) return;
+
+	// 残り時間を減らす
+	currentTime -= elapsedTime;
+
+	// 0以下になったら終了
+	if (currentTime <= 0.0f)
+	{
+		currentTime = 0.0f;
+		isTimeUp = true;
+
+		// ゲーム終了処理（例）
+		SceneManager::Instance().ChangeScene(new SceneResult);
+	}
+
 	//カメラコントローラー更新処理
 	//DirectX::XMFLOAT3 target = player->GetPosition();
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
@@ -154,10 +179,9 @@ void SceneGame::Update(float elapsedTime)
 		}
 	}
 
-
 	// =========================
-	// ゴミ削除（重要）
-	// =========================
+  // ゴミ削除（重要）
+  // =========================
 	gomis.erase(
 		std::remove_if(gomis.begin(), gomis.end(),
 			[](Gomi* g)
@@ -228,8 +252,6 @@ void SceneGame::Render()
 	{
 
 	}
-
-	
 }
 SceneGame* SceneGame::instance = nullptr;
 
@@ -240,6 +262,17 @@ SceneGame& SceneGame::Instance()
 
 void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
 {
+	// 最大数チェック
+	const int MAX_GOMI = 5;
+
+	if (gomis.size() >= MAX_GOMI)
+	{
+		// 一番古いゴミを削除
+		delete gomis.front();
+		gomis.erase(gomis.begin());
+	}
+
+	// 新しいゴミ追加
 	Gomi* g = new Gomi();
 	g->Init(pos);
 	gomis.push_back(g);
@@ -253,5 +286,19 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::End();
+
+
+	ImGui::Begin("Time");
+
+	if (isTimeUp)
+	{
+		ImGui::Text("Time Up!");
+	}
+	else
+	{
+		ImGui::Text("Time : %.1f", currentTime);
+	}
+
 	ImGui::End();
 }
