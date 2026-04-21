@@ -7,6 +7,7 @@
 #include"gomi.h"
 #include <cstdlib>
 #include <ctime>
+#include <Windows.h> 
 float GetRandom(float min, float max)
 {
 	return min + (float)rand() / RAND_MAX * (max - min);
@@ -70,6 +71,7 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+
 }
 
 // I—¹‰»
@@ -130,6 +132,17 @@ void SceneGame::Update(float elapsedTime)
 	{
 		g->Update(elapsedTime);
 	}
+	// VƒL[‰Ÿ‚µ‚½‚ç”­“®
+	static bool prev = false;
+	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
+
+	if (now && !prev)
+	{
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
+	}
+
+	prev = now;
 }
 
 // •`‰æˆ—
