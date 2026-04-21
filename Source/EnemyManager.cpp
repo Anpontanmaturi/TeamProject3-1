@@ -58,6 +58,26 @@ void EnemyManager::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* 
 	}
 }
 
+void EnemyManager::AttractEnemies(const DirectX::XMFLOAT3& center, float radius)
+{
+	for (Enemy* enemy : enemies)
+	{
+		DirectX::XMFLOAT3 pos = enemy->GetPosition();
+
+		float dx = pos.x - center.x;
+		float dz = pos.z - center.z;
+
+		float dist = sqrtf(dx * dx + dz * dz);
+		if (dist <= radius && !enemy->isAttracting)
+		{
+			DirectX::XMFLOAT3 target = center;
+			target.z += 2.0f;
+
+			enemy->StartAttract(target);
+		}
+	}
+}
+
 //エネミー登録
 void EnemyManager::Register(Enemy* enemy)
 {

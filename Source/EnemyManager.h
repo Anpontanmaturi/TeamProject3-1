@@ -18,7 +18,7 @@ public:
 		static EnemyManager instance;
 		return instance;
 	}
-
+	void AttractEnemies(const DirectX::XMFLOAT3& center, float radius);
 	//ƒGƒlƒ~[“o˜^
 	void Register(Enemy* enemy);
 

@@ -6,13 +6,13 @@
 #include "Player.h"
 #include"gomi.h"
 #include <cstdlib>
-#include <ctime>
-
+#include <Windows.h> 
 #include <imgui.h>
 #include <algorithm> 
 #include <cmath>
 #include<SceneResult.h>
 #include <SceneManager.h>
+#include <ctime>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -22,6 +22,7 @@ float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 
 	return sqrtf(dx * dx + dy * dy + dz * dz);
 }
+
 
 
 float GetRandom(float min, float max)
@@ -89,9 +90,11 @@ void SceneGame::Initialize()
 	}
 
 
+
 	//タイマー初期化
 	currentTime = timeLimit;
 	isTimeUp = false;
+
 }
 
 // 終了化
@@ -179,6 +182,19 @@ void SceneGame::Update(float elapsedTime)
 		}
 	}
 
+	// Vキー押したら発動
+	static bool prev = false;
+	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
+
+	if (now && !prev)
+	{
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
+	}
+
+	prev = now;
+
+
 	// =========================
   // ゴミ削除（重要）
   // =========================
@@ -195,6 +211,7 @@ void SceneGame::Update(float elapsedTime)
 			}),
 		gomis.end()
 	);
+
 }
 
 // 描画処理
