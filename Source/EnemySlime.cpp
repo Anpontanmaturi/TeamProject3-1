@@ -138,6 +138,7 @@ bool EnemySlime::SearchPlayer()
 	float dist = sqrtf(vx * vx + vy * vy + vz * vz);
 	if (dist < searchRange)
 	{
+		// 発見
 		return true;
 	}
 	return false;
@@ -178,7 +179,8 @@ void EnemySlime::SetIdleState()
 	moveSpeed = DEFAULT_SPEED;
 
 	//タイマーをランダム設定
-	stateTimer = MathUtils::RandomRange(3.0f, 5.0f);
+	stateTimer = 0.1f;
+
 }
 
 //待機ステート更新処理
