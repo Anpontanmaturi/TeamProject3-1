@@ -39,8 +39,8 @@ void EnemySlime::Update(float elapsedTime)
 		UpdateIdleState(elapsedTime);
 		break;
 
-	case State::Attack:
-		UpdateAttackState(elapsedTime);
+	case State::Escepe:
+		UpdateEscepeState(elapsedTime);
 		break;
 	}
 
@@ -138,19 +138,7 @@ bool EnemySlime::SearchPlayer()
 	float dist = sqrtf(vx * vx + vy * vy + vz * vz);
 	if (dist < searchRange)
 	{
-		float distXZ = sqrtf(vx * vx + vz * vz);
-		//単位ベクトル化
-		vx /= distXZ;
-		vz /= distXZ;
-		//前方ベクトル
-		float frontX = sinf(angle.y);
-		float frontZ = cosf(angle.y);
-		//２つのベクトルの内積値で前後判定
-		float dot = (frontX * vx) + (frontZ * vz);
-		if (dot > 0.0f)
-		{
-			return true;
-		}
+		return true;
 	}
 	return false;
 }
@@ -176,8 +164,8 @@ void EnemySlime::UpdateWanderState(float elapsedTime)
 	//プレイヤー索敵
 	if (SearchPlayer())
 	{
-		//見つかったら攻撃ステートへ遷移
-		SetAttackState();
+		//見つかったら逃走ステートへ遷移
+		SetEscepeState();
 	}
 }
 
@@ -185,6 +173,9 @@ void EnemySlime::UpdateWanderState(float elapsedTime)
 void EnemySlime::SetIdleState()
 {
 	state = State::Idle;
+
+	// 動く速度を元に戻す
+	moveSpeed = DEFAULT_SPEED;
 
 	//タイマーをランダム設定
 	stateTimer = MathUtils::RandomRange(3.0f, 5.0f);
@@ -204,53 +195,59 @@ void EnemySlime::UpdateIdleState(float elapsedTime)
 	//プレイヤー索敵
 	if (SearchPlayer())
 	{
-		//見つかったら攻撃ステートへ遷移
-		SetAttackState();
+		//見つかったら逃走ステートへ遷移
+		SetEscepeState();
 	}
 }
 
-//攻撃ステートへ遷移
-void EnemySlime::SetAttackState()
+//逃走ステートへ遷移
+void EnemySlime::SetEscepeState()
 {
-	state = State::Attack;
+	state = State::Escepe;
+
+	// 動く速度を上げる
+	moveSpeed = DEFAULT_SPEED * 2.5f;
 
 	stateTimer = 0.0f;
 }
 
-//追跡ステート更新処理
-void EnemySlime::UpdateAttackState(float elapsedTime)
+//逃走ステート更新処理
+void EnemySlime::UpdateEscepeState(float elapsedTime)
 {
-	//目標地点をプレイヤー位置に設定
-	targetPosition = Player::Instance().GetPosition();
+	//プレイヤーから自分の位置へのベクトルを算出
+	DirectX::XMVECTOR playerPos = DirectX::XMLoadFloat3(&Player::Instance().GetPosition());
+	DirectX::XMVECTOR myPos = DirectX::XMLoadFloat3(&position);
+
+	//プレイヤーを見失っていない
+	if (SearchPlayer())
+	{
+		// 逃げる方向を計算
+		DirectX::XMVECTOR dir = DirectX::XMVectorSubtract(myPos, playerPos);
+
+		//Y軸成分を0にして正規化する
+		dir = DirectX::XMVectorSetY(dir, 0.0f);
+		DirectX::XMVECTOR escapeDir = DirectX::XMVector3Normalize(dir);
+
+		//目標地点を算出
+		DirectX::XMVECTOR targetVec = DirectX::XMVectorAdd(myPos, DirectX::XMVectorScale(escapeDir, 10.0f));
+		DirectX::XMStoreFloat3(&targetPosition, targetVec);
+	}
+	// プレイヤーを見失った
+	else
+	{
+		// 目標地点まで XZ 平面でどれくらい近いか判定
+		float vx = targetPosition.x - position.x;
+		float vz = targetPosition.z - position.z;
+		float distSq = vx * vx + vz * vz;
+
+		// 到着したら待機へ
+		if (distSq < radius * radius)
+		{
+			SetIdleState();
+			return;
+		}
+	}
 
 	//目標地点へ移動
-	MoveToTarget(elapsedTime, 0.0f, 1.0f);
-
-	//タイマー処理
-	stateTimer -= elapsedTime;
-	if (stateTimer < 0.0f)
-	{
-		//前方向
-		DirectX::XMFLOAT3 dir;
-		dir.x = sinf(angle.y);
-		dir.y = 0.0f;
-		dir.z = cosf(angle.y);
-		//発射位置（プレイヤーの腰当たり）
-		DirectX::XMFLOAT3 pos;
-		pos.x = position.x;
-		pos.y = position.y + height * 0.5f;
-		pos.z = position.z;
-		//発射
-		ProjectileStraight* projectile = new ProjectileStraight(&projectileManager);
-		projectile->Launch(dir, pos);
-
-		stateTimer = 2.0f;
-	}
-
-	//プレイヤーを見失ったら
-	if (!SearchPlayer())
-	{
-		//待機ステートへ遷移
-		SetIdleState();
-	}
+	MoveToTarget(elapsedTime, 1.0f, 1.0f);
 }
