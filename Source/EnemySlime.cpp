@@ -208,7 +208,7 @@ void EnemySlime::SetEscepeState()
 	state = State::Escepe;
 
 	// ìÆÇ≠ë¨ìxÇè„Ç∞ÇÈ
-	moveSpeed = DEFAULT_SPEED * 2.5f;
+	moveSpeed = DEFAULT_SPEED * 3.0f;
 
 	stateTimer = 0.0f;
 }
