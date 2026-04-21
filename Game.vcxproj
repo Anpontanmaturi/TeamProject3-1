@@ -82,7 +82,7 @@
       <Message>
       </Message>
       <Command>
-</Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,6 +128,7 @@
     <ClInclude Include="External\imgui-docking\imstb_rectpack.h" />
     <ClInclude Include="External\imgui-docking\imstb_textedit.h" />
     <ClInclude Include="External\imgui-docking\imstb_truetype.h" />
+    <ClInclude Include="Source\battery.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CameraController.h" />
     <ClInclude Include="Source\Character.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="External\imgui-docking\imgui_impl_dx11.cpp" />
     <ClCompile Include="External\imgui-docking\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui-docking\imgui_widgets.cpp" />
+    <ClCompile Include="Source\battery.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CameraController.cpp" />
     <ClCompile Include="Source\Character.cpp" />

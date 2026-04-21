@@ -4,7 +4,7 @@
 //#include "Player.h"
 #include "CameraController.h"
 #include "Scene.h"
-
+#include "battery.h" // Objectのヘッダ
 // ゲームシーン
 //class SceneGame
 class SceneGame : public Scene
@@ -38,4 +38,5 @@ private:
 	Stage* stage = nullptr;
 	//Player* player = nullptr;
 	CameraController* cameraController = nullptr;
+	Object* object = nullptr;  // ←追加
 };

@@ -5,6 +5,7 @@
 #include "EnemySlime.h"
 #include "Player.h"
 
+
 // 初期化
 void SceneGame::Initialize()
 {
@@ -14,6 +15,8 @@ void SceneGame::Initialize()
 	//プレイヤー初期化
 	//player = new Player();
 	Player::Instance().Initialize();
+
+	object = new Object();  // ←追加
 
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
@@ -62,6 +65,11 @@ void SceneGame::Finalize()
 		stage = nullptr;
 	}
 
+	if (object != nullptr)
+	{
+		delete object;
+		object = nullptr;
+	}
 	//プレイヤー終了化
 	/*if (player != nullptr)
 	{
@@ -90,6 +98,11 @@ void SceneGame::Update(float elapsedTime)
 
 	//ステージ更新処理
 	stage->Update(elapsedTime);
+
+	if (object != nullptr)
+	{
+		object->Update(elapsedTime);
+	}
 
 	//プレイヤー更新処理
 	//player->Update(elapsedTime);
@@ -129,7 +142,10 @@ void SceneGame::Render()
 		//プレイヤー描画
 		//player->Render(rc, modelRenderer);
 		Player::Instance().Render(rc, modelRenderer);
-
+		if (object != nullptr)
+		{
+			object->Render(rc, modelRenderer);
+		}
 		//エネミー描画
 		EnemyManager::Instance().Render(rc, modelRenderer);
 	}
