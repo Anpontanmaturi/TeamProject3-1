@@ -197,6 +197,17 @@ SceneGame& SceneGame::Instance()
 
 void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
 {
+	// 最大数チェック
+	const int MAX_GOMI = 5;
+
+	if (gomis.size() >= MAX_GOMI)
+	{
+		// 一番古いゴミを削除
+		delete gomis.front();
+		gomis.erase(gomis.begin());
+	}
+
+	// 新しいゴミ追加
 	Gomi* g = new Gomi();
 	g->Init(pos);
 	gomis.push_back(g);
