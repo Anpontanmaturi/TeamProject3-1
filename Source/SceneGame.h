@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Stage.h"
-//#include "Player.h"
+#include "Player.h"
 #include "CameraController.h"
 #include "Scene.h"
+#include <gomi.h>
 
 // ゲームシーン
 //class SceneGame
@@ -13,7 +14,9 @@ public:
 	SceneGame() {};
 	//~SceneGame() {};
 	~SceneGame() override {};
-
+public:
+	static SceneGame& Instance();
+	void AddGomi(const DirectX::XMFLOAT3& pos);
 	// 初期化
 	//void Initialize();
 	void Initialize()override;
@@ -34,8 +37,16 @@ public:
 	//void DrawGUI();
 	void DrawGUI()override;
 
+
+	
+
 private:
+	// ?? 追加
+	static SceneGame* instance;
 	Stage* stage = nullptr;
 	//Player* player = nullptr;
 	CameraController* cameraController = nullptr;
+	std::vector<Gomi*> gomis; // ゴミのリスト
+
+	int gomiCount = 0;
 };

@@ -3,14 +3,34 @@
 #include "Camera.h"
 #include "EnemyManager.h"
 #include "EnemySlime.h"
-#include "Player.h"
+//#include "Player.h"
+#include"gomi.h"
+#include <cstdlib>
+#include <ctime>
+#include <algorithm> // ← これ追加
+#include <cmath>
+#include <imgui.h>
+// 距離計算
+float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+{
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	float dz = a.z - b.z;
 
+	return sqrtf(dx * dx + dy * dy + dz * dz);
+}
+
+float GetRandom(float min, float max)
+{
+	return min + (float)rand() / RAND_MAX * (max - min);
+}
 // 初期化
 void SceneGame::Initialize()
 {
+	srand((unsigned int)time(nullptr));
 	//ステージ初期化
 	stage = new Stage();
-
+	instance = this;
 	//プレイヤー初期化
 	//player = new Player();
 	Player::Instance().Initialize();
@@ -47,6 +67,22 @@ void SceneGame::Initialize()
 
 		enemyManager.Register(slime);
 	}
+	// =========================
+   // ゴミ生成（ここが本命）
+   // =========================
+	gomis.clear();
+
+	for (int i = 0; i < 20; i++)
+	{
+		Gomi* g = new Gomi(); // ← ポインタで生成
+
+		float x = GetRandom(-10.0f, 10.0f);
+		float z = GetRandom(-10.0f, 10.0f);
+
+		g->Init({ x, 0.0f, z });
+
+		gomis.push_back(g);
+	}
 }
 
 // 終了化
@@ -61,7 +97,12 @@ void SceneGame::Finalize()
 		delete stage;
 		stage = nullptr;
 	}
-
+	// ゴミ解放（重要）
+	for (auto& g : gomis)
+	{
+		delete g;
+	}
+	gomis.clear();
 	//プレイヤー終了化
 	/*if (player != nullptr)
 	{
@@ -97,6 +138,39 @@ void SceneGame::Update(float elapsedTime)
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
+	// ゴミ更新処理
+	DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+	for (auto& g : gomis)
+	{
+		g->Update(elapsedTime);
+		float dist = GetDistance(playerPos, g->GetPosition());
+
+		float playerRadius = 0.7f;
+
+		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		{
+			g->Collect();
+			gomiCount++; // ← 追加
+		}
+	}
+
+
+	// =========================
+	// ゴミ削除（重要）
+	// =========================
+	gomis.erase(
+		std::remove_if(gomis.begin(), gomis.end(),
+			[](Gomi* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+				return false;
+			}),
+		gomis.end()
+	);
 }
 
 // 描画処理
@@ -120,6 +194,12 @@ void SceneGame::Render()
 	Camera& camera = Camera::Instance();
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
+
+	// ゴミ描画
+	for (auto& g : gomis)
+	{
+		g->Render(rc, modelRenderer);
+	}
 
 	// 3Dモデル描画
 	{
@@ -148,12 +228,30 @@ void SceneGame::Render()
 	{
 
 	}
+
+	
+}
+SceneGame* SceneGame::instance = nullptr;
+
+SceneGame& SceneGame::Instance()
+{
+	return *instance;
 }
 
+void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
+{
+	Gomi* g = new Gomi();
+	g->Init(pos);
+	gomis.push_back(g);
+}
 // GUI描画
 void SceneGame::DrawGUI()
 {
 	//プレイヤーデバッグ描画
 	//player->DrowDebugGUI();
 	Player::Instance().DrowDebugGUI();
+
+	ImGui::Begin("UI");
+	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::End();
 }
