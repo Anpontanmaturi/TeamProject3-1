@@ -6,8 +6,25 @@
 #include "Player.h"
 #include"gomi.h"
 #include <cstdlib>
-#include <ctime>
 #include <Windows.h> 
+#include <imgui.h>
+#include <algorithm> 
+#include <cmath>
+#include<SceneResult.h>
+#include <SceneManager.h>
+#include <ctime>
+// 距離計算
+float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+{
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	float dz = a.z - b.z;
+
+	return sqrtf(dx * dx + dy * dy + dz * dz);
+}
+
+
+
 float GetRandom(float min, float max)
 {
 	return min + (float)rand() / RAND_MAX * (max - min);
@@ -72,6 +89,12 @@ void SceneGame::Initialize()
 		gomis.push_back(g);
 	}
 
+
+
+	//タイマー初期化
+	currentTime = timeLimit;
+	isTimeUp = false;
+
 }
 
 // 終了化
@@ -111,6 +134,22 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+
+	if (isTimeUp) return;
+
+	// 残り時間を減らす
+	currentTime -= elapsedTime;
+
+	// 0以下になったら終了
+	if (currentTime <= 0.0f)
+	{
+		currentTime = 0.0f;
+		isTimeUp = true;
+
+		// ゲーム終了処理（例）
+		SceneManager::Instance().ChangeScene(new SceneResult);
+	}
+
 	//カメラコントローラー更新処理
 	//DirectX::XMFLOAT3 target = player->GetPosition();
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
@@ -128,10 +167,21 @@ void SceneGame::Update(float elapsedTime)
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
 	// ゴミ更新処理
+	DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
 	for (auto& g : gomis)
 	{
 		g->Update(elapsedTime);
+		float dist = GetDistance(playerPos, g->GetPosition());
+
+		float playerRadius = 0.7f;
+
+		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		{
+			g->Collect();
+			gomiCount++; // ← 追加
+		}
 	}
+
 	// Vキー押したら発動
 	static bool prev = false;
 	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
@@ -143,6 +193,25 @@ void SceneGame::Update(float elapsedTime)
 	}
 
 	prev = now;
+
+
+	// =========================
+  // ゴミ削除（重要）
+  // =========================
+	gomis.erase(
+		std::remove_if(gomis.begin(), gomis.end(),
+			[](Gomi* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+				return false;
+			}),
+		gomis.end()
+	);
+
 }
 
 // 描画処理
@@ -231,4 +300,22 @@ void SceneGame::DrawGUI()
 	//プレイヤーデバッグ描画
 	//player->DrowDebugGUI();
 	Player::Instance().DrowDebugGUI();
+
+	ImGui::Begin("UI");
+	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::End();
+
+
+	ImGui::Begin("Time");
+
+	if (isTimeUp)
+	{
+		ImGui::Text("Time Up!");
+	}
+	else
+	{
+		ImGui::Text("Time : %.1f", currentTime);
+	}
+
+	ImGui::End();
 }

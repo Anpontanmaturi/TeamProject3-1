@@ -4,6 +4,8 @@
 #include "Enemy.h"
 #include "ProjectileManager.h"
 
+#define DEFAULT_SPEED 2.0f
+
 //スライム
 class EnemySlime:public Enemy
 {
@@ -45,11 +47,11 @@ private:
 	//プレイヤー索敵
 	bool SearchPlayer();
 
-	//攻撃ステートへ遷移
-	void SetAttackState();
+	//逃走ステートへ遷移
+	void SetEscepeState();
 
-	//攻撃ステート更新処理
-	void UpdateAttackState(float elapsedTime);
+	//逃走ステート更新処理
+	void UpdateEscepeState(float elapsedTime);
 
 private:
 	//ステート
@@ -57,7 +59,7 @@ private:
 	{
 		Wander,
 		Idle,
-		Attack,
+		Escepe,
 	};
 
 protected:
@@ -74,7 +76,7 @@ private:
 	DirectX::XMFLOAT3	targetPosition = { 0, 0, 0 };
 	DirectX::XMFLOAT3	territoryOrigin = { 0, 0, 0 };
 	float				territoryRange = 10.0f;
-	float				moveSpeed = 2.0f;
+	float				moveSpeed = DEFAULT_SPEED;
 	float				turnSpeed = DirectX::XMConvertToRadians(360);
 	float				stateTimer = 0.0f;
 	float				searchRange = 5.0f;
