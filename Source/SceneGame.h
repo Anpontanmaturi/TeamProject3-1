@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Stage.h"
-//#include "Player.h"
+#include "Player.h"
 #include "CameraController.h"
 #include "Scene.h"
 #include <gomi.h>
@@ -37,6 +37,9 @@ public:
 	//void DrawGUI();
 	void DrawGUI()override;
 
+
+	
+
 private:
 	// ?? ’Ç‰Á
 	static SceneGame* instance;
@@ -44,4 +47,6 @@ private:
 	//Player* player = nullptr;
 	CameraController* cameraController = nullptr;
 	std::vector<Gomi*> gomis; // ƒSƒ~‚ÌƒŠƒXƒg
+
+	int gomiCount = 0;
 };

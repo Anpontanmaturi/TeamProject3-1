@@ -21,6 +21,9 @@ public:
     bool IsCollected() const { return collected; }
     const DirectX::XMFLOAT3& GetPosition() const { return position; }
 
+
+    float GetRadius() const { return radius; }
+
 private:
     Model* model = nullptr;
 
@@ -32,4 +35,6 @@ private:
     bool collected = false;
 
     void UpdateTransform();
+
+    float radius = 0.3f; // “–‚½‚è”»’è
 };
