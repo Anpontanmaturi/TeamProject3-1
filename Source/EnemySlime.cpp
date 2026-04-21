@@ -174,6 +174,9 @@ void EnemySlime::SetIdleState()
 {
 	state = State::Idle;
 
+	// 動く速度を半減
+	moveSpeed *= 0.5f;
+
 	//タイマーを設定
 	//stateTimer = MathUtils::RandomRange(1.0f, 3.0f);
 	stateTimer = 0.1f;
@@ -202,6 +205,9 @@ void EnemySlime::UpdateIdleState(float elapsedTime)
 void EnemySlime::SetEscepeState()
 {
 	state = State::Escepe;
+
+	// 動く速度を倍に
+	moveSpeed *= 2.0f;
 
 	stateTimer = 0.0f;
 }

@@ -74,7 +74,7 @@ private:
 	DirectX::XMFLOAT3	targetPosition = { 0, 0, 0 };
 	DirectX::XMFLOAT3	territoryOrigin = { 0, 0, 0 };
 	float				territoryRange = 10.0f;
-	float				moveSpeed = 5.0f;
+	float				moveSpeed = 2.5f;
 	float				turnSpeed = DirectX::XMConvertToRadians(360);
 	float				stateTimer = 0.0f;
 	float				searchRange = 5.0f;
