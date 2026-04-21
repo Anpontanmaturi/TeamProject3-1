@@ -49,4 +49,7 @@ private:
 	std::vector<Gomi*> gomis; // ゴミのリスト
 
 	int gomiCount = 0;
+	float timeLimit = 180.0f;   // 制限時間（秒）
+	float currentTime = 180.0f; // 残り時間
+	bool isTimeUp = false;
 };

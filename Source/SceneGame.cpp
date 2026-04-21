@@ -10,6 +10,8 @@
 #include <algorithm> // ← これ追加
 #include <cmath>
 #include <imgui.h>
+#include <SceneManager.h>
+#include <SceneResult.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -83,6 +85,12 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+
+
+
+	//タイマー初期化
+	currentTime = timeLimit;
+	isTimeUp = false;
 }
 
 // 終了化
@@ -122,6 +130,23 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+
+	if (isTimeUp) return;
+
+	// 残り時間を減らす
+	currentTime -= elapsedTime;
+
+	// 0以下になったら終了
+	if (currentTime <= 0.0f)
+	{
+		currentTime = 0.0f;
+		isTimeUp = true;
+
+		// ゲーム終了処理（例）
+		SceneManager::Instance().ChangeScene(new SceneResult);
+	}
+
+
 	//カメラコントローラー更新処理
 	//DirectX::XMFLOAT3 target = player->GetPosition();
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
@@ -171,6 +196,8 @@ void SceneGame::Update(float elapsedTime)
 			}),
 		gomis.end()
 	);
+
+
 }
 
 // 描画処理
@@ -253,5 +280,18 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::End();
+
+	ImGui::Begin("Time");
+
+	if (isTimeUp)
+	{
+		ImGui::Text("Time Up!");
+	}
+	else
+	{
+		ImGui::Text("Time : %.1f", currentTime);
+	}
+
 	ImGui::End();
 }
