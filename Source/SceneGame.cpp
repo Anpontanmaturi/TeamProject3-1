@@ -3,10 +3,23 @@
 #include "Camera.h"
 #include "EnemyManager.h"
 #include "EnemySlime.h"
-#include "Player.h"
+//#include "Player.h"
 #include"gomi.h"
 #include <cstdlib>
 #include <ctime>
+#include <algorithm> // ← これ追加
+#include <cmath>
+#include <imgui.h>
+// 距離計算
+float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+{
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	float dz = a.z - b.z;
+
+	return sqrtf(dx * dx + dy * dy + dz * dz);
+}
+
 float GetRandom(float min, float max)
 {
 	return min + (float)rand() / RAND_MAX * (max - min);
@@ -126,10 +139,38 @@ void SceneGame::Update(float elapsedTime)
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
 	// ゴミ更新処理
+	DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
 	for (auto& g : gomis)
 	{
 		g->Update(elapsedTime);
+		float dist = GetDistance(playerPos, g->GetPosition());
+
+		float playerRadius = 0.7f;
+
+		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		{
+			g->Collect();
+			gomiCount++; // ← 追加
+		}
 	}
+
+
+	// =========================
+	// ゴミ削除（重要）
+	// =========================
+	gomis.erase(
+		std::remove_if(gomis.begin(), gomis.end(),
+			[](Gomi* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+				return false;
+			}),
+		gomis.end()
+	);
 }
 
 // 描画処理
@@ -187,6 +228,8 @@ void SceneGame::Render()
 	{
 
 	}
+
+	
 }
 SceneGame* SceneGame::instance = nullptr;
 
@@ -207,4 +250,8 @@ void SceneGame::DrawGUI()
 	//プレイヤーデバッグ描画
 	//player->DrowDebugGUI();
 	Player::Instance().DrowDebugGUI();
+
+	ImGui::Begin("UI");
+	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::End();
 }
