@@ -177,6 +177,23 @@ void Player::InputMove(float elapsedTime)
 
 	//旋回処理
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
+	//追加
+	moveSpeed = moveLimit;
+	if (energy <= 0.0f)
+	{
+		moveSpeed = moveSpeed / 2;
+	}
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	if (energy >= 0.0f)
+	{
+		energy = energy - 0.05f;
+		if (gamePad.GetButton() & GamePad::BTN_A)
+		{
+			moveSpeed = boostLimit;
+			energy--;
+		}
+	}
+
 }
 
 //描画処理
@@ -223,6 +240,8 @@ void Player::DrowDebugGUI()
 			angle.z = DirectX::XMConvertToRadians(a.z);
 			//スケール
 			ImGui::InputFloat3("Scale", &scale.x);
+		//追加
+			ImGui::InputFloat3("energy", &energy);
 		}
 	}
 	ImGui::End();
@@ -360,18 +379,18 @@ void Player::CollisionPlayerVsEnemies()
 //ジャンプ入力処理
 void Player::InputJump()
 {
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	if (gamePad.GetButtonDown() & GamePad::BTN_A)
-	{
-		//Jump(jumpSpeed);
-		//ジャンプ回数制限
-		if (jumpCount < jumpLimit)
-		{
-			//ジャンプ
-			jumpCount++;
-			Jump(jumpSpeed);
-		}
-	}
+	//GamePad& gamePad = Input::Instance().GetGamePad();
+	//if (gamePad.GetButtonDown() & GamePad::BTN_A)
+	//{
+	//	//Jump(jumpSpeed);
+	//	//ジャンプ回数制限
+	//	if (jumpCount < jumpLimit)
+	//	{
+	//		//ジャンプ
+	//		jumpCount++;
+	//		Jump(jumpSpeed);
+	//	}
+	//}
 }
 
 //弾丸入力処理
@@ -400,6 +419,8 @@ void Player::InputProjectile()
 	//追尾弾丸発射
 	if (gamePad.GetButtonDown() & GamePad::BTN_Y)
 	{
+		//追加
+		energy = maxenergy;
 		//前方向
 		DirectX::XMFLOAT3 dir;
 		dir.x = sinf(angle.y);
