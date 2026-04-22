@@ -241,7 +241,7 @@ void Player::DrowDebugGUI()
 			//ÉXÉPÅ[Éã
 			ImGui::InputFloat3("Scale", &scale.x);
 		//í«â¡
-			ImGui::InputFloat3("energy", &energy);
+			ImGui::InputFloat("energy", &energy);
 		}
 	}
 	ImGui::End();
