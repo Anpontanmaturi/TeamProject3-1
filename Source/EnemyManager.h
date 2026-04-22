@@ -40,6 +40,9 @@ public:
 	//デバッグプリミティブ描画
 	void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
+	//エネミー用GUI表示
+	void DrawDebugGUI();
+
 	//エネミー全削除
 	void Clear();
 
@@ -49,5 +52,8 @@ private:
 
 	std::vector<Enemy*>		enemies;
 	std::set<Enemy*>		removes;
+
+	DirectX::XMFLOAT3 respawnPoint = { 0,5,0 };//エネミーの再出現位置
+	int maxEnemies = 3; // エネミーの最大数
 };
 

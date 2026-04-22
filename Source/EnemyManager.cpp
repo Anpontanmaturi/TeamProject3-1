@@ -1,5 +1,7 @@
 #include "EnemyManager.h"
 #include "Collision.h"
+#include "EnemySlime.h"
+#include <imgui.h>
 
 //エネミー削除
 void EnemyManager::Remove(Enemy* enemy)
@@ -14,7 +16,10 @@ void EnemyManager::Update(float elapsedTime)
 
 	for (Enemy* enemy : enemies)
 	{
-		enemy->Update(elapsedTime);
+		if (enemy != nullptr && removes.find(enemy) == removes.end())//破棄リストにない場合のみ更新処理を行う
+		{
+			enemy->Update(elapsedTime);
+		}
 	}
 
 	//破棄処理
@@ -35,6 +40,14 @@ void EnemyManager::Update(float elapsedTime)
 
 	//廃棄リストをクリア
 	removes.clear();
+
+	// エネミーの補充処理
+	while(enemies.size() < maxEnemies)
+	{
+		Enemy* newEnemy = new EnemySlime(); // 例としてEnemySlimeを生成
+		newEnemy->SetPosition(respawnPoint); // 再出現位置に配置
+		Register(newEnemy); // エネミーマネージャーに登録
+	}
 
 	//敵同士の衝突処理
 	CollisionEnemyVsEnemies();
@@ -130,4 +143,10 @@ void EnemyManager::CollisionEnemyVsEnemies()
 			}
 		}
 	}
+}
+
+void EnemyManager::DrawDebugGUI()
+{
+	ImGui::Begin("Enemy Manager");
+	ImGui::End();
 }

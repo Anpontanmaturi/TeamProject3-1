@@ -37,7 +37,6 @@ void SceneGame::Initialize()
 	stage = new Stage();
 	instance = this;
 	//プレイヤー初期化
-	//player = new Player();
 	Player::Instance().Initialize();
 
 	//カメラコントローラー初期化
@@ -60,15 +59,12 @@ void SceneGame::Initialize()
 
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	/*EnemySlime* slime = new EnemySlime();
-	slime->SetPosition(DirectX::XMFLOAT3(0, 0, 5));
-	enemyManager.Register(slime);*/
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < ENEMY_MAX; ++i)
 	{
 		EnemySlime* slime = new EnemySlime();
 		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 
-		slime->SetTerritory(slime->GetPosition(), 10.0f);
+		slime->SetTerritory(slime->GetPosition(), 15.0f);
 
 		enemyManager.Register(slime);
 	}
@@ -116,11 +112,6 @@ void SceneGame::Finalize()
 	}
 	gomis.clear();
 	//プレイヤー終了化
-	/*if (player != nullptr)
-	{
-		delete player;
-		player = nullptr;
-	}*/
 	Player::Instance().Finalize();
 
 	//カメラコントローラー終了化
@@ -161,7 +152,6 @@ void SceneGame::Update(float elapsedTime)
 	stage->Update(elapsedTime);
 
 	//プレイヤー更新処理
-	//player->Update(elapsedTime);
 	Player::Instance().Update(elapsedTime);
 
 	//エネミー更新処理
@@ -298,8 +288,10 @@ void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
 void SceneGame::DrawGUI()
 {
 	//プレイヤーデバッグ描画
-	//player->DrowDebugGUI();
 	Player::Instance().DrowDebugGUI();
+
+	//エネミーデバッグ描画
+	//EnemyManager::Instance().DrawDebugGUI();
 
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
