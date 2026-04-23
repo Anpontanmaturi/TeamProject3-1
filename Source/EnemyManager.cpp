@@ -13,6 +13,22 @@ void EnemyManager::Remove(Enemy* enemy)
 //更新処理
 void EnemyManager::Update(float elapsedTime)
 {
+	// 遅延削除処理
+	for (auto it = delayRemoves.begin(); it != delayRemoves.end(); )
+	{
+		it->second -= elapsedTime; // 残り時間を減らす
+		if (it->second <= 0.0f) // 時間が来たら削除
+		{
+			Remove(it->first); // 通常の削除処理に追加
+			it = delayRemoves.erase(it); // マップから削除
+		}
+		else
+		{
+			it->first->Update(elapsedTime);
+			++it; // 次の要素へ
+		}
+	}
+
 
 	for (Enemy* enemy : enemies)
 	{
@@ -42,11 +58,13 @@ void EnemyManager::Update(float elapsedTime)
 	removes.clear();
 
 	// エネミーの補充処理
-	while(enemies.size() < maxEnemies)
-	{
-		Enemy* newEnemy = new EnemySlime(); // 例としてEnemySlimeを生成
-		newEnemy->SetPosition(respawnPoint); // 再出現位置に配置
-		Register(newEnemy); // エネミーマネージャーに登録
+	if (enemies.size() < maxEnemies) {
+		while (enemies.size() < maxEnemies)
+		{
+			Enemy* newEnemy = new EnemySlime(); // 例としてEnemySlimeを生成
+			newEnemy->SetPosition(respawnPoint); // 再出現位置に配置
+			Register(newEnemy); // エネミーマネージャーに登録
+		}
 	}
 
 	//敵同士の衝突処理
@@ -119,16 +137,7 @@ void EnemyManager::CollisionEnemyVsEnemies()
 			Enemy* enemyB = enemies.at(j);
 
 			DirectX::XMFLOAT3 outPosition;
-			/*if (Collision::IntersectSphereVsSphere(
-				enemyA->GetPosition(),
-				enemyA->GetRadius(),
-				enemyB->GetPosition(),
-				enemyB->GetRadius(),
-				outPosition
-			))
-			{
-				enemyB->SetPosition(outPosition);
-			}*/
+			
 			if (Collision::IntersectCylinderVsCylinder(
 				enemyA->GetPosition(),
 				enemyA->GetRadius(),
@@ -149,4 +158,14 @@ void EnemyManager::DrawDebugGUI()
 {
 	ImGui::Begin("Enemy Manager");
 	ImGui::End();
+}
+
+// 指定時間後に削除する
+void EnemyManager::RemoveWithDelay(Enemy* enemy, float delay)
+{
+	// 二重登録防止
+	if (delayRemoves.find(enemy) == delayRemoves.end())
+	{
+		delayRemoves[enemy] = delay;
+	}
 }

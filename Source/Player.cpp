@@ -357,26 +357,26 @@ void Player::CollisionPlayerVsEnemies()
 				if (isBoost)
 				{
 					// ===== ノックバック処理 =====
-					DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-					DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
-					DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
 					V = DirectX::XMVector3Normalize(V);
 
+					DirectX::XMVECTOR PtoEVec = DirectX::XMVectorSubtract(E, P);
+
 					DirectX::XMFLOAT3 dir;
-					DirectX::XMStoreFloat3(&dir, V);
+					//DirectX::XMStoreFloat3(&dir, V);
+					DirectX::XMStoreFloat3(&dir, DirectX::XMVector3Normalize(PtoEVec));
 
 					DirectX::XMFLOAT3 impulse;
 					float power = 10.0f;
 
 					impulse.x = dir.x * power;
-					impulse.y = power * 0.5f;
+					impulse.y = power * 2.0f;
 					impulse.z = dir.z * power;
 
-					// 既にあるこれ使うのがベスト👇
+					// 吹き飛ばす力を加える
 					enemy->AddImpulse(impulse);
 
-					// 即死させる（弾と同じ仕組み使う）
-					enemy->ApplyDamage(1, 0.0f);
+					// x秒後に敵を削除する
+					enemyManager.RemoveWithDelay(enemy, deleteEnemyTimer);
 				}
 				else
 				{

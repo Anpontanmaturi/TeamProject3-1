@@ -92,6 +92,8 @@ private:
 	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;
 
+	float deleteEnemyTimer = 0.5f;
+
 private:
 	bool isBoost = false;
 
