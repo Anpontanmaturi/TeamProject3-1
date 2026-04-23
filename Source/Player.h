@@ -91,4 +91,10 @@ private:
 	float energy = 1000.0f;
 	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;
+
+private:
+	bool isBoost = false;
+
+public:
+	bool IsBoost() const { return isBoost; }
 };
