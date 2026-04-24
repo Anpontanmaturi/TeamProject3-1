@@ -5,6 +5,7 @@
 #include "ProjectileManager.h"
 
 #define DEFAULT_SPEED 2.0f
+#define ENEMY_MAX 3 // “G‚ÌÅ‘å”
 
 //ƒXƒ‰ƒCƒ€
 class EnemySlime:public Enemy
@@ -79,7 +80,7 @@ private:
 	float				moveSpeed = DEFAULT_SPEED;
 	float				turnSpeed = DirectX::XMConvertToRadians(360);
 	float				stateTimer = 0.0f;
-	float				searchRange = 5.0f;
+	float				searchRange = 5.0f; // ’Tõ”ÍˆÍ
 	ProjectileManager	projectileManager;
 };
 

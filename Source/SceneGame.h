@@ -37,11 +37,18 @@ public:
 	//void DrawGUI();
 	void DrawGUI()override;
 
+	
+
+
 
 	
 	float dentiSpawnTimer = 0.0f;
 	float dentiSpawnInterval = 30.0f;
 	int maxDenti = 10; 
+
+	void StartHitStop(float time);
+
+
 private:
 	// ?? ’Ç‰Á
 	static SceneGame* instance;
@@ -55,4 +62,8 @@ private:
 	float timeLimit = 180.0f;   // §ŒÀŠÔi•bj
 	float currentTime = 180.0f; // c‚èŠÔ
 	bool isTimeUp = false;
+
+	float timeScale = 1.0f;
+	float hitStopTimer = 0.0f;
+
 };

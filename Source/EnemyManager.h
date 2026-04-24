@@ -3,6 +3,7 @@
 #include <vector>
 #include "Enemy.h"
 #include <set>
+#include <map>
 
 //エネミーマネージャー
 class EnemyManager
@@ -40,6 +41,12 @@ public:
 	//デバッグプリミティブ描画
 	void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
+	//エネミー用GUI表示
+	void DrawDebugGUI();
+
+	//敵を消す処理
+	void RemoveWithDelay(Enemy* enemy, float delay);
+
 	//エネミー全削除
 	void Clear();
 
@@ -49,5 +56,10 @@ private:
 
 	std::vector<Enemy*>		enemies;
 	std::set<Enemy*>		removes;
+
+	DirectX::XMFLOAT3 respawnPoint = { 0,5,0 };//エネミーの再出現位置
+	int maxEnemies = 3; // エネミーの最大数
+	
+	std::map<Enemy*, float> delayRemoves;//遅延削除用のマップ
 };
 
