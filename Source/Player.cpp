@@ -395,9 +395,16 @@ void Player::CollisionPlayerVsEnemies()
 					energy += 50.0f;
 
 
+					// コンボ追加
+					SceneGame::Instance().AddCombo();
+					int combo = SceneGame::Instance().GetCombo();
+					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
-					SceneGame::Instance().AddScore(100 + gomi * 10);
+					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);
+
+					
 				}
+				
 				else
 				{
 					//通常

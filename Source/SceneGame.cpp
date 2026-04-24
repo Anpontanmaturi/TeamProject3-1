@@ -382,7 +382,19 @@ void SceneGame::Update(float elapsedTime)
 	// =========================
 	Camera::Instance().Update(elapsedTime);
 
+
+	// ƒRƒ“ƒ{ŠÇ—
+	if (combo > 0)
+	{
+		comboTimer -= elapsedTime;
+
+		if (comboTimer <= 0.0f)
+		{
+			combo = 0;
+		}
+	}
 }
+
 
 // •`‰æˆ—
 void SceneGame::Render()
@@ -503,6 +515,7 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("Score");
 	ImGui::Text("Score : %d", score);
+	ImGui::Text("Combo : %d", SceneGame::Instance().GetCombo());
 	ImGui::End();
 }
 
@@ -516,4 +529,19 @@ void SceneGame::StartHitStop(float time)
 void SceneGame::AddScore(int value)
 {
 	score += value;
+}
+
+void SceneGame::AddCombo()
+{
+	combo++;
+	comboTimer = comboLimit;
+}
+
+float SceneGame::GetComboMultiplier() const
+{
+	if (combo == 1) return 1.0f;
+	if (combo == 2) return 1.5f;
+	if (combo >= 3) return 3.0f;
+
+	return 1.0f;
 }
