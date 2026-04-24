@@ -140,13 +140,6 @@ void SceneGame::Finalize()
 	}
 	gomis.clear();
 
-	// 電池解放してみる
-	for (auto& b : dentis)
-	{
-		delete b;
-	}
-	dentis.clear();
-
 	//オブジェクト終了化
 	objects.clear();
 	
@@ -382,6 +375,7 @@ void SceneGame::Render()
 	rc.lightDirection = { 0.0f, -1.0f, 0.0f };	// ライト方向（下方向）
 
 	// 描画準備
+	
 	rc.renderState = graphics.GetRenderState();
 
 	//カメラパラメータ設定
