@@ -24,7 +24,7 @@ public:
 
 	//‰Šú‰»
 	void Initialize();
-
+	void AddEnergy(float value);
 	//I—¹‰»
 	void Finalize();
 

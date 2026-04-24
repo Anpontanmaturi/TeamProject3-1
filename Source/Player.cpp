@@ -26,6 +26,17 @@ void Player::Initialize()
 	scale.x = scale.y = scale.z = 0.01f;
 }
 
+void Player::AddEnergy(float value)
+{
+	energy += value;
+
+	// 上限つけたいなら（おすすめ）
+	if (energy > maxenergy)
+	{
+		energy = maxenergy;
+	}
+}
+
 /*//デストラクタ
 Player::~Player()
 {
@@ -421,7 +432,6 @@ void Player::CollisionPlayerVsEnemies()
 //	}
 //}
 
-<<<<<<< HEAD
 //�Q�[�W��
 void Player::Heal(float amount)
 {
@@ -429,9 +439,8 @@ void Player::Heal(float amount)
 	if (hp > maxHp) hp = maxHp;
 }
 //�W�����v���͏���
-=======
+
 //ジャンプ入力処理
->>>>>>> main
 void Player::InputJump()
 {
 	//GamePad& gamePad = Input::Instance().GetGamePad();

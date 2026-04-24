@@ -5,7 +5,7 @@
 #include "CameraController.h"
 #include "Scene.h"
 #include <gomi.h>
-
+#include <Denti.h>
 // ゲームシーン
 //class SceneGame
 class SceneGame : public Scene
@@ -37,6 +37,14 @@ public:
 	//void DrawGUI();
 	void DrawGUI()override;
 
+	
+
+
+
+	
+	float dentiSpawnTimer = 0.0f;
+	float dentiSpawnInterval = 30.0f;
+	int maxDenti = 10; 
 
 	void StartHitStop(float time);
 
@@ -46,6 +54,7 @@ public:
 
 	int GetGomiCount() const { return gomiCount; }
 	void ClearGomiCount() { gomiCount = 0; }
+
 private:
 	// ?? 追加
 	static SceneGame* instance;
@@ -53,7 +62,7 @@ private:
 	//Player* player = nullptr;
 	CameraController* cameraController = nullptr;
 	std::vector<Gomi*> gomis; // ゴミのリスト
-
+	std::vector<Denti*> dentis;
 	int gomiCount = 0;
 
 	float timeLimit = 180.0f;   // 制限時間（秒）

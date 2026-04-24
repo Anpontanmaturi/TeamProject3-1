@@ -178,6 +178,9 @@
 >>>>>>> main
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Denti.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -317,6 +320,9 @@
 =======
     <ClCompile Include="Source\SceneResult.cpp">
 >>>>>>> main
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Denti.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

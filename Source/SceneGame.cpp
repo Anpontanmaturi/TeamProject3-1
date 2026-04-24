@@ -15,6 +15,7 @@
 #include <SceneManager.h>
 #include <ctime>
 std::vector<Object> objects;
+#include <Denti.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -89,7 +90,6 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
-
 	// オブジェクト
 	// オブジェクト生成
 	
@@ -99,7 +99,20 @@ void SceneGame::Initialize()
 	objects[0].SetPosition(0, 0, 0);
 
 
+	dentis.clear();
 
+	// 最初の1個
+	Denti* d = new Denti();
+
+	float x = GetRandom(-10.0f, 10.0f);
+	float z = GetRandom(-10.0f, 10.0f);
+
+	d->Init({ x, 0.5f, z });
+
+	dentis.push_back(d);
+
+	// タイマーリセット
+	dentiSpawnTimer = 0.0f;
 
 	//タイマー初期化
 	currentTime = timeLimit;
@@ -174,9 +187,33 @@ void SceneGame::Update(float elapsedTime)
 		SceneManager::Instance().ChangeScene(new SceneResult);
 	}
 
+
+	// 電池スポーンタイマー
+	dentiSpawnTimer += elapsedTime;
+
+	if (dentiSpawnTimer >= dentiSpawnInterval)
+	{
+		dentiSpawnTimer = 0.0f;
+
+		if (dentis.size() < maxDenti)
+		{
+			Denti* d = new Denti();
+
+			float x = GetRandom(-10.0f, 10.0f);
+			float z = GetRandom(-10.0f, 10.0f);
+
+			d->Init({ x, 0.5f, z });
+
+			dentis.push_back(d);
+		}
+	}
+	//カメラコントローラー更新処理
+	//DirectX::XMFLOAT3 target = player->GetPosition();
+
 	// =========================
 	// カメラ
 	// =========================
+
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	target.y += 0.5f;
 
@@ -221,6 +258,24 @@ void SceneGame::Update(float elapsedTime)
 			score += 5;
 		}
 	}
+	for (auto& d : dentis)
+	{
+		d->Update(elapsedTime);
+
+
+		float dist = GetDistance(playerPos, d->GetPosition());
+
+		float playerRadius = 0.7f;
+
+		if (!d->IsCollected() && dist < playerRadius + d->GetRadius())
+		{
+			d->Collect();
+
+			
+			Player::Instance().AddEnergy(300.0f);
+		}
+	}
+	// Vキー押したら発動
 
 
 	for (auto& obj : objects)
@@ -251,6 +306,7 @@ void SceneGame::Update(float elapsedTime)
 	}
 
 	// Vキー
+
 	static bool prev = false;
 	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
 
@@ -282,6 +338,21 @@ void SceneGame::Update(float elapsedTime)
 			}),
 		gomis.end()
 	);
+
+	dentis.erase(
+		std::remove_if(dentis.begin(), dentis.end(),
+			[](Denti* d)
+			{
+				if (d->IsCollected())
+				{
+					delete d;
+					return true;
+				}
+				return false;
+			}),
+		dentis.end()
+	);
+
 
 	// =========================
 	// カメラ更新（止めない）
@@ -317,11 +388,15 @@ void SceneGame::Render()
 	{
 		g->Render(rc, modelRenderer);
 	}
-
 	// オブジェクト描画
 	for (auto& obj : objects)
 	{
 		obj.Render(rc, modelRenderer);
+	}
+	// 電池描画 ← これ追加
+	for (auto& d : dentis)
+	{
+		d->Render(rc, modelRenderer);
 	}
 	// 3Dモデル描画
 	{
