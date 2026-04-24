@@ -38,7 +38,7 @@ public:
 	void DrawGUI()override;
 
 
-	
+	void StartHitStop(float time);
 
 private:
 	// ?? ’Ç‰Á
@@ -53,4 +53,8 @@ private:
 	float timeLimit = 180.0f;   // §ŒÀŠÔi•bj
 	float currentTime = 180.0f; // c‚èŠÔ
 	bool isTimeUp = false;
+
+	float timeScale = 1.0f;
+	float hitStopTimer = 0.0f;
+
 };
