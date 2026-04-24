@@ -101,6 +101,7 @@ private:
 	float energy = 1000.0f;
 	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;
+	
 
 	float deleteEnemyTimer = 0.5f; //敵削除タイマー
 

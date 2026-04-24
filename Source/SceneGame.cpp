@@ -232,6 +232,23 @@ void SceneGame::Update(float elapsedTime)
 	for (auto& obj : objects)
 	{
 		obj.Update(elapsedTime);
+
+		// プレイヤー位置
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
+		// オブジェクト位置
+		DirectX::XMFLOAT3 objPos = obj.GetPosition();
+
+		// 距離
+		float distance = GetDistance(playerPos, objPos);
+
+		float radius = 2.0f;
+
+		if (distance < radius)
+		{
+			// ★ここが回復速度
+			Player::Instance().AddEnergy(20.0f * elapsedTime);
+		}
 	}
 	
 	//プレイヤー更新処理
