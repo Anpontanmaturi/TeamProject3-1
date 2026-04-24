@@ -1,4 +1,4 @@
-#include"Player.h"
+ï»¿#include"Player.h"
 #include"System/Input.h"
 #include <imgui.h>
 #include "Camera.h"
@@ -6,109 +6,110 @@
 #include "Collision.h"
 #include "ProjectileStraight.h"
 #include "ProjectileHoming.h"
+#include <SceneGame.h>
 
-/*//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+/*//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Player::Player()
 {
 	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
 
-	//ƒ‚ƒfƒ‹‚ª‘å‚«‚¢‚Ì‚ÅƒXƒP[ƒŠƒ“ƒO
+	//ãƒ¢ãƒ‡ãƒ«ãŒå¤§ãã„ã®ã§ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°
 	scale.x = scale.y = scale.z = 0.01f;
 }*/
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 void Player::Initialize()
 {
 	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
 
-	//ƒ‚ƒfƒ‹‚ª‘å‚«‚¢‚Ì‚ÅƒXƒP[ƒŠƒ“ƒO
+	//ãƒ¢ãƒ‡ãƒ«ãŒå¤§ãã„ã®ã§ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°
 	scale.x = scale.y = scale.z = 0.01f;
 }
 
-/*//ƒfƒXƒgƒ‰ƒNƒ^
+/*//ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Player::~Player()
 {
 	delete model;
 }*/
 
-//I—¹‰»
+//çµ‚äº†åŒ–
 void Player::Finalize()
 {
 	delete model;
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void Player::Update(float elapsedTime)
 {
-	/*//M‹ÂƒxƒNƒgƒ‹æ“¾
+	/*//ä¿¡ä»°ãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 
-	//ˆÚ“®ˆ—
+	//ç§»å‹•å‡¦ç†
 	float moveSpeed = this->moveSpeed * elapsedTime;
 	position.x += moveVec.x * moveSpeed;
 	position.y += moveVec.y * moveSpeed;*/
 
-	//ˆÚ“®“ü—Íˆ—
+	//ç§»å‹•å…¥åŠ›å‡¦ç†
 	InputMove(elapsedTime);
 
-	/*//“ü—Íî•ñ‚ğæ“¾
+	/*//å…¥åŠ›æƒ…å ±ã‚’å–å¾—
 	GamePad& gamePad = Input::Instance().GetGamePad();
 	float ax = gamePad.GetAxisLX();
 	float ay = gamePad.GetAxisLY();
 
-	//ˆÚ“®‘€ì
+	//ç§»å‹•æ“ä½œ
 	float moveSpeed = 5.0f * elapsedTime;
 	{
-		//¶ƒXƒeƒBƒbƒN‚Ì“ü—Íî•ñ‚ğ‚à‚Æ‚ÉXZ•½–Ê‚Ö‚ÌˆÚ“®ˆ—
+		//å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›æƒ…å ±ã‚’ã‚‚ã¨ã«XZå¹³é¢ã¸ã®ç§»å‹•å‡¦ç†
 		position.x += ax * moveSpeed;
 		position.z += ay * moveSpeed;
 	}
 
-	//‰ñ“]‘€ì
+	//å›è»¢æ“ä½œ
 	float rotateSpeed = DirectX::XMConvertToRadians(360) * elapsedTime;
 	if (gamePad.GetButton() & GamePad::BTN_A)
 	{
-		//X²‰ñ“]‘€ì
+		//Xè»¸å›è»¢æ“ä½œ
 		angle.x += rotateSpeed;
 	}
 	if (gamePad.GetButton() & GamePad::BTN_B)
 	{
-		//Y²‰ñ“]‘€ì
+		//Yè»¸å›è»¢æ“ä½œ
 		angle.y += rotateSpeed;
 	}
 	if (gamePad.GetButton() & GamePad::BTN_X)
 	{
-		//Z²‰ñ“]‘€ì
+		//Zè»¸å›è»¢æ“ä½œ
 		angle.z += rotateSpeed;
 	}*/
 
-	//ƒWƒƒƒ“ƒv“ü—Íˆ—
+	//ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›å‡¦ç†
 	InputJump();
 
-	//’eŠÛ“ü—Íˆ—
+	//å¼¾ä¸¸å…¥åŠ›å‡¦ç†
 	InputProjectile();
 
-	//‘¬—Íˆ—XV
+	//é€ŸåŠ›å‡¦ç†æ›´æ–°
 	UpdateVelocity(elapsedTime);
 
-	//’eŠÛXVˆ—
+	//å¼¾ä¸¸æ›´æ–°å‡¦ç†
 	projectileManager.Update(elapsedTime);
 
-	//ƒvƒŒƒCƒ„[‚ÆƒGƒlƒ~[‚Æ‚ÌÕ“Ëˆ—
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã‚¨ãƒãƒŸãƒ¼ã¨ã®è¡çªå‡¦ç†
 	CollisionPlayerVsEnemies();
 
-	//’eŠÛ‚Æ“G‚ÌÕ“Ëˆ—
+	//å¼¾ä¸¸ã¨æ•µã®è¡çªå‡¦ç†
 	CollisionProjectilesVsEnemies();
 	
-	//ƒIƒuƒWƒFƒNƒgs—ñ‚ğXV
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè¡Œåˆ—ã‚’æ›´æ–°
 	UpdateTransform();
 
-	//ƒ‚ƒfƒ‹s—ñXV
+	//ãƒ¢ãƒ‡ãƒ«è¡Œåˆ—æ›´æ–°
 	model->UpdateTransform();
 	
 }
 
-/*//ˆÚ“®ˆ—
+/*//ç§»å‹•å‡¦ç†
 void Player::Move(float elapsedTime, float vx, float vz, float speed)
 {
 	speed *= elapsedTime;
@@ -116,36 +117,36 @@ void Player::Move(float elapsedTime, float vx, float vz, float speed)
 	position.z += vz * speed;
 }
 
-ù‰ñˆ—
+æ—‹å›å‡¦ç†
 void Player::Turn(float elapsedTime, float vx, float vz, float speed)
 {
 	speed *= elapsedTime;
 
-	//isƒxƒNƒgƒ‹‚ªƒ[ƒƒxƒNƒgƒ‹‚Ìê‡‚Íˆ—‚·‚é•K—v‚È‚µ
+	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«ãŒã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«ã®å ´åˆã¯å‡¦ç†ã™ã‚‹å¿…è¦ãªã—
 	float length = sqrtf(vx * vx + vz * vz);
 	if (length < 0.001f)return;
 
-	//isƒxƒNƒgƒ‹‚ğ’PˆÊƒxƒNƒgƒ‹‰»
+	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«ã‚’å˜ä½ãƒ™ã‚¯ãƒˆãƒ«åŒ–
 	vx /= length;
 	vz /= length;
 
-	//©g‚Ì‰ñ“]’l‚©‚ç‘O•ûŒü‚ğ‹‚ß‚é
+	//è‡ªèº«ã®å›è»¢å€¤ã‹ã‚‰å‰æ–¹å‘ã‚’æ±‚ã‚ã‚‹
 	float frontX = sinf(angle.y);
 	float frontZ = cosf(angle.y);
 	
-	//‰ñ“]Šp‚ğ‹‚ß‚é‚½‚ßB2‚Â‚Ì’PˆÊƒxƒNƒgƒ‹‚Ì“àÏ‚ğŒvZ‚·‚é
+	//å›è»¢è§’ã‚’æ±‚ã‚ã‚‹ãŸã‚ã€‚2ã¤ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã®å†…ç©ã‚’è¨ˆç®—ã™ã‚‹
 	float dot = (frontX * vx) + (frontZ * vz);
 
-	//“àÏ’l‚Í-1.0`1.0‚Å•\Œ»‚³‚ê‚Ä‚¨‚èA‚Q‚Â‚Ì’PˆÊƒxƒNƒgƒ‹‚ÌŠp“x‚ª
-	//¬‚³‚¢‚Ù‚Ç1.0‚É‹ß‚Ã‚­‚Æ‚¢‚¤«¿‚ğ—˜—p‚µ‚Ä‰ñ“]Šp“x‚ğ’²®‚·‚é
+	//å†…ç©å€¤ã¯-1.0ï½1.0ã§è¡¨ç¾ã•ã‚Œã¦ãŠã‚Šã€ï¼’ã¤ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã®è§’åº¦ãŒ
+	//å°ã•ã„ã»ã©1.0ã«è¿‘ã¥ãã¨ã„ã†æ€§è³ªã‚’åˆ©ç”¨ã—ã¦å›è»¢è§’åº¦ã‚’èª¿æ•´ã™ã‚‹
 	float rot = 1.0f - dot;
 	if (rot > speed) rot = speed;
 
-	//¶‰E”»’è‚ğs‚¤‚½‚ß‚É‚Q‚Â‚Ì’PˆÊƒxƒNƒgƒ‹‚ÌŠOÏ‚ğŒvZ‚·‚é
+	//å·¦å³åˆ¤å®šã‚’è¡Œã†ãŸã‚ã«ï¼’ã¤ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã®å¤–ç©ã‚’è¨ˆç®—ã™ã‚‹
 	float cross = (frontZ * vx) - (frontX * vz);
 
-	//2D‚ÌŠOÏ‚ª³‚Ìê‡‚©•‰‚Ìê‡‚©‚É‚æ‚Á‚Ä¶‰E”»’è‚ªs‚¦‚é
-	//¶‰E”»’è‚ğs‚¤‚±‚Æ‚É‚æ‚Á‚Ä¶‰E‰ñ“]‚ğ‘I‘ğ‚·‚é
+	//2Dã®å¤–ç©ãŒæ­£ã®å ´åˆã‹è² ã®å ´åˆã‹ã«ã‚ˆã£ã¦å·¦å³åˆ¤å®šãŒè¡Œãˆã‚‹
+	//å·¦å³åˆ¤å®šã‚’è¡Œã†ã“ã¨ã«ã‚ˆã£ã¦å·¦å³å›è»¢ã‚’é¸æŠã™ã‚‹
 	if (cross < 0.0f)
 	{
 		//angle.y -= speed;
@@ -160,45 +161,71 @@ void Player::Turn(float elapsedTime, float vx, float vz, float speed)
 	
 }*/
 
-//’…’n‚µ‚½‚ÉŒÄ‚Î‚ê‚é
+//ç€åœ°ã—ãŸæ™‚ã«å‘¼ã°ã‚Œã‚‹
 void Player::OnLanding()
 {
 	jumpCount = 0;
 }
 
-//ˆÚ“®“ü—Íˆ—
+//ç§»å‹•å…¥åŠ›å‡¦ç†
 void Player::InputMove(float elapsedTime)
 {
-	//isƒxƒNƒgƒ‹æ“¾
+	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«å–å¾—
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 
-	//ˆÚ“®ˆ—
+	//ç§»å‹•å‡¦ç†
 	Move(elapsedTime, moveVec.x, moveVec.z, moveSpeed);
 
-	//ù‰ñˆ—
+	//æ—‹å›å‡¦ç†
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
+	//è¿½åŠ 
+	moveSpeed = moveLimit;
+	if (energy <= 0.0f)
+	{
+		moveSpeed = moveSpeed / 2;
+	}
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	isBoost = false; // â†æ¯ãƒ•ãƒ¬ãƒ¼ãƒ åˆæœŸåŒ–
+
+	moveSpeed = moveLimit;
+
+	if (energy <= 0.0f)
+	{
+		moveSpeed *= 0.5f;
+	}
+	else
+	{
+		energy -= 0.05f;
+
+		if (gamePad.GetButton() & GamePad::BTN_A)
+		{
+			isBoost = true;              // â†ã“ã‚Œè¿½åŠ 
+			moveSpeed = boostLimit;
+			energy -= 1.0f;
+		}
+	}
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void Player::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 
-	//’eŠÛ•`‰æˆ—
+	//å¼¾ä¸¸æç”»å‡¦ç†
 	projectileManager.Render(rc, renderer);
 }
 
-//ƒfƒoƒbƒOƒvƒŠƒ~ƒeƒBƒu•`‰æ
+//ãƒ‡ãƒãƒƒã‚°ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–æç”»
 void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)
 {
-	//Šî’êƒNƒ‰ƒX‚ÌŒÄ‚Ño‚µ
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®å‘¼ã³å‡ºã—
 	Character::RenderDebugPrimitive(rc, renderer);
 
-	//’eŠÛƒfƒoƒbƒOƒvƒŠƒ~ƒeƒBƒu•`‰æ
+	//å¼¾ä¸¸ãƒ‡ãƒãƒƒã‚°ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–æç”»
 	projectileManager.RenderDebugPrimitive(rc, renderer);
 }
 
-// ƒfƒoƒbƒO—pGUI•`‰æ
+// ãƒ‡ãƒãƒƒã‚°ç”¨GUIæç”»
 void Player::DrowDebugGUI()
 {
 	ImVec2 pos = ImGui::GetMainViewport()->GetWorkPos();
@@ -207,12 +234,12 @@ void Player::DrowDebugGUI()
 
 	if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 	{
-		//ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+		//ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			//ˆÊ’u
+			//ä½ç½®
 			ImGui::InputFloat3("Position", &position.x);
-			//‰ñ“]
+			//å›è»¢
 			DirectX::XMFLOAT3 a;
 			a.x = DirectX::XMConvertToDegrees(angle.x);
 			a.y = DirectX::XMConvertToDegrees(angle.y);
@@ -221,73 +248,75 @@ void Player::DrowDebugGUI()
 			angle.x = DirectX::XMConvertToRadians(a.x);
 			angle.y = DirectX::XMConvertToRadians(a.y);
 			angle.z = DirectX::XMConvertToRadians(a.z);
-			//ƒXƒP[ƒ‹
+			//ã‚¹ã‚±ãƒ¼ãƒ«
 			ImGui::InputFloat3("Scale", &scale.x);
+		//è¿½åŠ 
+			ImGui::InputFloat("energy", &energy);
 		}
 	}
 	ImGui::End();
 }
 
-//ƒXƒeƒBƒbƒN“ü—Í’l‚©‚çˆÚ“®ƒxƒNƒgƒ‹‚ğæ“¾
+//ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›å€¤ã‹ã‚‰ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—
 DirectX::XMFLOAT3 Player::GetMoveVec() const
 {
-	//“ü—Íî•ñ‚ğæ“¾
+	//å…¥åŠ›æƒ…å ±ã‚’å–å¾—
 	GamePad& gamePad = Input::Instance().GetGamePad();
 	float ax = gamePad.GetAxisLX();
 	float ay = gamePad.GetAxisLY();
 
-	//ƒJƒƒ‰•ûŒü‚ÆƒXƒeƒBƒbƒN‚Ì“ü—Í’l‚É‚æ‚Á‚Äis•ûŒü‚ğŒvZ‚·‚é
+	//ã‚«ãƒ¡ãƒ©æ–¹å‘ã¨ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›å€¤ã«ã‚ˆã£ã¦é€²è¡Œæ–¹å‘ã‚’è¨ˆç®—ã™ã‚‹
 	Camera& camera = Camera::Instance();
 	const DirectX::XMFLOAT3& cameraRight = camera.GetRight();
 	const DirectX::XMFLOAT3& cameraFront = camera.GetFront();
 
-	//ˆÚ“®ƒxƒNƒgƒ‹‚ÍXZ•½–Ê‚É…•½‚ÈƒxƒNƒgƒ‹‚É‚È‚é‚æ‚¤‚É‚·‚é
+	//ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã¯XZå¹³é¢ã«æ°´å¹³ãªãƒ™ã‚¯ãƒˆãƒ«ã«ãªã‚‹ã‚ˆã†ã«ã™ã‚‹
 
-	//ƒJƒƒ‰‰E•ûŒüƒxƒNƒgƒ‹‚ğXZ’PˆÊƒxƒNƒgƒ‹‚É•ÏŠ·
+	//ã‚«ãƒ¡ãƒ©å³æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’XZå˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã«å¤‰æ›
 	float cameraRightX = cameraRight.x;
 	float cameraRightZ = cameraRight.z;
 	float cameraRightLength = sqrtf(cameraRightX * cameraRightX + cameraRightZ * cameraRightZ);
 	if (cameraRightLength > 0.0f)
 	{
-		//’PˆÊƒxƒNƒgƒ‹‰»
+		//å˜ä½ãƒ™ã‚¯ãƒˆãƒ«åŒ–
 		cameraRightX /= cameraRightLength;
 		cameraRightZ /= cameraRightLength;
 	}
 
-	//ƒJƒƒ‰‘O•ûŒüƒxƒNƒgƒ‹‚ğXZƒxƒNƒgƒ‹‚É•ÏŠ·
+	//ã‚«ãƒ¡ãƒ©å‰æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’XZãƒ™ã‚¯ãƒˆãƒ«ã«å¤‰æ›
 	float cameraFrontX = cameraFront.x;
 	float cameraFrontZ = cameraFront.z;
 	float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
 	if (cameraFrontLength > 0.0f)
 	{
-		//’PˆÊƒxƒNƒgƒ‹‰»
+		//å˜ä½ãƒ™ã‚¯ãƒˆãƒ«åŒ–
 		cameraFrontX /= cameraFrontLength;
 		cameraFrontX /= cameraFrontLength;		
 	}
-	//ƒXƒeƒBƒbƒN‚Ì…•½“ü—Í’l‚ğƒJƒƒ‰‰E•ûŒü‚É”½‰f‚µA
-	//ƒXƒeƒBƒbƒN‚Ì‚’¼“ü—Í’l‚ğƒJƒƒ‰‘O•ûŒü‚É”½‰f‚µA
-	//isƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®æ°´å¹³å…¥åŠ›å€¤ã‚’ã‚«ãƒ¡ãƒ©å³æ–¹å‘ã«åæ˜ ã—ã€
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‚ç›´å…¥åŠ›å€¤ã‚’ã‚«ãƒ¡ãƒ©å‰æ–¹å‘ã«åæ˜ ã—ã€
+	//é€²è¡Œãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹
 	DirectX::XMFLOAT3 vec;
 	vec.x = (cameraRightX * ax) + (cameraFrontX * ay);
 	vec.z = (cameraRightZ * ax) + (cameraFrontZ * ay);
-	//Y²•ûŒü‚É‚ÍˆÚ“®‚µ‚È‚¢
+	//Yè»¸æ–¹å‘ã«ã¯ç§»å‹•ã—ãªã„
 	vec.y = 0.0f;
 
 	return vec;
 }
 
-//ƒvƒŒƒCƒ„[‚ÆƒGƒlƒ~[‚Æ‚ÌÕ“Ëˆ—
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã‚¨ãƒãƒŸãƒ¼ã¨ã®è¡çªå‡¦ç†
 void Player::CollisionPlayerVsEnemies()
 {
 	EnemyManager& enemyManager = EnemyManager::Instance();
 
-	//‘S‚Ä‚Ì“G‚Æ‘“–‚½‚è‚ÅÕ“Ëˆ—
+	//å…¨ã¦ã®æ•µã¨ç·å½“ãŸã‚Šã§è¡çªå‡¦ç†
 	int enemyCount = enemyManager.GetEnemyCount();
 	for (int i = 0; i < enemyCount; ++i)
 	{
 		Enemy* enemy = enemyManager.GetEnemy(i);
 
-		//Õ“Ëˆ—
+		//è¡çªå‡¦ç†
 		DirectX::XMFLOAT3 outPosition;
 		//if (Collision::IntersectSphereVsSphere(
 		//	position, radius,
@@ -295,7 +324,7 @@ void Player::CollisionPlayerVsEnemies()
 		//	enemy->GetRadius(),
 		//	outPosition))
 		//{
-		//	//‰Ÿ‚µo‚µŒã‚ÌˆÊ’u”»’è
+		//	//æŠ¼ã—å‡ºã—å¾Œã®ä½ç½®åˆ¤å®š
 		//	enemy->SetPosition(outPosition);
 		//}
 		if (Collision::IntersectCylinderVsCylinder(
@@ -308,48 +337,83 @@ void Player::CollisionPlayerVsEnemies()
 			outPosition
 		))
 		{
-			////‰Ÿ‚µo‚µŒã‚ÌˆÊ’uİ’è
+			////æŠ¼ã—å‡ºã—å¾Œã®ä½ç½®è¨­å®š
 			//enemy->SetPosition(outPosition);
 
-			//“G‚Ì^ã‚É“–‚½‚Á‚½‚©‚ğ”»’è
+			//æ•µã®çœŸä¸Šã«å½“ãŸã£ãŸã‹ã‚’åˆ¤å®š
 			DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
 			DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
 			DirectX::XMVECTOR V = DirectX::XMVectorSubtract(P, E);
 			DirectX::XMVECTOR N = DirectX::XMVector3Normalize(V);
 			DirectX::XMFLOAT3 normal;
 			DirectX::XMStoreFloat3(&normal, N);
-			//ã‚©‚ç“¥‚ñ‚Ã‚¯‚½ê‡‚Í¬ƒWƒƒƒ“ƒv‚·‚é
+			//ä¸Šã‹ã‚‰è¸ã‚“ã¥ã‘ãŸå ´åˆã¯å°ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹
 			if (normal.y > 0.8f)
 			{
-				//¬ƒWƒƒƒ“ƒv‚·‚é
+				//å°ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹
 				Jump(jumpSpeed * 0.5f);
 			}
 			else
 			{
-				//‰Ÿ‚µo‚µŒã‚ÌˆÊ’uİ’è
-				enemy->SetPosition(outPosition);
+				if (isBoost)
+				{
+					// ===== ãƒãƒƒã‚¯ãƒãƒƒã‚¯å‡¦ç† =====
+					DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
+					DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
+					DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
+					V = DirectX::XMVector3Normalize(V);
+
+					DirectX::XMFLOAT3 dir;
+					DirectX::XMStoreFloat3(&dir, V);
+
+					DirectX::XMFLOAT3 impulse;
+					float power = 12.5f;
+
+					impulse.x = dir.x * power;
+					impulse.y = power * 1.5;
+					impulse.z = dir.z * power;
+
+					// æ—¢ã«ã‚ã‚‹ã“ã‚Œä½¿ã†ã®ãŒãƒ™ã‚¹ãƒˆğŸ‘‡
+					enemy->AddImpulse(impulse);
+
+					// xç§’å¾Œã«æ•µã‚’å‰Šé™¤ã™ã‚‹
+					enemyManager.RemoveWithDelay(enemy, deleteEnemyTimer);
+
+					Camera::Instance().StartShake(0.9f, 0.4f);
+					SceneGame::Instance().StartHitStop(0.28f);
+					energy += 50.0f;
+
+
+					int gomi = SceneGame::Instance().GetGomiCount();
+					SceneGame::Instance().AddScore(100 + gomi * 10);
+				}
+				else
+				{
+					//é€šå¸¸
+					enemy->SetPosition(outPosition);
+				}
 			}
 		}
 	}
 }
 
-//ƒWƒƒƒ“ƒvˆ—
+//ã‚¸ãƒ£ãƒ³ãƒ—å‡¦ç†
 //void Player::Jump(float speed)
 //{
-//	//ã•ûŒü‚Ì—Í‚ğİ’è
+//	//ä¸Šæ–¹å‘ã®åŠ›ã‚’è¨­å®š
 //	velocity.y = speed;
 //}
 
-//‘¬—Íˆ—XV
+//é€ŸåŠ›å‡¦ç†æ›´æ–°
 //void Player::UpdateVelocity(float elapsedTime)
 //{
-//	//d—Íˆ—
+//	//é‡åŠ›å‡¦ç†
 //	velocity.y += gravity * elapsedTime;
 //
-//	//ˆÚ“®ˆ—
+//	//ç§»å‹•å‡¦ç†
 //	position.y += velocity.y * elapsedTime;
 //
-//	//’n–Ê”»’è
+//	//åœ°é¢åˆ¤å®š
 //	if (position.y < 0.0f)
 //	{
 //		position.y = 0.0f;
@@ -357,107 +421,119 @@ void Player::CollisionPlayerVsEnemies()
 //	}
 //}
 
-//ƒQ[ƒW‰ñ•œ
+<<<<<<< HEAD
+//ï¿½Qï¿½[ï¿½Wï¿½ï¿½
 void Player::Heal(float amount)
 {
 	hp += amount;
 	if (hp > maxHp) hp = maxHp;
 }
-//ƒWƒƒƒ“ƒv“ü—Íˆ—
+//ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Íï¿½ï¿½ï¿½
+=======
+//ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ›å‡¦ç†
+>>>>>>> main
 void Player::InputJump()
 {
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	if (gamePad.GetButtonDown() & GamePad::BTN_A)
-	{
-		//Jump(jumpSpeed);
-		//ƒWƒƒƒ“ƒv‰ñ”§ŒÀ
-		if (jumpCount < jumpLimit)
-		{
-			//ƒWƒƒƒ“ƒv
-			jumpCount++;
-			Jump(jumpSpeed);
-		}
-	}
+	//GamePad& gamePad = Input::Instance().GetGamePad();
+	//if (gamePad.GetButtonDown() & GamePad::BTN_A)
+	//{
+	//	//Jump(jumpSpeed);
+	//	//ã‚¸ãƒ£ãƒ³ãƒ—å›æ•°åˆ¶é™
+	//	if (jumpCount < jumpLimit)
+	//	{
+	//		//ã‚¸ãƒ£ãƒ³ãƒ—
+	//		jumpCount++;
+	//		Jump(jumpSpeed);
+	//	}
+	//}
 }
 
-//’eŠÛ“ü—Íˆ—
+//å¼¾ä¸¸å…¥åŠ›å‡¦ç†
 void Player::InputProjectile()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
-	//’¼i’eŠÛ”­Ë
-	if (gamePad.GetButtonDown() & GamePad::BTN_X)
-	{
-		//‘O•ûŒü
-		DirectX::XMFLOAT3 dir;
-		dir.x = sinf(angle.y);
-		dir.y = 0.0f;
-		dir.z = cosf(angle.y);
-		//”­ËˆÊ’uiƒvƒŒƒCƒ„[‚Ì˜‚ ‚½‚èj
-		DirectX::XMFLOAT3 pos;
-		pos.x = position.x;
-		pos.y = position.y + height * 0.5f;
-		pos.z = position.z;
-		//”­Ë
-		ProjectileStraight* projectile = new ProjectileStraight(&projectileManager);
-		projectile->Launch(dir, pos);
-		//projectileManager.Register(projectile);
-	}
-	//’Ç”ö’eŠÛ”­Ë
 	if (gamePad.GetButtonDown() & GamePad::BTN_Y)
 	{
-		//‘O•ûŒü
-		DirectX::XMFLOAT3 dir;
-		dir.x = sinf(angle.y);
-		dir.y = 0.0f;
-		dir.z = cosf(angle.y);
-
-		//”­ËˆÊ’uiƒvƒŒƒCƒ„[‚Ì˜‚ ‚½‚èj
-		DirectX::XMFLOAT3 pos;
-		pos.x = position.x;
-		pos.y = position.y + height * 0.5f;
-		pos.z = position.z;
-
-		//ƒ^[ƒQƒbƒgiƒfƒtƒHƒ‹ƒg‚Å‚ÍƒvƒŒƒCƒ„[‚Ì‘O•ûj
-		DirectX::XMFLOAT3 target;
-		target.x = pos.x + dir.x * 1000.0f;
-		target.y = pos.y + dir.y * 1000.0f;
-		target.z = pos.z + dir.z * 1000.0f;
-
-		//ˆê”Ô‹ß‚­‚Ì“G‚ğƒ^[ƒQƒbƒg‚É‚·‚é
-		float dist = FLT_MAX;
-		EnemyManager& enemyManager = EnemyManager::Instance();
-		int enemyCount = enemyManager.GetEnemyCount();
-		for (int i = 0; i < enemyCount; ++i)
-		{
-			//“G‚Æ‚Ì‹——£”»’è
-			Enemy* enemy = EnemyManager::Instance().GetEnemy(i);
-			DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-			DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
-			DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
-			DirectX::XMVECTOR D = DirectX::XMVector3LengthSq(V);
-			float d;
-			DirectX::XMStoreFloat(&d, D);
-			if (d < dist)
-			{
-				dist = d;
-				target = enemy->GetPosition();
-				target.y += enemy->GetHeight() * 0.5f;
-			}
-		}
-
-		//”­Ë
-		ProjectileHoming* projectile = new ProjectileHoming(&projectileManager);
-		projectile->Launch(dir, pos, target);
+		//è¿½åŠ 
+		energy = maxenergy;
 	}
+
+	////ç›´é€²å¼¾ä¸¸ç™ºå°„
+	//if (gamePad.GetButtonDown() & GamePad::BTN_X)
+	//{
+	//	//å‰æ–¹å‘
+	//	DirectX::XMFLOAT3 dir;
+	//	dir.x = sinf(angle.y);
+	//	dir.y = 0.0f;
+	//	dir.z = cosf(angle.y);
+	//	//ç™ºå°„ä½ç½®ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è…°ã‚ãŸã‚Šï¼‰
+	//	DirectX::XMFLOAT3 pos;
+	//	pos.x = position.x;
+	//	pos.y = position.y + height * 0.5f;
+	//	pos.z = position.z;
+	//	//ç™ºå°„
+	//	ProjectileStraight* projectile = new ProjectileStraight(&projectileManager);
+	//	projectile->Launch(dir, pos);
+	//	//projectileManager.Register(projectile);
+	//}
+	////è¿½å°¾å¼¾ä¸¸ç™ºå°„
+	//if (gamePad.GetButtonDown() & GamePad::BTN_Y)
+	//{
+	//	//è¿½åŠ 
+	//	energy = maxenergy;
+	//	//å‰æ–¹å‘
+	//	DirectX::XMFLOAT3 dir;
+	//	dir.x = sinf(angle.y);
+	//	dir.y = 0.0f;
+	//	dir.z = cosf(angle.y);
+	//
+	//	//ç™ºå°„ä½ç½®ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è…°ã‚ãŸã‚Šï¼‰
+	//	DirectX::XMFLOAT3 pos;
+	//	pos.x = position.x;
+	//	pos.y = position.y + height * 0.5f;
+	//	pos.z = position.z;
+	//
+	//	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰æ–¹ï¼‰
+	//	DirectX::XMFLOAT3 target;
+	//	target.x = pos.x + dir.x * 1000.0f;
+	//	target.y = pos.y + dir.y * 1000.0f;
+	//	target.z = pos.z + dir.z * 1000.0f;
+	//
+	//	//ä¸€ç•ªè¿‘ãã®æ•µã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ã™ã‚‹
+	//	float dist = FLT_MAX;
+	//	EnemyManager& enemyManager = EnemyManager::Instance();
+	//	int enemyCount = enemyManager.GetEnemyCount();
+	//	for (int i = 0; i < enemyCount; ++i)
+	//	{
+	//		//æ•µã¨ã®è·é›¢åˆ¤å®š
+	//		Enemy* enemy = EnemyManager::Instance().GetEnemy(i);
+	//		DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
+	//		DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
+	//		DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
+	//		DirectX::XMVECTOR D = DirectX::XMVector3LengthSq(V);
+	//		float d;
+	//		DirectX::XMStoreFloat(&d, D);
+	//		if (d < dist)
+	//		{
+	//			dist = d;
+	//			target = enemy->GetPosition();
+	//			target.y += enemy->GetHeight() * 0.5f;
+	//		}
+	//	}
+	//
+	//	//ç™ºå°„
+	//	ProjectileHoming* projectile = new ProjectileHoming(&projectileManager);
+	//	projectile->Launch(dir, pos, target);
+	//}
 }
 
-//’eŠÛ‚Æ“G‚ÌÕ“Ëˆ—
+//å¼¾ä¸¸ã¨æ•µã®è¡çªå‡¦ç†
 void Player::CollisionProjectilesVsEnemies()
 {
 	EnemyManager& enemyManager = EnemyManager::Instance();
 
-	//‘S‚Ä‚Ì’eŠÛ‚Æ‘S‚Ä‚Ì“G‚ğ‘“–‚½‚è‚ÅÕ“Ëˆ—
+	//å…¨ã¦ã®å¼¾ä¸¸ã¨å…¨ã¦ã®æ•µã‚’ç·å½“ãŸã‚Šã§è¡çªå‡¦ç†
 	int projectileCount = projectileManager.GetProjectileCount();
 	int enemyCount = enemyManager.GetEnemyCount();
 	for (int i = 0; i < projectileCount; ++i)
@@ -467,7 +543,7 @@ void Player::CollisionProjectilesVsEnemies()
 		{
 			Enemy* enemy = enemyManager.GetEnemy(j);
 
-			//Õ“Ëˆ—
+			//è¡çªå‡¦ç†
 			DirectX::XMFLOAT3 outPosition;
 			if (Collision::IntersectSphereVsCylinder(
 				projectile->GetPosition(),
@@ -477,11 +553,11 @@ void Player::CollisionProjectilesVsEnemies()
 				enemy->GetHeight(),
 				outPosition))
 			{
-				//ƒ_ƒ[ƒW‚ğ—^‚¦‚é
+				//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
 				//enemy->ApplyDamage(1,0.5f);
 				if (enemy->ApplyDamage(1, 0.5f))
 				{
-					//‚«”ò‚Î‚·
+					//å¹ãé£›ã°ã™
 					{
 						DirectX::XMFLOAT3 impulse;
 						const float power = 10.0f;
@@ -499,7 +575,7 @@ void Player::CollisionProjectilesVsEnemies()
 
 						enemy->AddImpulse(impulse);
 					}
-					//’eŠÛ”jŠü
+					//å¼¾ä¸¸ç ´æ£„
 					projectile->Destroy();
 				}
 			}

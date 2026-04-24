@@ -171,7 +171,11 @@
     <ClInclude Include="Source\gomi.h">
       <Filter>Source</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Source\battery.h">
+=======
+    <ClInclude Include="Source\SceneResult.h">
+>>>>>>> main
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
@@ -308,7 +312,11 @@
     <ClCompile Include="Source\gomi.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Source\battery.cpp">
+=======
+    <ClCompile Include="Source\SceneResult.cpp">
+>>>>>>> main
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

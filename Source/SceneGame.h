@@ -38,8 +38,14 @@ public:
 	void DrawGUI()override;
 
 
-	
+	void StartHitStop(float time);
 
+	void AddScore(int value);
+	int GetScore() const { return score; }
+
+
+	int GetGomiCount() const { return gomiCount; }
+	void ClearGomiCount() { gomiCount = 0; }
 private:
 	// ?? 追加
 	static SceneGame* instance;
@@ -49,4 +55,15 @@ private:
 	std::vector<Gomi*> gomis; // ゴミのリスト
 
 	int gomiCount = 0;
+
+	float timeLimit = 180.0f;   // 制限時間（秒）
+	float currentTime = 180.0f; // 残り時間
+	bool isTimeUp = false;
+
+	float timeScale = 1.0f;
+	float hitStopTimer = 0.0f;
+
+public:
+	int score = 0;
+
 };

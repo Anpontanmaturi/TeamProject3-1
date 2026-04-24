@@ -95,6 +95,18 @@ private:
 	//DirectX::XMFLOAT3 velocity = { 0, 0, 0 };
 	int jumpCount = 0;
 	int jumpLimit = 2;
-
+	//追加
+	float moveLimit = 5.0f;
+	float boostLimit = 7.5f;
+	float energy = 1000.0f;
+	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;
+
+	float deleteEnemyTimer = 0.5f; //敵削除タイマー
+
+private:
+	bool isBoost = false;
+
+public:
+	bool IsBoost() const { return isBoost; }
 };

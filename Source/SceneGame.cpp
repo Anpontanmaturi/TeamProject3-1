@@ -7,8 +7,27 @@
 #include"gomi.h"
 #include"battery.h"
 #include <cstdlib>
+#include <Windows.h> 
+#include <imgui.h>
+#include <algorithm> 
+#include <cmath>
+#include<SceneResult.h>
+#include <SceneManager.h>
 #include <ctime>
 std::vector<Object> objects;
+// 距離計算
+float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+{
+	float dx = a.x - b.x;
+	float dy = a.y - b.y;
+	float dz = a.z - b.z;
+
+	return sqrtf(dx * dx + dy * dy + dz * dz);
+}
+
+
+
+
 float GetRandom(float min, float max)
 {
 	return min + (float)rand() / RAND_MAX * (max - min);
@@ -22,7 +41,6 @@ void SceneGame::Initialize()
 	instance = this;
 
 	//プレイヤー初期化
-	//player = new Player();
 	Player::Instance().Initialize();
 
 
@@ -46,15 +64,12 @@ void SceneGame::Initialize()
 
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
-	/*EnemySlime* slime = new EnemySlime();
-	slime->SetPosition(DirectX::XMFLOAT3(0, 0, 5));
-	enemyManager.Register(slime);*/
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < ENEMY_MAX; ++i)
 	{
 		EnemySlime* slime = new EnemySlime();
 		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 
-		slime->SetTerritory(slime->GetPosition(), 10.0f);
+		slime->SetTerritory(slime->GetPosition(), 15.0f);
 
 		enemyManager.Register(slime);
 	}
@@ -74,6 +89,7 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+
 	// オブジェクト
 	// オブジェクト生成
 	
@@ -81,6 +97,15 @@ void SceneGame::Initialize()
 
 	// 位置など設定
 	objects[0].SetPosition(0, 0, 0);
+
+
+
+
+	//タイマー初期化
+	currentTime = timeLimit;
+	isTimeUp = false;
+
+
 }
 
 // 終了化
@@ -107,11 +132,6 @@ void SceneGame::Finalize()
 	
 
 	//プレイヤー終了化
-	/*if (player != nullptr)
-	{
-		delete player;
-		player = nullptr;
-	}*/
 	Player::Instance().Finalize();
 
 	//カメラコントローラー終了化
@@ -125,15 +145,51 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
-	//カメラコントローラー更新処理
-	//DirectX::XMFLOAT3 target = player->GetPosition();
+	if (isTimeUp) return;
+
+	// =========================
+	// ヒットストップ処理（追加）
+	// =========================
+	if (hitStopTimer > 0.0f)
+	{
+		hitStopTimer -= elapsedTime;
+
+		if (hitStopTimer <= 0.0f)
+		{
+			timeScale = 1.0f;
+		}
+	}
+
+	float scaledTime = elapsedTime * timeScale;
+
+	// =========================
+	// タイマー（※これは止めない）
+	// =========================
+	currentTime -= elapsedTime;
+
+	if (currentTime <= 0.0f)
+	{
+		currentTime = 0.0f;
+		isTimeUp = true;
+		SceneManager::Instance().ChangeScene(new SceneResult);
+	}
+
+	// =========================
+	// カメラ
+	// =========================
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	target.y += 0.5f;
-	cameraController->SetTarget(target);
-	cameraController->Update(elapsedTime);
 
-	//ステージ更新処理
-	stage->Update(elapsedTime);
+	cameraController->SetTarget(target);
+	cameraController->Update(scaledTime);
+
+	// =========================
+	// ゲーム更新（全部 scaledTime）
+	// =========================
+	stage->Update(scaledTime);
+	Player::Instance().Update(scaledTime);
+	EnemyManager::Instance().Update(scaledTime);
+
 
 	//オブジェクト更新処理
 	for (auto& obj : objects)
@@ -145,13 +201,27 @@ void SceneGame::Update(float elapsedTime)
 	//player->Update(elapsedTime);
 	Player::Instance().Update(elapsedTime);
 
-	//エネミー更新処理
-	EnemyManager::Instance().Update(elapsedTime);
-	// ゴミ更新処理
+	// =========================
+	// ゴミ処理
+	// =========================
+	DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
+
 	for (auto& g : gomis)
 	{
-		g->Update(elapsedTime);
+		g->Update(scaledTime);
+
+		float dist = GetDistance(playerPos, g->GetPosition());
+		float playerRadius = 0.7f;
+
+		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		{
+			g->Collect();
+			gomiCount++;
+			score += 5;
+		}
 	}
+
 
 	for (auto& obj : objects)
 	{
@@ -179,6 +249,45 @@ void SceneGame::Update(float elapsedTime)
 			Player::Instance().Heal(0.1f); // 回復量
 		}
 	}
+
+	// Vキー
+	static bool prev = false;
+	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
+
+	if (now && !prev)
+	{
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
+
+
+		//仮置き！！！！！
+		gomiCount = 0;
+	}
+
+	prev = now;
+
+	// =========================
+	// ゴミ削除
+	// =========================
+	gomis.erase(
+		std::remove_if(gomis.begin(), gomis.end(),
+			[](Gomi* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+				return false;
+			}),
+		gomis.end()
+	);
+
+	// =========================
+	// カメラ更新（止めない）
+	// =========================
+	Camera::Instance().Update(elapsedTime);
+
 }
 
 // 描画処理
@@ -270,6 +379,43 @@ void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
 void SceneGame::DrawGUI()
 {
 	//プレイヤーデバッグ描画
-	//player->DrowDebugGUI();
 	Player::Instance().DrowDebugGUI();
+
+	//エネミーデバッグ描画
+	//EnemyManager::Instance().DrawDebugGUI();
+
+	ImGui::Begin("UI");
+	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::End();
+
+
+	ImGui::Begin("Time");
+
+	if (isTimeUp)
+	{
+		ImGui::Text("Time Up!");
+	}
+	else
+	{
+		ImGui::Text("Time : %.1f", currentTime);
+	}
+
+	ImGui::End();
+
+
+	ImGui::Begin("Score");
+	ImGui::Text("Score : %d", score);
+	ImGui::End();
+}
+
+void SceneGame::StartHitStop(float time)
+{
+	hitStopTimer = time;
+	timeScale = 0.0f;
+}
+
+
+void SceneGame::AddScore(int value)
+{
+	score += value;
 }
