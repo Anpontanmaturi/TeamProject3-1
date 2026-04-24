@@ -171,6 +171,9 @@
     <ClInclude Include="Source\gomi.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\battery.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -303,6 +306,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\gomi.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\battery.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

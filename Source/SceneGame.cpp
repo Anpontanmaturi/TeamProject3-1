@@ -5,8 +5,10 @@
 #include "EnemySlime.h"
 #include "Player.h"
 #include"gomi.h"
+#include"battery.h"
 #include <cstdlib>
 #include <ctime>
+std::vector<Object> objects;
 float GetRandom(float min, float max)
 {
 	return min + (float)rand() / RAND_MAX * (max - min);
@@ -18,9 +20,11 @@ void SceneGame::Initialize()
 	//ステージ初期化
 	stage = new Stage();
 	instance = this;
+
 	//プレイヤー初期化
 	//player = new Player();
 	Player::Instance().Initialize();
+
 
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
@@ -70,6 +74,13 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+	// オブジェクト
+	// オブジェクト生成
+	
+	objects.emplace_back(); // ← これが必要！！
+
+	// 位置など設定
+	objects[0].SetPosition(0, 0, 0);
 }
 
 // 終了化
@@ -90,6 +101,11 @@ void SceneGame::Finalize()
 		delete g;
 	}
 	gomis.clear();
+
+	//オブジェクト終了化
+	objects.clear();
+	
+
 	//プレイヤー終了化
 	/*if (player != nullptr)
 	{
@@ -119,6 +135,12 @@ void SceneGame::Update(float elapsedTime)
 	//ステージ更新処理
 	stage->Update(elapsedTime);
 
+	//オブジェクト更新処理
+	for (auto& obj : objects)
+	{
+		obj.Update(elapsedTime);
+	}
+	
 	//プレイヤー更新処理
 	//player->Update(elapsedTime);
 	Player::Instance().Update(elapsedTime);
@@ -129,6 +151,33 @@ void SceneGame::Update(float elapsedTime)
 	for (auto& g : gomis)
 	{
 		g->Update(elapsedTime);
+	}
+
+	for (auto& obj : objects)
+	{
+		obj.Update(elapsedTime);
+
+		// プレイヤー位置
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
+		// オブジェクト位置
+		DirectX::XMFLOAT3 objPos = obj.GetPosition(); // ←後で追加する
+
+		// 距離計算
+		DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&playerPos);
+		DirectX::XMVECTOR o = DirectX::XMLoadFloat3(&objPos);
+
+		float distance = DirectX::XMVectorGetX(
+			DirectX::XMVector3Length(DirectX::XMVectorSubtract(p, o))
+		);
+
+		// 範囲内なら回復
+		float radius = 2.0f; // 当たり範囲
+
+		if (distance < radius)
+		{
+			Player::Instance().Heal(0.1f); // 回復量
+		}
 	}
 }
 
@@ -160,6 +209,11 @@ void SceneGame::Render()
 		g->Render(rc, modelRenderer);
 	}
 
+	// オブジェクト描画
+	for (auto& obj : objects)
+	{
+		obj.Render(rc, modelRenderer);
+	}
 	// 3Dモデル描画
 	{
 		//ステージ描画

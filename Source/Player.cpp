@@ -357,6 +357,12 @@ void Player::CollisionPlayerVsEnemies()
 //	}
 //}
 
+//ゲージ回復
+void Player::Heal(float amount)
+{
+	hp += amount;
+	if (hp > maxHp) hp = maxHp;
+}
 //ジャンプ入力処理
 void Player::InputJump()
 {
