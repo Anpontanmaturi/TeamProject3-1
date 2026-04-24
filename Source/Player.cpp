@@ -6,6 +6,7 @@
 #include "Collision.h"
 #include "ProjectileStraight.h"
 #include "ProjectileHoming.h"
+#include <SceneGame.h>
 
 /*//コンストラクタ
 Player::Player()
@@ -366,7 +367,7 @@ void Player::CollisionPlayerVsEnemies()
 					DirectX::XMStoreFloat3(&dir, V);
 
 					DirectX::XMFLOAT3 impulse;
-					float power = 10.0f;
+					float power = 12.5f;
 
 					impulse.x = dir.x * power;
 					impulse.y = power * 0.5f;
@@ -377,6 +378,9 @@ void Player::CollisionPlayerVsEnemies()
 
 					// 即死させる（弾と同じ仕組み使う）
 					enemy->ApplyDamage(1, 0.0f);
+
+					Camera::Instance().StartShake(0.9f, 0.4f);
+					SceneGame::Instance().StartHitStop(0.28f);
 				}
 				else
 				{
