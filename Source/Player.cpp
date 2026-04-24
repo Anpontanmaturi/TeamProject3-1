@@ -381,6 +381,7 @@ void Player::CollisionPlayerVsEnemies()
 
 					Camera::Instance().StartShake(0.9f, 0.4f);
 					SceneGame::Instance().StartHitStop(0.28f);
+					energy += 50.0f;
 				}
 				else
 				{
