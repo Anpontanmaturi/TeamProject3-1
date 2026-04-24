@@ -28,8 +28,6 @@ EnemySlime::~EnemySlime()
 //更新処理
 void EnemySlime::Update(float elapsedTime)
 {
-	Enemy::Update(elapsedTime);
-
 	//ステート毎の更新処理
 	switch (state)
 	{
@@ -210,7 +208,7 @@ void EnemySlime::SetEscepeState()
 	state = State::Escepe;
 
 	// 動く速度を上げる
-	moveSpeed = DEFAULT_SPEED * 3.5f;
+	moveSpeed = DEFAULT_SPEED * 2.5f;
 
 	stateTimer = 0.0f;
 }
