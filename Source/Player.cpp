@@ -382,6 +382,10 @@ void Player::CollisionPlayerVsEnemies()
 					Camera::Instance().StartShake(0.9f, 0.4f);
 					SceneGame::Instance().StartHitStop(0.28f);
 					energy += 50.0f;
+
+
+					int gomi = SceneGame::Instance().GetGomiCount();
+					SceneGame::Instance().AddScore(100 + gomi * 10);
 				}
 				else
 				{
