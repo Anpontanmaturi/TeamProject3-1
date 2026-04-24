@@ -2,6 +2,7 @@
 #include "Collision.h"
 #include "EnemySlime.h"
 #include <imgui.h>
+#include <SceneGame.h>
 
 //エネミー削除
 void EnemyManager::Remove(Enemy* enemy)
@@ -35,6 +36,14 @@ void EnemyManager::Update(float elapsedTime)
 		if (enemy != nullptr && removes.find(enemy) == removes.end())//破棄リストにない場合のみ更新処理を行う
 		{
 			enemy->Update(elapsedTime);
+
+			// ゴミ処理(仮置き)
+			enemy->gomiTimer += elapsedTime;
+			if (enemy->gomiTimer >= 5.0f)
+			{
+				enemy->gomiTimer = 0.0f;
+				SceneGame::Instance().AddGomi(enemy->GetPosition());
+			}
 		}
 	}
 
