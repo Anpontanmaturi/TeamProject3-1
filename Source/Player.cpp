@@ -26,6 +26,17 @@ void Player::Initialize()
 	scale.x = scale.y = scale.z = 0.01f;
 }
 
+void Player::AddEnergy(float value)
+{
+	energy += value;
+
+	// 上限つけたいなら（おすすめ）
+	if (energy > maxenergy)
+	{
+		energy = maxenergy;
+	}
+}
+
 /*//デストラクタ
 Player::~Player()
 {
@@ -382,6 +393,10 @@ void Player::CollisionPlayerVsEnemies()
 					Camera::Instance().StartShake(0.9f, 0.4f);
 					SceneGame::Instance().StartHitStop(0.28f);
 					energy += 50.0f;
+
+
+					int gomi = SceneGame::Instance().GetGomiCount();
+					SceneGame::Instance().AddScore(100 + gomi * 10);
 				}
 				else
 				{
@@ -416,6 +431,14 @@ void Player::CollisionPlayerVsEnemies()
 //		velocity.y = 0.0f;
 //	}
 //}
+
+//�Q�[�W��
+void Player::Heal(float amount)
+{
+	hp += amount;
+	if (hp > maxHp) hp = maxHp;
+}
+//�W�����v���͏���
 
 //ジャンプ入力処理
 void Player::InputJump()

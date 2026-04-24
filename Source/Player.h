@@ -24,7 +24,7 @@ public:
 
 	//初期化
 	void Initialize();
-
+	void AddEnergy(float value);
 	//終了化
 	void Finalize();
 
@@ -42,6 +42,8 @@ public:
 
 	//速度入力更新
 	//void UpdateVelocity(float elapsedTime);
+
+	void Heal(float amount);
 
 	//ジャンプ入力処理
 	void InputJump();
@@ -62,6 +64,11 @@ private:
 	//弾丸入力処理
 	void InputProjectile();
 
+	//HP取得
+	float GetHp() const { return hp; }
+	float GetMaxHp() const { return maxHp; }
+
+
 	//旋回処理
 	//void Turn(float elapsedTime, float vx, float vz, float speed);
 
@@ -79,6 +86,9 @@ private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
 	float turnSpeed = DirectX::XMConvertToRadians(720);
+
+	float hp = 100.0f;
+	float maxHp = 100.0f;
 
 	float jumpSpeed = 12.0f;
 	//float gravity = -30.0f;

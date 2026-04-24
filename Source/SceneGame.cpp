@@ -5,6 +5,7 @@
 #include "EnemySlime.h"
 #include "Player.h"
 #include"gomi.h"
+#include"battery.h"
 #include <cstdlib>
 #include <Windows.h> 
 #include <imgui.h>
@@ -13,6 +14,8 @@
 #include<SceneResult.h>
 #include <SceneManager.h>
 #include <ctime>
+std::vector<Object> objects;
+#include <Denti.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -22,6 +25,7 @@ float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 
 	return sqrtf(dx * dx + dy * dy + dz * dz);
 }
+
 
 
 
@@ -36,8 +40,10 @@ void SceneGame::Initialize()
 	//ステージ初期化
 	stage = new Stage();
 	instance = this;
+
 	//プレイヤー初期化
 	Player::Instance().Initialize();
+
 
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
@@ -84,12 +90,34 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+	// オブジェクト
+	// オブジェクト生成
+	
+	objects.emplace_back(); // ← これが必要！！
+
+	// 位置など設定
+	objects[0].SetPosition(0, 0, 0);
 
 
+	dentis.clear();
+
+	// 最初の1個
+	Denti* d = new Denti();
+
+	float x = GetRandom(-10.0f, 10.0f);
+	float z = GetRandom(-10.0f, 10.0f);
+
+	d->Init({ x, 0.5f, z });
+
+	dentis.push_back(d);
+
+	// タイマーリセット
+	dentiSpawnTimer = 0.0f;
 
 	//タイマー初期化
 	currentTime = timeLimit;
 	isTimeUp = false;
+
 
 }
 
@@ -111,6 +139,11 @@ void SceneGame::Finalize()
 		delete g;
 	}
 	gomis.clear();
+
+	//オブジェクト終了化
+	objects.clear();
+	
+
 	//プレイヤー終了化
 	Player::Instance().Finalize();
 
@@ -154,9 +187,33 @@ void SceneGame::Update(float elapsedTime)
 		SceneManager::Instance().ChangeScene(new SceneResult);
 	}
 
+
+	// 電池スポーンタイマー
+	dentiSpawnTimer += elapsedTime;
+
+	if (dentiSpawnTimer >= dentiSpawnInterval)
+	{
+		dentiSpawnTimer = 0.0f;
+
+		if (dentis.size() < maxDenti)
+		{
+			Denti* d = new Denti();
+
+			float x = GetRandom(-10.0f, 10.0f);
+			float z = GetRandom(-10.0f, 10.0f);
+
+			d->Init({ x, 0.5f, z });
+
+			dentis.push_back(d);
+		}
+	}
+	//カメラコントローラー更新処理
+	//DirectX::XMFLOAT3 target = player->GetPosition();
+
 	// =========================
 	// カメラ
 	// =========================
+
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	target.y += 0.5f;
 
@@ -170,10 +227,22 @@ void SceneGame::Update(float elapsedTime)
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
 
+
+	//オブジェクト更新処理
+	for (auto& obj : objects)
+	{
+		obj.Update(elapsedTime);
+	}
+	
+	//プレイヤー更新処理
+	//player->Update(elapsedTime);
+	Player::Instance().Update(elapsedTime);
+
 	// =========================
 	// ゴミ処理
 	// =========================
 	DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
 
 	for (auto& g : gomis)
 	{
@@ -186,10 +255,58 @@ void SceneGame::Update(float elapsedTime)
 		{
 			g->Collect();
 			gomiCount++;
+			score += 5;
+		}
+	}
+	for (auto& d : dentis)
+	{
+		d->Update(elapsedTime);
+
+
+		float dist = GetDistance(playerPos, d->GetPosition());
+
+		float playerRadius = 0.7f;
+
+		if (!d->IsCollected() && dist < playerRadius + d->GetRadius())
+		{
+			d->Collect();
+
+			
+			Player::Instance().AddEnergy(300.0f);
+		}
+	}
+	// Vキー押したら発動
+
+
+	for (auto& obj : objects)
+	{
+		obj.Update(elapsedTime);
+
+		// プレイヤー位置
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
+		// オブジェクト位置
+		DirectX::XMFLOAT3 objPos = obj.GetPosition(); // ←後で追加する
+
+		// 距離計算
+		DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&playerPos);
+		DirectX::XMVECTOR o = DirectX::XMLoadFloat3(&objPos);
+
+		float distance = DirectX::XMVectorGetX(
+			DirectX::XMVector3Length(DirectX::XMVectorSubtract(p, o))
+		);
+
+		// 範囲内なら回復
+		float radius = 2.0f; // 当たり範囲
+
+		if (distance < radius)
+		{
+			Player::Instance().Heal(0.1f); // 回復量
 		}
 	}
 
 	// Vキー
+
 	static bool prev = false;
 	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
 
@@ -197,6 +314,10 @@ void SceneGame::Update(float elapsedTime)
 	{
 		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
 		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
+
+
+		//仮置き！！！！！
+		gomiCount = 0;
 	}
 
 	prev = now;
@@ -218,10 +339,26 @@ void SceneGame::Update(float elapsedTime)
 		gomis.end()
 	);
 
+	dentis.erase(
+		std::remove_if(dentis.begin(), dentis.end(),
+			[](Denti* d)
+			{
+				if (d->IsCollected())
+				{
+					delete d;
+					return true;
+				}
+				return false;
+			}),
+		dentis.end()
+	);
+
+
 	// =========================
 	// カメラ更新（止めない）
 	// =========================
 	Camera::Instance().Update(elapsedTime);
+
 }
 
 // 描画処理
@@ -251,7 +388,16 @@ void SceneGame::Render()
 	{
 		g->Render(rc, modelRenderer);
 	}
-
+	// オブジェクト描画
+	for (auto& obj : objects)
+	{
+		obj.Render(rc, modelRenderer);
+	}
+	// 電池描画 ← これ追加
+	for (auto& d : dentis)
+	{
+		d->Render(rc, modelRenderer);
+	}
 	// 3Dモデル描画
 	{
 		//ステージ描画
@@ -330,10 +476,21 @@ void SceneGame::DrawGUI()
 	}
 
 	ImGui::End();
+
+
+	ImGui::Begin("Score");
+	ImGui::Text("Score : %d", score);
+	ImGui::End();
 }
 
 void SceneGame::StartHitStop(float time)
 {
 	hitStopTimer = time;
 	timeScale = 0.0f;
+}
+
+
+void SceneGame::AddScore(int value)
+{
+	score += value;
 }
