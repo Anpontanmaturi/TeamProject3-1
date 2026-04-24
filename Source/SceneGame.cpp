@@ -305,9 +305,6 @@ void SceneGame::Update(float elapsedTime)
 	{
 		obj.Update(elapsedTime);
 
-		// プレイヤー位置
-		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
-
 		// オブジェクト位置
 		DirectX::XMFLOAT3 objPos = obj.GetPosition(); // ←後で追加する
 

@@ -369,8 +369,6 @@ void Player::CollisionPlayerVsEnemies()
 				if (isBoost)
 				{
 					// ===== ノックバック処理 =====
-					DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-					DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
 					DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
 					V = DirectX::XMVector3Normalize(V);
 
@@ -381,7 +379,7 @@ void Player::CollisionPlayerVsEnemies()
 					float power = 12.5f;
 
 					impulse.x = dir.x * power;
-					impulse.y = power * 1.5f;
+					impulse.y = power * 3.0f;
 					impulse.z = dir.z * power;
 
 					// 既にあるこれ使うのがベスト👇
@@ -432,13 +430,12 @@ void Player::CollisionPlayerVsEnemies()
 //	}
 //}
 
-//�Q�[�W��
+//回復
 void Player::Heal(float amount)
 {
 	hp += amount;
 	if (hp > maxHp) hp = maxHp;
 }
-//�W�����v���͏���
 
 //ジャンプ入力処理
 void Player::InputJump()
