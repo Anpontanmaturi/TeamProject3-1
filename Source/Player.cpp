@@ -381,7 +381,7 @@ void Player::CollisionPlayerVsEnemies()
 					float power = 12.5f;
 
 					impulse.x = dir.x * power;
-					impulse.y = power * 1.5;
+					impulse.y = power * 1.5f;
 					impulse.z = dir.z * power;
 
 					// 既にあるこれ使うのがベスト👇

@@ -139,6 +139,12 @@ void SceneGame::Finalize()
 		delete g;
 	}
 	gomis.clear();
+	// 電池の解放
+	for (auto& b : dentis)
+	{
+		delete b;
+	}
+	dentis.clear();
 
 	//オブジェクト終了化
 	objects.clear();
