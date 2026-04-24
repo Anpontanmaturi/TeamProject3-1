@@ -7,7 +7,8 @@ void Enemy::Destroy()
 {
 	EnemyManager::Instance().Remove(this);
 }
-void Enemy::Update(float elapsedTime)
+
+/*void Enemy::Update(float elapsedTime)
 {
 	using namespace DirectX;
 
@@ -68,7 +69,8 @@ void Enemy::Update(float elapsedTime)
 		gomiTimer = 0.0f;
 		SceneGame::Instance().AddGomi(GetPosition());
 	}
-}
+}*/
+
 void Enemy::StartAttract(const DirectX::XMFLOAT3& target)
 {
 	isAttracting = true;

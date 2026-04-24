@@ -9,7 +9,7 @@ class Enemy : public Character
 public:
 	Enemy(){}
 	~Enemy()override{}
-	virtual void Update(float elapsedTime);
+	virtual void Update(float elapsedTime) = 0;
 	void StartAttract(const DirectX::XMFLOAT3& target);
 	//”jŠü
 	void Destroy();

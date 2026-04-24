@@ -48,6 +48,12 @@ public:
 
 	void StartHitStop(float time);
 
+	void AddScore(int value);
+	int GetScore() const { return score; }
+
+
+	int GetGomiCount() const { return gomiCount; }
+	void ClearGomiCount() { gomiCount = 0; }
 
 private:
 	// ?? ’Ç‰Á
@@ -65,5 +71,8 @@ private:
 
 	float timeScale = 1.0f;
 	float hitStopTimer = 0.0f;
+
+public:
+	int score = 0;
 
 };

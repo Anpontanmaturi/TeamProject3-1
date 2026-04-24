@@ -226,6 +226,7 @@ void SceneGame::Update(float elapsedTime)
 		{
 			g->Collect();
 			gomiCount++;
+			score += 5;
 		}
 	}
 	for (auto& d : dentis)
@@ -256,6 +257,10 @@ void SceneGame::Update(float elapsedTime)
 	{
 		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
 		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
+
+
+		//仮置き！！！！！
+		gomiCount = 0;
 	}
 
 	prev = now;
@@ -409,10 +414,21 @@ void SceneGame::DrawGUI()
 	}
 
 	ImGui::End();
+
+
+	ImGui::Begin("Score");
+	ImGui::Text("Score : %d", score);
+	ImGui::End();
 }
 
 void SceneGame::StartHitStop(float time)
 {
 	hitStopTimer = time;
 	timeScale = 0.0f;
+}
+
+
+void SceneGame::AddScore(int value)
+{
+	score += value;
 }
