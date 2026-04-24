@@ -13,6 +13,7 @@
 #include<SceneResult.h>
 #include <SceneManager.h>
 #include <ctime>
+#include <Denti.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -89,7 +90,22 @@ void SceneGame::Initialize()
 		gomis.push_back(g);
 	}
 
+	dentis.clear();
 
+	dentis.clear();
+
+	// 最初の1個
+	Denti* d = new Denti();
+
+	float x = GetRandom(-10.0f, 10.0f);
+	float z = GetRandom(-10.0f, 10.0f);
+
+	d->Init({ x, 0.5f, z });
+
+	dentis.push_back(d);
+
+	// タイマーリセット
+	dentiSpawnTimer = 0.0f;
 
 	//タイマー初期化
 	currentTime = timeLimit;
@@ -150,6 +166,25 @@ void SceneGame::Update(float elapsedTime)
 		SceneManager::Instance().ChangeScene(new SceneResult);
 	}
 
+	// 電池スポーンタイマー
+	dentiSpawnTimer += elapsedTime;
+
+	if (dentiSpawnTimer >= dentiSpawnInterval)
+	{
+		dentiSpawnTimer = 0.0f;
+
+		if (dentis.size() < maxDenti)
+		{
+			Denti* d = new Denti();
+
+			float x = GetRandom(-10.0f, 10.0f);
+			float z = GetRandom(-10.0f, 10.0f);
+
+			d->Init({ x, 0.5f, z });
+
+			dentis.push_back(d);
+		}
+	}
 	//カメラコントローラー更新処理
 	//DirectX::XMFLOAT3 target = player->GetPosition();
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
@@ -181,7 +216,19 @@ void SceneGame::Update(float elapsedTime)
 			gomiCount++; // ← 追加
 		}
 	}
+	for (auto& d : dentis)
+	{
+		d->Update(elapsedTime);
 
+		float dist = GetDistance(playerPos, d->GetPosition());
+
+		float playerRadius = 0.7f;
+
+		if (!d->IsCollected() && dist < playerRadius + d->GetRadius())
+		{
+			d->Collect(); // ← これで消えるフラグ
+		}
+	}
 	// Vキー押したら発動
 	static bool prev = false;
 	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
@@ -211,7 +258,19 @@ void SceneGame::Update(float elapsedTime)
 			}),
 		gomis.end()
 	);
-
+	dentis.erase(
+		std::remove_if(dentis.begin(), dentis.end(),
+			[](Denti* d)
+			{
+				if (d->IsCollected())
+				{
+					delete d;
+					return true;
+				}
+				return false;
+			}),
+		dentis.end()
+	);
 }
 
 // 描画処理
@@ -241,7 +300,11 @@ void SceneGame::Render()
 	{
 		g->Render(rc, modelRenderer);
 	}
-
+	// 電池描画 ← これ追加
+	for (auto& d : dentis)
+	{
+		d->Render(rc, modelRenderer);
+	}
 	// 3Dモデル描画
 	{
 		//ステージ描画
