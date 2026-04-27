@@ -110,4 +110,6 @@ private:
 
 public:
 	bool IsBoost() const { return isBoost; }
+
+	int gomiCount = 0;
 };
