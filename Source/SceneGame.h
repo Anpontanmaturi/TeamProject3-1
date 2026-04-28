@@ -54,7 +54,11 @@ public:
 
 	int GetGomiCount() const { return gomiCount; }
 	void ClearGomiCount() { gomiCount = 0; }
+	// ƒRƒ“ƒ{
+	void AddCombo();
+	int GetCombo() const { return combo; }
 
+	float GetComboMultiplier() const;
 private:
 	// ?? ’Ç‰Á
 	static SceneGame* instance;
@@ -71,6 +75,11 @@ private:
 
 	float timeScale = 1.0f;
 	float hitStopTimer = 0.0f;
+
+	// ƒRƒ“ƒ{
+	int combo = 0;
+	float comboTimer = 0.0f;
+	float comboLimit = 2.0f; // 2•bˆÈ“à‚ÅŒp‘±
 
 public:
 	int score = 0;

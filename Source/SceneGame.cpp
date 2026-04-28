@@ -139,6 +139,12 @@ void SceneGame::Finalize()
 		delete g;
 	}
 	gomis.clear();
+	// 電池の解放
+	for (auto& b : dentis)
+	{
+		delete b;
+	}
+	dentis.clear();
 
 	//オブジェクト終了化
 	objects.clear();
@@ -376,7 +382,19 @@ void SceneGame::Update(float elapsedTime)
 	// =========================
 	Camera::Instance().Update(elapsedTime);
 
+
+	// コンボ管理
+	if (combo > 0)
+	{
+		comboTimer -= elapsedTime;
+
+		if (comboTimer <= 0.0f)
+		{
+			combo = 0;
+		}
+	}
 }
+
 
 // 描画処理
 void SceneGame::Render()
@@ -497,6 +515,7 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("Score");
 	ImGui::Text("Score : %d", score);
+	ImGui::Text("Combo : %d", SceneGame::Instance().GetCombo());
 	ImGui::End();
 }
 void SceneGame::StartHitStop(float time)
@@ -509,4 +528,19 @@ void SceneGame::StartHitStop(float time)
 void SceneGame::AddScore(int value)
 {
 	score += value;
+}
+
+void SceneGame::AddCombo()
+{
+	combo++;
+	comboTimer = comboLimit;
+}
+
+float SceneGame::GetComboMultiplier() const
+{
+	if (combo == 1) return 1.0f;
+	if (combo == 2) return 1.5f;
+	if (combo >= 3) return 3.0f;
+
+	return 1.0f;
 }
