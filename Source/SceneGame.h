@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include <gomi.h>
 #include <Denti.h>
+#include <garakuta.h>
 // ゲームシーン
 //class SceneGame
 class SceneGame : public Scene
@@ -68,11 +69,13 @@ private:
 	std::vector<Gomi*> gomis; // ゴミのリスト
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
-
+	std::vector<garakuta*> garbages;
 	float timeLimit = 180.0f;   // 制限時間（秒）
 	float currentTime = 180.0f; // 残り時間
 	bool isTimeUp = false;
-
+	float garbageSpawnTimer = 0.0f;
+	float garbageSpawnInterval = 45.0f;
+	int maxGarbage = 1;
 	float timeScale = 1.0f;
 	float hitStopTimer = 0.0f;
 
