@@ -253,7 +253,8 @@ void SceneGame::Update(float elapsedTime)
 		if (distance < radius)
 		{
 			// š‚±‚±‚ª‰ñ•œ‘¬“x
-			Player::Instance().AddEnergy(20.0f * elapsedTime);
+			Player::Instance().AddEnergy(85.0f * elapsedTime);
+			gomiCount = 0;
 		}
 	}
 
