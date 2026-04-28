@@ -88,17 +88,35 @@ void SceneGame::Initialize()
 
 	dentis.clear();
 
-	dentis.clear();
+	
+	garbages.clear(); // ←これ追加！！
 
-	// 最初の1個
+	// 電池1個
 	Denti* d = new Denti();
-
 	float x = GetRandom(-10.0f, 10.0f);
 	float z = GetRandom(-10.0f, 10.0f);
-
 	d->Init({ x, 0.5f, z });
-
 	dentis.push_back(d);
+
+	// ガラクタ生成
+	garbages.clear();
+
+	// 最初の1個
+	garakuta* g = new garakuta();
+
+	// ガラクタ専用の座標を作る
+	float gx = GetRandom(-10.0f, 10.0f);
+	float gz = GetRandom(-10.0f, 10.0f);
+
+	g->Init({ gx, 0.0f, gz });
+	garbages.push_back(g);
+
+	// タイマーリセット
+	garbageSpawnTimer = 0.0f;
+
+	// 最初の1個
+
+	//dentis.push_back(d);
 
 	// タイマーリセット
 	dentiSpawnTimer = 0.0f;
@@ -129,7 +147,11 @@ void SceneGame::Finalize()
 	gomis.clear();
 	//プレイヤー終了化
 	Player::Instance().Finalize();
-
+	for (auto& g : garbages)
+	{
+		delete g;
+	}
+	garbages.clear();
 	//カメラコントローラー終了化
 	if (cameraController != nullptr)
 	{
@@ -169,7 +191,6 @@ void SceneGame::Update(float elapsedTime)
 		isTimeUp = true;
 		SceneManager::Instance().ChangeScene(new SceneResult);
 	}
-
 
 	// 電池スポーンタイマー
 	dentiSpawnTimer += elapsedTime;
@@ -229,6 +250,45 @@ void SceneGame::Update(float elapsedTime)
 			score += 5;
 		}
 	}
+	// =========================
+// ガラクタ処理（←これ追加）
+// =========================
+	for (auto& g : garbages)
+	{
+		g->Update(elapsedTime);
+
+		float dist = GetDistance(playerPos, g->GetPosition());
+		float playerRadius = 0.7f;
+
+		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		{
+			g->Collect();
+
+			Player::Instance().AddGarbage(1); // ← 持ってる数増やす
+		}
+	}
+	// =========================
+	// ガラクタスポーン
+	// =========================
+	garbageSpawnTimer += elapsedTime;
+
+	if (garbageSpawnTimer >= garbageSpawnInterval)
+	{
+		garbageSpawnTimer = 0.0f;
+
+		// 最大数チェック（1個だけ）
+		if (garbages.size() < maxGarbage)
+		{
+			garakuta* g = new garakuta();
+
+			float x = GetRandom(-5.0f, 5.0f);
+			float z = GetRandom(-5.0f, 5.0f);
+
+			g->Init({ x, 0.0f, z });
+
+			garbages.push_back(g);
+		}
+	}
 	for (auto& d : dentis)
 	{
 		d->Update(elapsedTime);
@@ -246,24 +306,14 @@ void SceneGame::Update(float elapsedTime)
 			Player::Instance().AddEnergy(300.0f);
 		}
 	}
+	
 	// Vキー押したら発動
 
 	// Vキー
 
-	static bool prev = false;
-	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
-
-	if (now && !prev)
-	{
-		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
-		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
 
 
-		//仮置き！！！！！
-		gomiCount = 0;
-	}
 
-	prev = now;
 
 	// =========================
 	// ゴミ削除
@@ -296,7 +346,19 @@ void SceneGame::Update(float elapsedTime)
 		dentis.end()
 	);
 
-
+	garbages.erase(
+		std::remove_if(garbages.begin(), garbages.end(),
+			[](garakuta* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+				return false;
+			}),
+		garbages.end()
+	);
 	// =========================
 	// カメラ更新（止めない）
 	// =========================
@@ -340,6 +402,10 @@ void SceneGame::Render()
 
 	// ゴミ描画
 	for (auto& g : gomis)
+	{
+		g->Render(rc, modelRenderer);
+	}
+	for (auto& g : garbages)
 	{
 		g->Render(rc, modelRenderer);
 	}
