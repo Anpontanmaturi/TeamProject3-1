@@ -259,7 +259,7 @@ void SceneGame::Update(float elapsedTime)
 
 	//プレイヤー更新処理
 	//player->Update(elapsedTime);
-	Player::Instance().Update(elapsedTime);
+	//Player::Instance().Update(elapsedTime);
 
 	// =========================
 	// ゴミ処理

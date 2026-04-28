@@ -370,8 +370,6 @@ void Player::CollisionPlayerVsEnemies()
 				if (isBoost)
 				{
 					// ===== ノックバック処理 =====
-					DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-					DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
 					DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
 					V = DirectX::XMVector3Normalize(V);
 
@@ -401,9 +399,7 @@ void Player::CollisionPlayerVsEnemies()
 					int combo = SceneGame::Instance().GetCombo();
 					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
-					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);
-
-					
+					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);					
 				}
 				
 				else
