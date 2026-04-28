@@ -58,7 +58,7 @@ void SceneGame::Initialize()
 	);
 	camera.SetPerspectiveFov(
 		DirectX::XMConvertToRadians(45),	//視野角
-		graphics.GetScreenWidth()/graphics.GetScreenHeight(),	//画面アスペクト比
+		graphics.GetScreenWidth() / graphics.GetScreenHeight(),	//画面アスペクト比
 		0.1f,	//グリップ距離(近)
 		1000.0f	//グリップ距離(遠)
 	);
@@ -92,7 +92,7 @@ void SceneGame::Initialize()
 	}
 	// オブジェクト
 	// オブジェクト生成
-	
+
 	objects.emplace_back(); // ← これが必要！！
 
 	// 位置など設定
@@ -148,7 +148,7 @@ void SceneGame::Finalize()
 
 	//オブジェクト終了化
 	objects.clear();
-	
+
 
 	//プレイヤー終了化
 	Player::Instance().Finalize();
@@ -256,7 +256,7 @@ void SceneGame::Update(float elapsedTime)
 			Player::Instance().AddEnergy(20.0f * elapsedTime);
 		}
 	}
-	
+
 	//プレイヤー更新処理
 	//player->Update(elapsedTime);
 	Player::Instance().Update(elapsedTime);
@@ -294,7 +294,7 @@ void SceneGame::Update(float elapsedTime)
 		{
 			d->Collect();
 
-			
+
 			Player::Instance().AddEnergy(300.0f);
 		}
 	}
@@ -410,7 +410,7 @@ void SceneGame::Render()
 	rc.lightDirection = { 0.0f, -1.0f, 0.0f };	// ライト方向（下方向）
 
 	// 描画準備
-	
+
 	rc.renderState = graphics.GetRenderState();
 
 	//カメラパラメータ設定
@@ -518,7 +518,6 @@ void SceneGame::DrawGUI()
 	ImGui::Text("Combo : %d", SceneGame::Instance().GetCombo());
 	ImGui::End();
 }
-
 void SceneGame::StartHitStop(float time)
 {
 	hitStopTimer = time;

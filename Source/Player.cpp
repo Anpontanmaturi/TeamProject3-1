@@ -385,7 +385,7 @@ void Player::CollisionPlayerVsEnemies()
 					impulse.y = power * 1.5f;
 					impulse.z = dir.z * power;
 
-					// 既にあるこれ使うのがベスト👇
+					// 既にあるこれ使うのがベスト
 					enemy->AddImpulse(impulse);
 
 					// x秒後に敵を削除する
@@ -440,13 +440,13 @@ void Player::CollisionPlayerVsEnemies()
 //	}
 //}
 
-//�Q�[�W��
+
 void Player::Heal(float amount)
 {
 	hp += amount;
 	if (hp > maxHp) hp = maxHp;
 }
-//�W�����v���͏���
+
 
 //ジャンプ入力処理
 void Player::InputJump()
