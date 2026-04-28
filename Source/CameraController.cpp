@@ -5,35 +5,67 @@
 //更新処理
 void CameraController::Update(float elapsedTime)
 {
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	float ax = gamePad.GetAxisRX();
-	float ay = gamePad.GetAxisRY();
-	//カメラの回転速度
-	float speed = rollSpeed * elapsedTime;
+	bool currentKeyTab = (GetAsyncKeyState(VK_TAB) & 0x8000);
 
-	//スティックの入力値に合わせてX軸とY軸を回転
-	angle.x -= ay * speed;
-	angle.y += ax * speed;
+	if (currentKeyTab && !prevKeyTab)
+	{
+		isCursorLocked = !isCursorLocked; // フラグ反転
 
-	//X軸のカメラ回転を制限
-	if (angle.x < minAngleX)
-	{
-		angle.x = minAngleX;
+		// カーソルを表示/非表示にする（お好みで）
+		ShowCursor(!isCursorLocked);
+
+		// カーソルをロックした場合に画面中央に移動させる
+		if (isCursorLocked)
+		{
+			SetCursorPos(centerX, centerY);
+		}
+
 	}
-	if (angle.x > maxAngleX)
+	prevKeyTab = currentKeyTab;
+
+	// カーソルがロックされている場合のみマウス移動を処理
+	if (isCursorLocked)
 	{
-		angle.x = maxAngleX;
+
+		// 現在のマウス座標取得
+		POINT mousePos;
+		GetCursorPos(&mousePos);
+
+		// 相対移動量
+		float ax = static_cast<float>(mousePos.x - centerX);
+		float ay = static_cast<float>(mousePos.y - centerY);
+
+		// 角度更新
+		angle.y += ax * sensitivity;
+
+		//// X軸回転制限
+		//if (angle.x < minAngleX) angle.x = minAngleX;
+		//if (angle.x > maxAngleX) angle.x = maxAngleX;
+
+		//	X軸回転を固定
+		angle.x = DirectX::XMConvertToRadians(20.0f);
+
+		// Y軸回転ラップ
+		if (angle.y < -DirectX::XM_PI) angle.y += DirectX::XM_2PI;
+		if (angle.y > DirectX::XM_PI) angle.y -= DirectX::XM_2PI;
+
+		// マウスを画面中央に戻す
+		SetCursorPos(centerX, centerY);
 	}
 
-	//Y軸の回転値を-3.14～3.14に収まるようにする
-	if (angle.y < -DirectX::XM_PI)
+	// ズーム処理
+	int wheel = Input::Instance().GetMouseWheel();
+
+	if (wheel != 0)
 	{
-		angle.y += DirectX::XM_2PI;
+		range -= static_cast<float>(wheel) * zoomSpeed;
+
+		if (range < minRange)  range = minRange;  // キャラクターにめり込まない距離
+		if (range > maxRange) range = maxRange; // ステージの外に出すぎない距離
 	}
-	if (angle.y > DirectX::XM_PI)
-	{
-		angle.y -= DirectX::XM_2PI;
-	}
+
+	//カメラ回転値を回転行列に変換	
+	Transform = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
 
 
 	//カメラ回転値を回転行列に変換

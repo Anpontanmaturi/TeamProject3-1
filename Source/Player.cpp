@@ -263,6 +263,7 @@ void Player::DrowDebugGUI()
 			ImGui::InputFloat3("Scale", &scale.x);
 		//追加
 			ImGui::InputFloat("energy", &energy);
+			ImGui::Text("Press TAB to toggle the cursor move and stop.");
 		}
 	}
 	ImGui::End();
