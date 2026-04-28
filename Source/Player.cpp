@@ -208,7 +208,7 @@ void Player::InputMove(float elapsedTime)
 	{
 		energy -= 0.05f;
 
-		if (gamePad.GetButton() & GamePad::BTN_A)
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		{
 			isBoost = true;              // ←これ追加
 			moveSpeed = boostLimit;
