@@ -37,6 +37,6 @@ private:
 
 	const float zoomSpeed = 0.01f;    // ƒY[ƒ€‚ÌŠ´“x
 	const float minRange = 2.0f;     // ÅÚ‹ß‹——£
-	const float maxRange = 10.0f;    // Å‘å‰“•û‹——£
+	const float maxRange = 15.0f;    // Å‘å‰“•û‹——£
 
 };
