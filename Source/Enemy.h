@@ -15,13 +15,9 @@ public:
 	void Destroy();
 	float gomiTimer = 0.0f;
 	//XVˆ—
-	//bool isAttracting = false;
-	DirectX::XMFLOAT3 attractTarget;
-	DirectX::XMFLOAT3 target;
-	bool hasTarget = false;
 	bool isAttracting = false;
-	//DirectX::XMFLOAT3 attractTarget;
-	float attractCooldown = 0.0f;
+	DirectX::XMFLOAT3 attractTarget;
+
 	//•`‰æˆ—
 	virtual void Render(const RenderContext& rc, ModelRenderer* renderer) = 0;
 };

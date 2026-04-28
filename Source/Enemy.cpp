@@ -8,38 +8,71 @@ void Enemy::Destroy()
 	EnemyManager::Instance().Remove(this);
 }
 
-void Enemy::Update(float elapsedTime)
+/*void Enemy::Update(float elapsedTime)
 {
-    if (isAttracting)
-    {
-        DirectX::XMFLOAT3 pos = GetPosition();
+	using namespace DirectX;
 
-        float dx = attractTarget.x - pos.x;
-        float dz = attractTarget.z - pos.z;
+	// ===== 吸引中 =====
+	if (isAttracting)
+	{
+		XMFLOAT3 pos = GetPosition();
 
-        float len = sqrtf(dx * dx + dz * dz);
+		XMVECTOR vPos = XMLoadFloat3(&pos);
+		XMVECTOR vTarget = XMLoadFloat3(&attractTarget);
 
-        // ★ 到着判定
-        if (len < 0.5f)
-        {
-            isAttracting = false;
-            attractCooldown = 1.0f;
-            return;
-        }
+		XMVECTOR dir = XMVectorSubtract(vTarget, vPos);
 
-        dx /= len;
-        dz /= len;
+		float dist = XMVectorGetX(XMVector3Length(dir));
 
-        pos.x += dx * 5.0f * elapsedTime;
-        pos.z += dz * 5.0f * elapsedTime;
+		if (dist < 0.5f)
+		{
+			isAttracting = false;
+		}
+		else
+		{
+			dir = XMVector3Normalize(dir);
 
-        SetPosition(pos);
+			float speed = 2.0f; // ← 少し上げた方が自然
 
-        return;
-    }
-}
-void Enemy::StartAttract(const DirectX::XMFLOAT3& targetPos)
+			XMVECTOR move = XMVectorScale(dir, speed * elapsedTime);
+			vPos = XMVectorAdd(vPos, move);
+
+			XMStoreFloat3(&pos, vPos);
+			SetPosition(pos);
+		}
+
+		return; // ← ★これ超重要！！
+	}
+
+	// ===== 通常移動 =====
+	XMFLOAT3 pos = GetPosition();
+	XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
+	XMVECTOR vPos = XMLoadFloat3(&pos);
+	XMVECTOR vPlayer = XMLoadFloat3(&playerPos);
+
+	XMVECTOR dir = XMVectorSubtract(vPlayer, vPos);
+	dir = XMVector3Normalize(dir);
+
+	float speed = 2.0f;
+
+	XMVECTOR move = XMVectorScale(dir, speed * elapsedTime);
+	vPos = XMVectorAdd(vPos, move);
+
+	XMStoreFloat3(&pos, vPos);
+	SetPosition(pos);
+
+	// ゴミ処理
+	gomiTimer += elapsedTime;
+	if (gomiTimer >= 5.0f)
+	{
+		gomiTimer = 0.0f;
+		SceneGame::Instance().AddGomi(GetPosition());
+	}
+}*/
+
+void Enemy::StartAttract(const DirectX::XMFLOAT3& target)
 {
-    isAttracting = true;
-    attractTarget = targetPos;
+	isAttracting = true;
+	attractTarget = target;
 }
