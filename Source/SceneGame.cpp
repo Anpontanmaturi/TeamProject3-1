@@ -226,7 +226,7 @@ void SceneGame::Update(float elapsedTime)
 	stage->Update(scaledTime);
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
-
+	
 
 	//オブジェクト更新処理
 	for (auto& obj : objects)
@@ -247,10 +247,15 @@ void SceneGame::Update(float elapsedTime)
 		if (distance < radius)
 		{
 			// ★ここが回復速度
-			Player::Instance().AddEnergy(20.0f * elapsedTime);
+			
+			Player::Instance().AddEnergy(85.0f * elapsedTime);
+
+			gomiCount = 0;
 		}
+		
 	}
 	
+
 	//プレイヤー更新処理
 	//player->Update(elapsedTime);
 	Player::Instance().Update(elapsedTime);
