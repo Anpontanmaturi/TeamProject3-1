@@ -25,6 +25,9 @@ public:
 	//初期化
 	void Initialize();
 	void AddEnergy(float value);
+
+	void AddGarbage(int value);
+
 	//終了化
 	void Finalize();
 
@@ -102,6 +105,7 @@ private:
 	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;
 	
+	int garbageCount = 0; // ←これ追加!!
 
 	float deleteEnemyTimer = 0.5f; //敵削除タイマー
 

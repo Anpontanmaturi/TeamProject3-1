@@ -7,8 +7,8 @@
 class Enemy : public Character
 {
 public:
-	Enemy(){}
-	~Enemy()override{}
+	Enemy() {}
+	~Enemy()override {}
 	virtual void Update(float elapsedTime) = 0;
 	void StartAttract(const DirectX::XMFLOAT3& target);
 	//”jŠü
@@ -17,6 +17,10 @@ public:
 	//XVˆ—
 	bool isAttracting = false;
 	DirectX::XMFLOAT3 attractTarget;
+	DirectX::XMFLOAT3 target;
+	bool hasTarget = false;
+	float attractCooldown = 0.0f;
+
 
 	//•`‰æˆ—
 	virtual void Render(const RenderContext& rc, ModelRenderer* renderer) = 0;

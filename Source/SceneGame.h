@@ -6,6 +6,8 @@
 #include "Scene.h"
 #include <gomi.h>
 #include <Denti.h>
+#include <garakuta.h>
+
 // ゲームシーン
 //class SceneGame
 class SceneGame : public Scene
@@ -80,6 +82,12 @@ private:
 	int combo = 0;
 	float comboTimer = 0.0f;
 	float comboLimit = 2.0f; // 2秒以内で継続
+
+	// ガラクタスポーンタイマー
+	std::vector<garakuta*> garbages;
+	float garbageSpawnTimer = 0.0f;
+	float garbageSpawnInterval = 45.0f;
+	int maxGarbage = 1;
 
 public:
 	int score = 0;

@@ -28,6 +28,26 @@ EnemySlime::~EnemySlime()
 //更新処理
 void EnemySlime::Update(float elapsedTime)
 {
+	//基底クラスの更新処理
+	Enemy::Update(elapsedTime);
+	if (attractCooldown > 0.0f)
+	{
+		attractCooldown -= elapsedTime;
+		UpdateTransform();
+		return;
+	}
+	if (isAttracting)
+	{
+		UpdateTransform(); // ← モデル更新
+		return;            // ← AI止める（超重要）
+	}
+	if (isAttracting)
+	{
+		Enemy::Update(elapsedTime);
+		return;
+	}
+
+
 	//ステート毎の更新処理
 	switch (state)
 	{

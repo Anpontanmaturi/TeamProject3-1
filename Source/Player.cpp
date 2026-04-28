@@ -49,6 +49,7 @@ void Player::Finalize()
 	delete model;
 }
 
+
 //更新処理
 void Player::Update(float elapsedTime)
 {
@@ -118,7 +119,33 @@ void Player::Update(float elapsedTime)
 	//モデル行列更新
 	model->UpdateTransform();
 	
+	static bool prevE = false;
+	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
+
+	if (nowE && !prevE)
+	{
+		OutputDebugStringA("E押された\n");
+
+		if (garbageCount > 0)
+		{
+			OutputDebugStringA("ガラクタ使用\n");
+
+			garbageCount--;
+
+			DirectX::XMFLOAT3 pos = position;
+			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
+		}
+	}
+
+	prevE = nowE;
+
 }
+
+void Player::AddGarbage(int value)
+{
+	garbageCount += value;
+}
+
 
 /*//移動処理
 void Player::Move(float elapsedTime, float vx, float vz, float speed)

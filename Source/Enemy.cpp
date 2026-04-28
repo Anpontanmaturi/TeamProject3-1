@@ -8,68 +8,37 @@ void Enemy::Destroy()
 	EnemyManager::Instance().Remove(this);
 }
 
-/*void Enemy::Update(float elapsedTime)
+void Enemy::Update(float elapsedTime)
 {
-	using namespace DirectX;
+    if (isAttracting)
+    {
+        DirectX::XMFLOAT3 pos = GetPosition();
 
-	// ===== 吸引中 =====
-	if (isAttracting)
-	{
-		XMFLOAT3 pos = GetPosition();
+        float dx = attractTarget.x - pos.x;
+        float dz = attractTarget.z - pos.z;
 
-		XMVECTOR vPos = XMLoadFloat3(&pos);
-		XMVECTOR vTarget = XMLoadFloat3(&attractTarget);
+        float len = sqrtf(dx * dx + dz * dz);
 
-		XMVECTOR dir = XMVectorSubtract(vTarget, vPos);
+        // 到着判定
+        if (len < 0.5f)
+        {
+            isAttracting = false;
+            attractCooldown = 1.0f;
+            return;
+        }
 
-		float dist = XMVectorGetX(XMVector3Length(dir));
+        dx /= len;
+        dz /= len;
 
-		if (dist < 0.5f)
-		{
-			isAttracting = false;
-		}
-		else
-		{
-			dir = XMVector3Normalize(dir);
+        pos.x += dx * 5.0f * elapsedTime;
+        pos.z += dz * 5.0f * elapsedTime;
 
-			float speed = 2.0f; // ← 少し上げた方が自然
+        SetPosition(pos);
 
-			XMVECTOR move = XMVectorScale(dir, speed * elapsedTime);
-			vPos = XMVectorAdd(vPos, move);
+        return;
+    }
+}
 
-			XMStoreFloat3(&pos, vPos);
-			SetPosition(pos);
-		}
-
-		return; // ← ★これ超重要！！
-	}
-
-	// ===== 通常移動 =====
-	XMFLOAT3 pos = GetPosition();
-	XMFLOAT3 playerPos = Player::Instance().GetPosition();
-
-	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMVECTOR vPlayer = XMLoadFloat3(&playerPos);
-
-	XMVECTOR dir = XMVectorSubtract(vPlayer, vPos);
-	dir = XMVector3Normalize(dir);
-
-	float speed = 2.0f;
-
-	XMVECTOR move = XMVectorScale(dir, speed * elapsedTime);
-	vPos = XMVectorAdd(vPos, move);
-
-	XMStoreFloat3(&pos, vPos);
-	SetPosition(pos);
-
-	// ゴミ処理
-	gomiTimer += elapsedTime;
-	if (gomiTimer >= 5.0f)
-	{
-		gomiTimer = 0.0f;
-		SceneGame::Instance().AddGomi(GetPosition());
-	}
-}*/
 
 void Enemy::StartAttract(const DirectX::XMFLOAT3& target)
 {

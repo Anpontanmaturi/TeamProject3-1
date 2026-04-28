@@ -108,7 +108,8 @@ void EnemyManager::AttractEnemies(const DirectX::XMFLOAT3& center, float radius)
 		float dz = pos.z - center.z;
 
 		float dist = sqrtf(dx * dx + dz * dz);
-		if (dist <= radius && !enemy->isAttracting)
+		//if (dist <= radius && !enemy->isAttracting)
+		if (dist <= radius)
 		{
 			DirectX::XMFLOAT3 target = center;
 			target.z += 2.0f;
