@@ -44,12 +44,17 @@ void EnemyManager::Update(float elapsedTime)
 				enemy->gomiTimer = 0.0f;
 				SceneGame::Instance().AddGomi(enemy->GetPosition());
 			}
+
+			// デコイに対する反応
+			if (enemy->isAttracting)
+			{
+				// 反応処理
+				ReactToDecoy(enemy, elapsedTime);
+			}
 		}
 	}
 
 	//破棄処理
-	//※enemysの範囲for文中でerase()すると不具合が発生してしまうため、
-	//　更新処理が終わった後に破棄リストに積まれたオブジェクトを削除する。
 	for (Enemy* enemy : removes)
 	{
 		//std::vectorから要素を削除する場合はイテレーターで削除しなければならない
@@ -98,6 +103,7 @@ void EnemyManager::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* 
 	}
 }
 
+//エネミー引き寄せ処理
 void EnemyManager::AttractEnemies(const DirectX::XMFLOAT3& center, float radius)
 {
 	for (Enemy* enemy : enemies)
@@ -178,4 +184,35 @@ void EnemyManager::RemoveWithDelay(Enemy* enemy, float delay)
 	{
 		delayRemoves[enemy] = delay;
 	}
+}
+
+// デコイに対する反応処理
+void EnemyManager::ReactToDecoy(Enemy* enemy, float elapsedTime)
+{
+	
+	DirectX::XMFLOAT3 pos = enemy->GetPosition();
+
+	float dx = attractTarget.x - pos.x;
+	float dz = attractTarget.z - pos.z;
+
+	float len = sqrtf(dx * dx + dz * dz);
+
+	// 到着判定
+	if (len < 0.5f)
+	{
+		enemy->isAttracting = false;
+		enemy->attractCooldown = 1.0f;
+		return;
+	}
+
+	dx /= len;
+	dz /= len;
+
+	pos.x += dx * 5.0f * elapsedTime;
+	pos.z += dz * 5.0f * elapsedTime;
+
+	enemy->SetPosition(pos);
+
+	return;
+	
 }
