@@ -39,7 +39,7 @@ void EnemyManager::Update(float elapsedTime)
 
 			// ƒSƒ~ˆ—(‰¼’u‚«)
 			enemy->gomiTimer += elapsedTime;
-			if (enemy->gomiTimer >= 5.0f)
+			if (enemy->gomiTimer >= 5.0f && fabs(enemy->GetPosition().y) < 0.01f)
 			{
 				enemy->gomiTimer = 0.0f;
 				SceneGame::Instance().AddGomi(enemy->GetPosition());
