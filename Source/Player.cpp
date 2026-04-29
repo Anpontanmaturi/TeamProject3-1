@@ -8,15 +8,6 @@
 #include "ProjectileHoming.h"
 #include <SceneGame.h>
 
-/*//コンストラクタ
-Player::Player()
-{
-	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-
-	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
-}*/
-
 //初期化
 void Player::Initialize()
 {
@@ -37,12 +28,6 @@ void Player::AddEnergy(float value)
 	}
 }
 
-/*//デストラクタ
-Player::~Player()
-{
-	delete model;
-}*/
-
 //終了化
 void Player::Finalize()
 {
@@ -53,47 +38,8 @@ void Player::Finalize()
 //更新処理
 void Player::Update(float elapsedTime)
 {
-	/*//信仰ベクトル取得
-	DirectX::XMFLOAT3 moveVec = GetMoveVec();
-
-	//移動処理
-	float moveSpeed = this->moveSpeed * elapsedTime;
-	position.x += moveVec.x * moveSpeed;
-	position.y += moveVec.y * moveSpeed;*/
-
 	//移動入力処理
 	InputMove(elapsedTime);
-
-	/*//入力情報を取得
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	float ax = gamePad.GetAxisLX();
-	float ay = gamePad.GetAxisLY();
-
-	//移動操作
-	float moveSpeed = 5.0f * elapsedTime;
-	{
-		//左スティックの入力情報をもとにXZ平面への移動処理
-		position.x += ax * moveSpeed;
-		position.z += ay * moveSpeed;
-	}
-
-	//回転操作
-	float rotateSpeed = DirectX::XMConvertToRadians(360) * elapsedTime;
-	if (gamePad.GetButton() & GamePad::BTN_A)
-	{
-		//X軸回転操作
-		angle.x += rotateSpeed;
-	}
-	if (gamePad.GetButton() & GamePad::BTN_B)
-	{
-		//Y軸回転操作
-		angle.y += rotateSpeed;
-	}
-	if (gamePad.GetButton() & GamePad::BTN_X)
-	{
-		//Z軸回転操作
-		angle.z += rotateSpeed;
-	}*/
 
 	//ジャンプ入力処理
 	InputJump();
@@ -118,26 +64,6 @@ void Player::Update(float elapsedTime)
 
 	//モデル行列更新
 	model->UpdateTransform();
-	
-	static bool prevE = false;
-	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
-
-	if (nowE && !prevE)
-	{
-		OutputDebugStringA("E押された\n");
-
-		if (garbageCount > 0)
-		{
-			OutputDebugStringA("ガラクタ使用\n");
-
-			garbageCount--;
-
-			DirectX::XMFLOAT3 pos = position;
-			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
-		}
-	}
-
-	prevE = nowE;
 
 }
 
@@ -222,7 +148,6 @@ void Player::InputMove(float elapsedTime)
 	{
 		moveSpeed = moveSpeed / 2;
 	}
-	GamePad& gamePad = Input::Instance().GetGamePad();
 	isBoost = false; // ←毎フレーム初期化
 
 	moveSpeed = moveLimit;
@@ -357,15 +282,6 @@ void Player::CollisionPlayerVsEnemies()
 
 		//衝突処理
 		DirectX::XMFLOAT3 outPosition;
-		//if (Collision::IntersectSphereVsSphere(
-		//	position, radius,
-		//	enemy->GetPosition(),
-		//	enemy->GetRadius(),
-		//	outPosition))
-		//{
-		//	//押し出し後の位置判定
-		//	enemy->SetPosition(outPosition);
-		//}
 		if (Collision::IntersectCylinderVsCylinder(
 			position,
 			radius,
@@ -376,9 +292,6 @@ void Player::CollisionPlayerVsEnemies()
 			outPosition
 		))
 		{
-			////押し出し後の位置設定
-			//enemy->SetPosition(outPosition);
-
 			//敵の真上に当たったかを判定
 			DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
 			DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
@@ -439,31 +352,6 @@ void Player::CollisionPlayerVsEnemies()
 	}
 }
 
-//ジャンプ処理
-//void Player::Jump(float speed)
-//{
-//	//上方向の力を設定
-//	velocity.y = speed;
-//}
-
-//速力処理更新
-//void Player::UpdateVelocity(float elapsedTime)
-//{
-//	//重力処理
-//	velocity.y += gravity * elapsedTime;
-//
-//	//移動処理
-//	position.y += velocity.y * elapsedTime;
-//
-//	//地面判定
-//	if (position.y < 0.0f)
-//	{
-//		position.y = 0.0f;
-//		velocity.y = 0.0f;
-//	}
-//}
-
-
 void Player::Heal(float amount)
 {
 	hp += amount;
@@ -474,18 +362,7 @@ void Player::Heal(float amount)
 //ジャンプ入力処理
 void Player::InputJump()
 {
-	//GamePad& gamePad = Input::Instance().GetGamePad();
-	//if (gamePad.GetButtonDown() & GamePad::BTN_A)
-	//{
-	//	//Jump(jumpSpeed);
-	//	//ジャンプ回数制限
-	//	if (jumpCount < jumpLimit)
-	//	{
-	//		//ジャンプ
-	//		jumpCount++;
-	//		Jump(jumpSpeed);
-	//	}
-	//}
+	
 }
 
 //弾丸入力処理
@@ -499,73 +376,25 @@ void Player::InputProjectile()
 		energy = maxenergy;
 	}
 
-	////直進弾丸発射
-	//if (gamePad.GetButtonDown() & GamePad::BTN_X)
-	//{
-	//	//前方向
-	//	DirectX::XMFLOAT3 dir;
-	//	dir.x = sinf(angle.y);
-	//	dir.y = 0.0f;
-	//	dir.z = cosf(angle.y);
-	//	//発射位置（プレイヤーの腰あたり）
-	//	DirectX::XMFLOAT3 pos;
-	//	pos.x = position.x;
-	//	pos.y = position.y + height * 0.5f;
-	//	pos.z = position.z;
-	//	//発射
-	//	ProjectileStraight* projectile = new ProjectileStraight(&projectileManager);
-	//	projectile->Launch(dir, pos);
-	//	//projectileManager.Register(projectile);
-	//}
-	////追尾弾丸発射
-	//if (gamePad.GetButtonDown() & GamePad::BTN_Y)
-	//{
-	//	//追加
-	//	energy = maxenergy;
-	//	//前方向
-	//	DirectX::XMFLOAT3 dir;
-	//	dir.x = sinf(angle.y);
-	//	dir.y = 0.0f;
-	//	dir.z = cosf(angle.y);
-	//
-	//	//発射位置（プレイヤーの腰あたり）
-	//	DirectX::XMFLOAT3 pos;
-	//	pos.x = position.x;
-	//	pos.y = position.y + height * 0.5f;
-	//	pos.z = position.z;
-	//
-	//	//ターゲット（デフォルトではプレイヤーの前方）
-	//	DirectX::XMFLOAT3 target;
-	//	target.x = pos.x + dir.x * 1000.0f;
-	//	target.y = pos.y + dir.y * 1000.0f;
-	//	target.z = pos.z + dir.z * 1000.0f;
-	//
-	//	//一番近くの敵をターゲットにする
-	//	float dist = FLT_MAX;
-	//	EnemyManager& enemyManager = EnemyManager::Instance();
-	//	int enemyCount = enemyManager.GetEnemyCount();
-	//	for (int i = 0; i < enemyCount; ++i)
-	//	{
-	//		//敵との距離判定
-	//		Enemy* enemy = EnemyManager::Instance().GetEnemy(i);
-	//		DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-	//		DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
-	//		DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
-	//		DirectX::XMVECTOR D = DirectX::XMVector3LengthSq(V);
-	//		float d;
-	//		DirectX::XMStoreFloat(&d, D);
-	//		if (d < dist)
-	//		{
-	//			dist = d;
-	//			target = enemy->GetPosition();
-	//			target.y += enemy->GetHeight() * 0.5f;
-	//		}
-	//	}
-	//
-	//	//発射
-	//	ProjectileHoming* projectile = new ProjectileHoming(&projectileManager);
-	//	projectile->Launch(dir, pos, target);
-	//}
+	static bool prevE = false;
+	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
+
+	if (nowE && !prevE)
+	{
+		OutputDebugStringA("E押された\n");
+
+		if (garbageCount > 0)
+		{
+			OutputDebugStringA("ガラクタ使用\n");
+
+			garbageCount--;
+
+			DirectX::XMFLOAT3 pos = position;
+			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
+		}
+	}
+	prevE = nowE;
+
 }
 
 //弾丸と敵の衝突処理

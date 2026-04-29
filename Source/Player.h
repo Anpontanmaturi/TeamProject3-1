@@ -7,9 +7,6 @@
 //プレイヤー
 class Player : public Character
 {
-/*public:
-	Player();
-	~Player() override;*/
 private:
 	Player() {};
 	~Player() override {};
@@ -40,12 +37,7 @@ public:
 	//描画処理
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
 
-	//ジャンプ処理
-	//void Jump(float speed);
-
-	//速度入力更新
-	//void UpdateVelocity(float elapsedTime);
-
+	// 回復処理
 	void Heal(float amount);
 
 	//ジャンプ入力処理
@@ -57,9 +49,6 @@ public:
 private:
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec() const;
-
-	//移動処理
-	//void Move(float elapsedTime, float vx, float vz, float speed);
 
 	//移動入力処理
 	void InputMove(float elapsedTime);

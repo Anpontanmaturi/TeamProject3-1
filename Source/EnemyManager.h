@@ -66,12 +66,5 @@ private:
 	std::map<Enemy*, float> delayRemoves;//遅延削除用のマップ
 
 	float gomiTimer = 0.0f;
-
-	// エネミーの反応処理用のマップ
-	bool isAttracting = false;
-	DirectX::XMFLOAT3 attractTarget;
-	DirectX::XMFLOAT3 target;
-	bool hasTarget = false;
-	float attractCooldown = 0.0f;
 };
 

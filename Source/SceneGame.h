@@ -71,8 +71,13 @@ private:
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
 
+#if 1
 	float timeLimit = 180.0f;   // 制限時間（秒）
 	float currentTime = 180.0f; // 残り時間
+#else
+	float timeLimit = 10.0f;   // 制限時間（秒）
+	float currentTime = 10.0f; // 残り時間
+#endif
 	bool isTimeUp = false;
 
 	float timeScale = 1.0f;

@@ -32,32 +32,34 @@ void EnemySlime::Update(float elapsedTime)
 	if (attractCooldown > 0.0f)
 	{
 		attractCooldown -= elapsedTime;
-		return;
 	}
 	if (isAttracting)
 	{
-		return;            // ← AI止める（超重要）
+
 	}
-
-	//ステート毎の更新処理
-	switch (state)
+	else
 	{
-	case State::Wander:
-		UpdateWanderState(elapsedTime);
-		break;
-		
-	case State::Idle:
-		UpdateIdleState(elapsedTime);
-		break;
+		//ステート毎の更新処理
+		switch (state)
+		{
+		case State::Wander:
+			UpdateWanderState(elapsedTime);
+			break;
 
-	case State::Escepe:
-		UpdateEscepeState(elapsedTime);
-		break;
+		case State::Idle:
+			UpdateIdleState(elapsedTime);
+			break;
+
+		case State::Escepe:
+			UpdateEscepeState(elapsedTime);
+			break;
+		}
+
 	}
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
-
+	
 	//弾丸更新処理
 	projectileManager.Update(elapsedTime);
 

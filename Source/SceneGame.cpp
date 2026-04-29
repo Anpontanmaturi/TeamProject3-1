@@ -191,6 +191,7 @@ void SceneGame::Update(float elapsedTime)
 		currentTime = 0.0f;
 		isTimeUp = true;
 		SceneManager::Instance().ChangeScene(new SceneResult);
+		return;
 	}
 
 
@@ -559,6 +560,16 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::Separator();
+	if (ImGui::Button("Spawn Garbage (Player Front)"))
+	{
+		// プレイヤーの前にスポーンさせる
+		DirectX::XMFLOAT3 pos = Player::Instance().GetPosition();
+		pos.x += 2.0f;
+		garakuta* g = new garakuta();
+		g->Init(pos);
+		garbages.push_back(g);
+	}
 	ImGui::End();
 
 

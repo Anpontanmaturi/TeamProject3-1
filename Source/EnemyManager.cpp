@@ -7,8 +7,16 @@
 //エネミー削除
 void EnemyManager::Remove(Enemy* enemy)
 {
+	_ASSERT_EXPR(enemy != nullptr, L"EnemyManager::Remove : 削除しようとしたポインタがNULLです");
+	if (enemy == nullptr) return;
 	//破棄リストに追加
 	removes.insert(enemy);
+
+	auto it = delayRemoves.find(enemy);
+	if (it != delayRemoves.end())
+	{
+		delayRemoves.erase(it);
+	}
 }
 
 //更新処理
@@ -17,10 +25,13 @@ void EnemyManager::Update(float elapsedTime)
 	// 遅延削除処理
 	for (auto it = delayRemoves.begin(); it != delayRemoves.end(); )
 	{
+		_ASSERT_EXPR(it->first != nullptr, L"delayRemovesの中にNULLポインタが含まれています");
+
 		it->second -= elapsedTime; // 残り時間を減らす
 		if (it->second <= 0.0f) // 時間が来たら削除
 		{
-			Remove(it->first); // 通常の削除処理に追加
+			//Remove(it->first); // 通常の削除処理に追加
+			removes.insert(it->first);
 			it = delayRemoves.erase(it); // マップから削除
 		}
 		else
@@ -139,6 +150,10 @@ void EnemyManager::Clear()
 		delete enemy;
 	}
 	enemies.clear();
+
+	// マップもクリア
+	delayRemoves.clear();
+	removes.clear();
 }
 
 //エネミー同士の衝突処理
