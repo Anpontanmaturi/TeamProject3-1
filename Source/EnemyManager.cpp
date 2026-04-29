@@ -192,8 +192,8 @@ void EnemyManager::ReactToDecoy(Enemy* enemy, float elapsedTime)
 	
 	DirectX::XMFLOAT3 pos = enemy->GetPosition();
 
-	float dx = attractTarget.x - pos.x;
-	float dz = attractTarget.z - pos.z;
+	float dx = enemy->attractTarget.x - pos.x;
+	float dz = enemy->attractTarget.z - pos.z;
 
 	float len = sqrtf(dx * dx + dz * dz);
 
