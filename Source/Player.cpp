@@ -15,6 +15,10 @@ void Player::Initialize()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
+
+	energy = 1000.0f;
+
+	position = { 0.0f,0.0f,0.0f };
 }
 
 void Player::AddEnergy(float value)
