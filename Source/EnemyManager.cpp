@@ -7,8 +7,17 @@
 //エネミー削除
 void EnemyManager::Remove(Enemy* enemy)
 {
+	_ASSERT_EXPR(enemy != nullptr, L"EnemyManager::Remove : 削除しようとしたポインタがNULLです");
+	if (enemy == nullptr) return;
 	//破棄リストに追加
 	removes.insert(enemy);
+
+	auto it = delayRemoves.find(enemy);
+	if (it != delayRemoves.end())
+	{
+		delayRemoves.erase(it);
+	}
+
 }
 
 //更新処理
@@ -17,10 +26,12 @@ void EnemyManager::Update(float elapsedTime)
 	// 遅延削除処理
 	for (auto it = delayRemoves.begin(); it != delayRemoves.end(); )
 	{
+		_ASSERT_EXPR(it->first != nullptr, L"delayRemovesの中にNULLポインタが含まれています");
+
 		it->second -= elapsedTime; // 残り時間を減らす
 		if (it->second <= 0.0f) // 時間が来たら削除
 		{
-			Remove(it->first); // 通常の削除処理に追加
+			removes.insert(it->first);// 破棄リストに追加
 			it = delayRemoves.erase(it); // マップから削除
 		}
 		else
@@ -33,17 +44,28 @@ void EnemyManager::Update(float elapsedTime)
 
 	for (Enemy* enemy : enemies)
 	{
-		if (enemy != nullptr && removes.find(enemy) == removes.end())//破棄リストにない場合のみ更新処理を行う
+		if (enemy == nullptr ||
+			removes.find(enemy) != removes.end() ||
+			delayRemoves.find(enemy) != delayRemoves.end()) // 廃棄リストに入っている場合は以降の処理をスキップ
 		{
-			enemy->Update(elapsedTime);
+			continue;
+		}
 
-			// ゴミ処理(仮置き)
-			enemy->gomiTimer += elapsedTime;
-			if (enemy->gomiTimer >= 5.0f && fabs(enemy->GetPosition().y) < 0.01f)
-			{
-				enemy->gomiTimer = 0.0f;
-				SceneGame::Instance().AddGomi(enemy->GetPosition());
-			}
+		enemy->Update(elapsedTime);
+
+		// ゴミ処理(仮置き)
+		enemy->gomiTimer += elapsedTime;
+		if (enemy->gomiTimer >= 5.0f && fabs(enemy->GetPosition().y) < 0.01f)
+		{
+			enemy->gomiTimer = 0.0f;
+			SceneGame::Instance().AddGomi(enemy->GetPosition());
+		}
+
+		// デコイに対する反応
+		if (enemy->isAttracting)
+		{
+			// 反応処理
+			ReactToDecoy(enemy, elapsedTime);
 		}
 	}
 
@@ -108,7 +130,8 @@ void EnemyManager::AttractEnemies(const DirectX::XMFLOAT3& center, float radius)
 		float dz = pos.z - center.z;
 
 		float dist = sqrtf(dx * dx + dz * dz);
-		if (dist <= radius && !enemy->isAttracting)
+		//if (dist <= radius && !enemy->isAttracting)
+		if (dist <= radius)
 		{
 			DirectX::XMFLOAT3 target = center;
 			target.z += 2.0f;
@@ -132,6 +155,11 @@ void EnemyManager::Clear()
 		delete enemy;
 	}
 	enemies.clear();
+
+	// マップもクリア
+	delayRemoves.clear();
+	removes.clear();
+
 }
 
 //エネミー同士の衝突処理
@@ -177,4 +205,35 @@ void EnemyManager::RemoveWithDelay(Enemy* enemy, float delay)
 	{
 		delayRemoves[enemy] = delay;
 	}
+}
+
+// デコイに対する反応処理
+void EnemyManager::ReactToDecoy(Enemy* enemy, float elapsedTime)
+{
+
+	DirectX::XMFLOAT3 pos = enemy->GetPosition();
+
+	float dx = enemy->attractTarget.x - pos.x;
+	float dz = enemy->attractTarget.z - pos.z;
+
+	float len = sqrtf(dx * dx + dz * dz);
+
+	// 到着判定
+	if (len < 0.5f)
+	{
+		enemy->isAttracting = false;
+		enemy->attractCooldown = 1.0f;
+		return;
+	}
+
+	dx /= len;
+	dz /= len;
+
+	pos.x += dx * 5.0f * elapsedTime;
+	pos.z += dz * 5.0f * elapsedTime;
+
+	enemy->SetPosition(pos);
+
+	return;
+
 }
