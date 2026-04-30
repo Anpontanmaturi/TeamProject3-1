@@ -44,24 +44,28 @@ void EnemyManager::Update(float elapsedTime)
 
 	for (Enemy* enemy : enemies)
 	{
-		if (enemy != nullptr && removes.find(enemy) == removes.end())//破棄リストにない場合のみ更新処理を行う
+		if (enemy == nullptr ||
+			removes.find(enemy) != removes.end() ||
+			delayRemoves.find(enemy) != delayRemoves.end()) // 廃棄リストに入っている場合は以降の処理をスキップ
 		{
-			enemy->Update(elapsedTime);
+			continue;
+		}
 
-			// ゴミ処理(仮置き)
-			enemy->gomiTimer += elapsedTime;
-			if (enemy->gomiTimer >= 5.0f)
-			{
-				enemy->gomiTimer = 0.0f;
-				SceneGame::Instance().AddGomi(enemy->GetPosition());
-			}
+		enemy->Update(elapsedTime);
 
-			// デコイに対する反応
-			if (enemy->isAttracting)
-			{
-				// 反応処理
-				ReactToDecoy(enemy, elapsedTime);
-			}
+		// ゴミ処理(仮置き)
+		enemy->gomiTimer += elapsedTime;
+		if (enemy->gomiTimer >= 5.0f)
+		{
+			enemy->gomiTimer = 0.0f;
+			SceneGame::Instance().AddGomi(enemy->GetPosition());
+		}
+
+		// デコイに対する反応
+		if (enemy->isAttracting)
+		{
+			// 反応処理
+			ReactToDecoy(enemy, elapsedTime);
 		}
 	}
 

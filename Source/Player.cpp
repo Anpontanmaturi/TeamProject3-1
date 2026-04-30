@@ -365,7 +365,7 @@ void Player::InputJump()
 	
 }
 
-//弾丸入力処理
+//入力処理
 void Player::InputProjectile()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
@@ -423,7 +423,6 @@ void Player::CollisionProjectilesVsEnemies()
 				outPosition))
 			{
 				//ダメージを与える
-				//enemy->ApplyDamage(1,0.5f);
 				if (enemy->ApplyDamage(1, 0.5f))
 				{
 					//吹き飛ばす
