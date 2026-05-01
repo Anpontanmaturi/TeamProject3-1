@@ -178,7 +178,7 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\UiManager.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -344,8 +344,11 @@
     <ClInclude Include="Source\Garakuta.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\UiBase.h">
+      <Filter>Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\UiManager.h">
-      <Filter>Source</Filter>
+      <Filter>Source\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -386,6 +389,9 @@
     </Filter>
     <Filter Include="Source\System">
       <UniqueIdentifier>{b242e2ae-ad74-41cf-a246-46da239d9945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\UI">
+      <UniqueIdentifier>{80035d00-0898-41ec-973a-617a2170cbd4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
