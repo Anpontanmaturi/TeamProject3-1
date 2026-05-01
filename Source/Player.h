@@ -46,6 +46,8 @@ public:
 	//デバッグプリミティブ描画
 	void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
+
+	void Reset();
 private:
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec() const;

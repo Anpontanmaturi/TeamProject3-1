@@ -19,6 +19,7 @@ void Player::Initialize()
 	energy = 1000.0f;
 
 	position = { 0.0f,0.0f,0.0f };
+	Reset();
 }
 
 void Player::AddEnergy(float value)
@@ -75,7 +76,12 @@ void Player::AddGarbage(int value)
 {
 	garbageCount += value;
 }
-
+void Player::Reset()
+{
+	garbageCount = 0;
+	energy = maxenergy;
+	position = { 0.0f,0.0f,0.0f };
+}
 
 
 //着地した時に呼ばれる
