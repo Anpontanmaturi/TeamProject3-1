@@ -77,57 +77,6 @@ void Player::AddGarbage(int value)
 }
 
 
-/*//移動処理
-void Player::Move(float elapsedTime, float vx, float vz, float speed)
-{
-	speed *= elapsedTime;
-	position.x += vx * speed;
-	position.z += vz * speed;
-}
-
-旋回処理
-void Player::Turn(float elapsedTime, float vx, float vz, float speed)
-{
-	speed *= elapsedTime;
-
-	//進行ベクトルがゼロベクトルの場合は処理する必要なし
-	float length = sqrtf(vx * vx + vz * vz);
-	if (length < 0.001f)return;
-
-	//進行ベクトルを単位ベクトル化
-	vx /= length;
-	vz /= length;
-
-	//自身の回転値から前方向を求める
-	float frontX = sinf(angle.y);
-	float frontZ = cosf(angle.y);
-	
-	//回転角を求めるため。2つの単位ベクトルの内積を計算する
-	float dot = (frontX * vx) + (frontZ * vz);
-
-	//内積値は-1.0～1.0で表現されており、２つの単位ベクトルの角度が
-	//小さいほど1.0に近づくという性質を利用して回転角度を調整する
-	float rot = 1.0f - dot;
-	if (rot > speed) rot = speed;
-
-	//左右判定を行うために２つの単位ベクトルの外積を計算する
-	float cross = (frontZ * vx) - (frontX * vz);
-
-	//2Dの外積が正の場合か負の場合かによって左右判定が行える
-	//左右判定を行うことによって左右回転を選択する
-	if (cross < 0.0f)
-	{
-		//angle.y -= speed;
-		angle.y -= rot;
-	}
-	else
-	{
-		//angle.y += speed;
-		angle.y += rot;
-	}
-
-	
-}*/
 
 //着地した時に呼ばれる
 void Player::OnLanding()
@@ -313,6 +262,10 @@ void Player::CollisionPlayerVsEnemies()
 			{
 				if (isBoost)
 				{
+
+					if (!enemy->ApplyDamage(1, 0.3f))
+						continue;
+
 					// ===== ノックバック処理 =====
 					DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
 					V = DirectX::XMVector3Normalize(V);
@@ -343,7 +296,8 @@ void Player::CollisionPlayerVsEnemies()
 					int combo = SceneGame::Instance().GetCombo();
 					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
-					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);					
+					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);	
+					
 				}
 				
 				else
@@ -404,53 +358,4 @@ void Player::InputProjectile()
 //弾丸と敵の衝突処理
 void Player::CollisionProjectilesVsEnemies()
 {
-	EnemyManager& enemyManager = EnemyManager::Instance();
-
-	//全ての弾丸と全ての敵を総当たりで衝突処理
-	int projectileCount = projectileManager.GetProjectileCount();
-	int enemyCount = enemyManager.GetEnemyCount();
-	for (int i = 0; i < projectileCount; ++i)
-	{
-		Projectile* projectile = projectileManager.GetProjectile(i);
-		for (int j = 0; j < enemyCount; ++j)
-		{
-			Enemy* enemy = enemyManager.GetEnemy(j);
-
-			//衝突処理
-			DirectX::XMFLOAT3 outPosition;
-			if (Collision::IntersectSphereVsCylinder(
-				projectile->GetPosition(),
-				projectile->GetRadius(),
-				enemy->GetPosition(),
-				enemy->GetRadius(),
-				enemy->GetHeight(),
-				outPosition))
-			{
-				//ダメージを与える
-				if (enemy->ApplyDamage(1, 0.5f))
-				{
-					//吹き飛ばす
-					{
-						DirectX::XMFLOAT3 impulse;
-						const float power = 10.0f;
-						const DirectX::XMFLOAT3& e = enemy->GetPosition();
-						const DirectX::XMFLOAT3& p = projectile->GetPosition();
-						float vx = e.x - p.x;
-						float vz = e.z - p.z;
-						float lengthXZ = sqrtf(vx * vx + vz * vz);
-						vx /= lengthXZ;
-						vz /= lengthXZ;
-
-						impulse.x = vx * power;
-						impulse.y = power * 0.5f;
-						impulse.z = vz * power;
-
-						enemy->AddImpulse(impulse);
-					}
-					//弾丸破棄
-					projectile->Destroy();
-				}
-			}
-		}
-	}
 }
