@@ -11,10 +11,10 @@
 //初期化
 void Player::Initialize()
 {
-	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
+	model = new Model("Data/Model/Player/runba_on_tex.mdl");
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
+	scale.x = scale.y = scale.z = 0.025f;
 
 	energy = 1000.0f;
 
