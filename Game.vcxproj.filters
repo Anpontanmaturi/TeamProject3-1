@@ -180,6 +180,9 @@
     <ClInclude Include="Source\garakuta.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Pause.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -321,6 +324,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\garakuta.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Pause.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

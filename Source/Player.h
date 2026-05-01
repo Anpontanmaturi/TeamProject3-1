@@ -72,6 +72,7 @@ private:
 	//’eŠÛ‚Æ“G‚ÌÕ“Ëˆ—
 	void CollisionProjectilesVsEnemies();
 
+	void Reset();
 protected:
 	//’…’n‚µ‚½‚ÉŒÄ‚Î‚ê‚é
 	void OnLanding() override;

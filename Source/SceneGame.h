@@ -1,5 +1,5 @@
 #pragma once
-
+#include"Pause.h"
 #include "Stage.h"
 #include "Player.h"
 #include "CameraController.h"
@@ -78,12 +78,13 @@ private:
 	int maxGarbage = 1;
 	float timeScale = 1.0f;
 	float hitStopTimer = 0.0f;
-
+	bool isPaused = false;
+	bool escKeyPrev = false; // トグル用
 	// コンボ
 	int combo = 0;
 	float comboTimer = 0.0f;
 	float comboLimit = 2.0f; // 2秒以内で継続
-
+	Pause pause;
 public:
 	int score = 0;
 

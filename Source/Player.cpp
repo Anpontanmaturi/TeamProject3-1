@@ -24,6 +24,7 @@ void Player::Initialize()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.01f;
+	Reset();
 }
 
 void Player::AddEnergy(float value)
@@ -48,11 +49,21 @@ void Player::Finalize()
 {
 	delete model;
 }
-int garbageCount = 0;
-
-void AddGarbage(int n)
+//int garbageCount = 0;
+//
+//void AddGarbage(int n)
+//{
+//	garbageCount += n;
+//}
+void Player::AddGarbage(int value)
 {
-	garbageCount += n;
+	garbageCount += value;
+}
+void Player::Reset()
+{
+	garbageCount = 0;
+	energy = maxenergy;
+	position = { 0,0,0 };
 }
 //更新処理
 void Player::Update(float elapsedTime)
@@ -127,11 +138,8 @@ void Player::Update(float elapsedTime)
 
 	if (nowE && !prevE)
 	{
-		OutputDebugStringA("E押された\n");
-
 		if (garbageCount > 0)
 		{
-			OutputDebugStringA("ガラクタ使用\n");
 
 			garbageCount--;
 
@@ -143,10 +151,7 @@ void Player::Update(float elapsedTime)
 	prevE = nowE;
 	
 }
-void Player::AddGarbage(int value)
-{
-	garbageCount += value;
-}
+
 
 /*//移動処理
 void Player::Move(float elapsedTime, float vx, float vz, float speed)

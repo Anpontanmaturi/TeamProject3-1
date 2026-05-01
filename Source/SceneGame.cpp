@@ -14,6 +14,8 @@
 #include <SceneManager.h>
 #include <ctime>
 #include <Denti.h>
+#include"SceneTitle.h"
+#include <Pause.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -39,10 +41,10 @@ void SceneGame::Initialize()
 	instance = this;
 	//プレイヤー初期化
 	Player::Instance().Initialize();
-
+	pause.Initialize();
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
-
+	
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
@@ -130,41 +132,44 @@ void SceneGame::Initialize()
 // 終了化
 void SceneGame::Finalize()
 {
-	//エネミー終了化
 	EnemyManager::Instance().Clear();
 
-	//ステージ終了化
 	if (stage != nullptr)
 	{
 		delete stage;
 		stage = nullptr;
 	}
-	// ゴミ解放（重要）
-	for (auto& g : gomis)
-	{
-		delete g;
-	}
+
+	for (auto& g : gomis) delete g;
 	gomis.clear();
-	//プレイヤー終了化
+
 	Player::Instance().Finalize();
-	for (auto& g : garbages)
-	{
-		delete g;
-	}
+
+	for (auto& g : garbages) delete g;
 	garbages.clear();
-	//カメラコントローラー終了化
+
 	if (cameraController != nullptr)
 	{
 		delete cameraController;
 		cameraController = nullptr;
 	}
+
+	pause.Finalize();
 }
 
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
-	if (isTimeUp) return;
 
+
+	// ポーズ更新
+	pause.Update();
+
+	// ポーズ中ならゲーム止める
+	if (pause.IsPaused())
+	{
+		return;
+	}
 	// =========================
 	// ヒットストップ処理（追加）
 	// =========================
@@ -441,6 +446,12 @@ void SceneGame::Render()
 	{
 
 	}
+	
+
+	
+	// g最後にポーズ描画（上にかぶせる）
+	pause.Render();
+	
 }
 SceneGame* SceneGame::instance = nullptr;
 
