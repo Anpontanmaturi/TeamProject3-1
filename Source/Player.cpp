@@ -11,10 +11,14 @@
 //初期化
 void Player::Initialize()
 {
-	model = new Model("Data/Model/Player/runba_on_tex.mdl");
+	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.025f;
+	scale.x = scale.y = scale.z = 0.01f;
+
+	energy = 1000.0f;
+
+	position = { 0.0f,0.0f,0.0f };
 }
 
 void Player::AddEnergy(float value)
@@ -33,6 +37,7 @@ void Player::Finalize()
 {
 	delete model;
 }
+
 
 //更新処理
 void Player::Update(float elapsedTime)
@@ -63,8 +68,66 @@ void Player::Update(float elapsedTime)
 
 	//モデル行列更新
 	model->UpdateTransform();
-	
+
 }
+
+void Player::AddGarbage(int value)
+{
+	garbageCount += value;
+}
+
+
+/*//移動処理
+void Player::Move(float elapsedTime, float vx, float vz, float speed)
+{
+	speed *= elapsedTime;
+	position.x += vx * speed;
+	position.z += vz * speed;
+}
+
+旋回処理
+void Player::Turn(float elapsedTime, float vx, float vz, float speed)
+{
+	speed *= elapsedTime;
+
+	//進行ベクトルがゼロベクトルの場合は処理する必要なし
+	float length = sqrtf(vx * vx + vz * vz);
+	if (length < 0.001f)return;
+
+	//進行ベクトルを単位ベクトル化
+	vx /= length;
+	vz /= length;
+
+	//自身の回転値から前方向を求める
+	float frontX = sinf(angle.y);
+	float frontZ = cosf(angle.y);
+	
+	//回転角を求めるため。2つの単位ベクトルの内積を計算する
+	float dot = (frontX * vx) + (frontZ * vz);
+
+	//内積値は-1.0～1.0で表現されており、２つの単位ベクトルの角度が
+	//小さいほど1.0に近づくという性質を利用して回転角度を調整する
+	float rot = 1.0f - dot;
+	if (rot > speed) rot = speed;
+
+	//左右判定を行うために２つの単位ベクトルの外積を計算する
+	float cross = (frontZ * vx) - (frontX * vz);
+
+	//2Dの外積が正の場合か負の場合かによって左右判定が行える
+	//左右判定を行うことによって左右回転を選択する
+	if (cross < 0.0f)
+	{
+		//angle.y -= speed;
+		angle.y -= rot;
+	}
+	else
+	{
+		//angle.y += speed;
+		angle.y += rot;
+	}
+
+	
+}*/
 
 //着地した時に呼ばれる
 void Player::OnLanding()
@@ -89,7 +152,6 @@ void Player::InputMove(float elapsedTime)
 	{
 		moveSpeed = moveSpeed / 2;
 	}
-	GamePad& gamePad = Input::Instance().GetGamePad();
 	isBoost = false; // ←毎フレーム初期化
 
 	moveSpeed = moveLimit;
@@ -102,7 +164,7 @@ void Player::InputMove(float elapsedTime)
 	{
 		energy -= 0.05f;
 
-		if (gamePad.GetButton() & GamePad::BTN_A)
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		{
 			isBoost = true;              // ←これ追加
 			moveSpeed = boostLimit;
@@ -304,21 +366,10 @@ void Player::Heal(float amount)
 //ジャンプ入力処理
 void Player::InputJump()
 {
-	//GamePad& gamePad = Input::Instance().GetGamePad();
-	//if (gamePad.GetButtonDown() & GamePad::BTN_A)
-	//{
-	//	//Jump(jumpSpeed);
-	//	//ジャンプ回数制限
-	//	if (jumpCount < jumpLimit)
-	//	{
-	//		//ジャンプ
-	//		jumpCount++;
-	//		Jump(jumpSpeed);
-	//	}
-	//}
+	
 }
 
-//弾丸入力処理
+//入力処理
 void Player::InputProjectile()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
@@ -328,6 +379,26 @@ void Player::InputProjectile()
 		//追加
 		energy = maxenergy;
 	}
+
+	static bool prevE = false;
+	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
+
+	if (nowE && !prevE)
+	{
+		OutputDebugStringA("E押された\n");
+
+		if (garbageCount > 0)
+		{
+			OutputDebugStringA("ガラクタ使用\n");
+
+			garbageCount--;
+
+			DirectX::XMFLOAT3 pos = position;
+			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
+		}
+	}
+	prevE = nowE;
+
 }
 
 //弾丸と敵の衝突処理
@@ -356,7 +427,6 @@ void Player::CollisionProjectilesVsEnemies()
 				outPosition))
 			{
 				//ダメージを与える
-				//enemy->ApplyDamage(1,0.5f);
 				if (enemy->ApplyDamage(1, 0.5f))
 				{
 					//吹き飛ばす

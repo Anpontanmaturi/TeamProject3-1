@@ -191,6 +191,7 @@ void SceneGame::Update(float elapsedTime)
 		currentTime = 0.0f;
 		isTimeUp = true;
 		SceneManager::Instance().ChangeScene(new SceneResult);
+		return;
 	}
 
 
@@ -253,7 +254,8 @@ void SceneGame::Update(float elapsedTime)
 		if (distance < radius)
 		{
 			// ★ここが回復速度
-			Player::Instance().AddEnergy(20.0f * elapsedTime);
+			Player::Instance().AddEnergy(85.0f * elapsedTime);
+			gomiCount = 0;
 		}
 	}
 
@@ -281,6 +283,48 @@ void SceneGame::Update(float elapsedTime)
 			score += 5;
 		}
 	}
+
+	// =========================
+	// ガラクタ処理（←これ追加）
+	// =========================
+	for (auto& g : garbages)
+	{
+		g->Update(elapsedTime);
+
+		float dist = GetDistance(playerPos, g->GetPosition());
+		float playerRadius = 0.7f;
+
+		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		{
+			g->Collect();
+
+			Player::Instance().AddGarbage(1); // ← 持ってる数増やす
+		}
+	}
+	// =========================
+	// ガラクタスポーン
+	// =========================
+	garbageSpawnTimer += elapsedTime;
+
+	if (garbageSpawnTimer >= garbageSpawnInterval)
+	{
+		garbageSpawnTimer = 0.0f;
+
+		// 最大数チェック（1個だけ）
+		if (garbages.size() < maxGarbage)
+		{
+			garakuta* g = new garakuta();
+
+			float x = GetRandom(-5.0f, 5.0f);
+			float z = GetRandom(-5.0f, 5.0f);
+
+			g->Init({ x, 0.0f, z });
+
+			garbages.push_back(g);
+		}
+	}
+
+
 	for (auto& d : dentis)
 	{
 		d->Update(elapsedTime);
@@ -376,6 +420,21 @@ void SceneGame::Update(float elapsedTime)
 		dentis.end()
 	);
 
+	// ガラクタ削除
+	garbages.erase(
+		std::remove_if(garbages.begin(), garbages.end(),
+			[](garakuta* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+				return false;
+			}),
+		garbages.end()
+	);
+
 
 	// =========================
 	// カメラ更新（止めない）
@@ -427,6 +486,11 @@ void SceneGame::Render()
 	for (auto& obj : objects)
 	{
 		obj.Render(rc, modelRenderer);
+	}
+	// ガラクタ描画
+	for (auto& g : garbages)
+	{
+		g->Render(rc, modelRenderer);
 	}
 	// 電池描画 ← これ追加
 	for (auto& d : dentis)
@@ -496,6 +560,16 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::Separator();
+	if (ImGui::Button("Spawn Garbage (Player Front)"))
+	{
+		// プレイヤーの前にスポーンさせる
+		DirectX::XMFLOAT3 pos = Player::Instance().GetPosition();
+		pos.x += 2.0f;
+		garakuta* g = new garakuta();
+		g->Init(pos);
+		garbages.push_back(g);
+	}
 	ImGui::End();
 
 

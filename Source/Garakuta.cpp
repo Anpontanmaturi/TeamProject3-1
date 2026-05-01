@@ -1,25 +1,25 @@
-#include "Gomi.h"
+#include "garakuta.h"
 #include <DirectXMath.h>
-#include"Denti.h"
+
 using namespace DirectX;
 
 // コンストラクタ
-Denti::Denti()
+garakuta::garakuta()
 {
-    model = new Model("Data/Model/item/denti.mdl");
+    model = new Model("Data/Model/SpikeBall/SpikeBall.mdl");
 
     // サイズ調整（必要なら）
-    scale = { 0.02f, 0.02f, 0.02f };
+    scale = { 0.6f, 0.6f, 0.6f };
 }
 
 // デストラクタ
-Denti::~Denti()
+garakuta::~garakuta()
 {
     delete model;
 }
 
 // 初期化
-void Denti::Init(const XMFLOAT3& pos)
+void garakuta::Init(const XMFLOAT3& pos)
 {
     position = pos;
     collected = false;
@@ -28,7 +28,7 @@ void Denti::Init(const XMFLOAT3& pos)
 }
 
 // 更新
-void Denti::Update(float elapsedTime)
+void garakuta::Update(float elapsedTime)
 {
     if (collected) return;
 
@@ -37,7 +37,7 @@ void Denti::Update(float elapsedTime)
 }
 
 // 描画
-void Denti::Render(const RenderContext& rc, ModelRenderer* renderer)
+void garakuta::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
     if (collected) return;
     if (model == nullptr) return;
@@ -45,13 +45,13 @@ void Denti::Render(const RenderContext& rc, ModelRenderer* renderer)
 }
 
 // 回収
-void Denti::Collect()
+void garakuta::Collect()
 {
     collected = true;
 }
 
 // 行列更新
-void Denti::UpdateTransform()
+void garakuta::UpdateTransform()
 {
     XMMATRIX S = XMMatrixScaling(scale.x, scale.y, scale.z);
     XMMATRIX T = XMMatrixTranslation(position.x, position.y, position.z);

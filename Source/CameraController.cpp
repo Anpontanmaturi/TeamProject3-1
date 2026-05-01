@@ -26,7 +26,6 @@ void CameraController::Update(float elapsedTime)
 	// カーソルがロックされている場合のみマウス移動を処理
 	if (isCursorLocked)
 	{
-
 		// 現在のマウス座標取得
 		POINT mousePos;
 		GetCursorPos(&mousePos);
@@ -37,10 +36,6 @@ void CameraController::Update(float elapsedTime)
 
 		// 角度更新
 		angle.y += ax * sensitivity;
-
-		//// X軸回転制限
-		//if (angle.x < minAngleX) angle.x = minAngleX;
-		//if (angle.x > maxAngleX) angle.x = maxAngleX;
 
 		//	X軸回転を固定
 		angle.x = DirectX::XMConvertToRadians(20.0f);

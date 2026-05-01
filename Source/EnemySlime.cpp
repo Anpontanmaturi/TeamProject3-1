@@ -7,10 +7,10 @@
 //コンストラクタ
 EnemySlime::EnemySlime()
 {
-	model = new Model("Data/Model/Slime/Slime.mdl");
+	model = new Model("Data/Model/Slime/pipetto.mdl");
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
+	scale.x = scale.y = scale.z = 0.03f;
 
 	//幅、大きさ設定
 	radius = 0.5f;
@@ -28,25 +28,38 @@ EnemySlime::~EnemySlime()
 //更新処理
 void EnemySlime::Update(float elapsedTime)
 {
-	//ステート毎の更新処理
-	switch (state)
+	// 引き寄せ処理
+	if (attractCooldown > 0.0f)
 	{
-	case State::Wander:
-		UpdateWanderState(elapsedTime);
-		break;
-		
-	case State::Idle:
-		UpdateIdleState(elapsedTime);
-		break;
+		attractCooldown -= elapsedTime;
+	}
+	if (isAttracting)
+	{
 
-	case State::Escepe:
-		UpdateEscepeState(elapsedTime);
-		break;
+	}
+	else
+	{
+		//ステート毎の更新処理
+		switch (state)
+		{
+		case State::Wander:
+			UpdateWanderState(elapsedTime);
+			break;
+
+		case State::Idle:
+			UpdateIdleState(elapsedTime);
+			break;
+
+		case State::Escepe:
+			UpdateEscepeState(elapsedTime);
+			break;
+		}
+
 	}
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
-
+	
 	//弾丸更新処理
 	projectileManager.Update(elapsedTime);
 
