@@ -177,7 +177,7 @@
     <ClCompile Include="Source\Garakuta.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Pause.cpp">
+    <ClCompile Include="Source\UiManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,7 +344,7 @@
     <ClInclude Include="Source\Garakuta.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Pause.h">
+    <ClInclude Include="Source\UiManager.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

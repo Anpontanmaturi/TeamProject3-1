@@ -90,8 +90,8 @@ private:
 	int jumpCount = 0;
 	int jumpLimit = 2;
 	//’Ç‰Á
-	float moveLimit = 5.0f;
-	float boostLimit = 7.5f;
+	float moveLimit = 5.5f;
+	float boostLimit = 8.0f;
 	float energy = 1000.0f;
 	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;
