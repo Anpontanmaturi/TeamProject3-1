@@ -14,6 +14,7 @@
 #include<SceneResult.h>
 #include <SceneManager.h>
 #include <ctime>
+#include"Pause.h"
 std::vector<Object> objects;
 #include <Denti.h>
 // 距離計算
@@ -40,7 +41,7 @@ void SceneGame::Initialize()
 	//ステージ初期化
 	stage = new Stage();
 	instance = this;
-
+	pause.Initialize();
 	//プレイヤー初期化
 	Player::Instance().Initialize();
 
@@ -98,7 +99,7 @@ void SceneGame::Initialize()
 	// 位置など設定
 	objects[0].SetPosition(0, 0, 0);
 
-
+	garbages.clear();
 	dentis.clear();
 
 	// 最初の1個
@@ -110,7 +111,21 @@ void SceneGame::Initialize()
 	d->Init({ x, 0.5f, z });
 
 	dentis.push_back(d);
+	// ガラクタ生成
+	garbages.clear();
 
+	// 最初の1個
+	garakuta* g = new garakuta();
+
+	// ガラクタ専用の座標を作る
+	float gx = GetRandom(-10.0f, 10.0f);
+	float gz = GetRandom(-10.0f, 10.0f);
+
+	g->Init({ gx, 0.0f, gz });
+	garbages.push_back(g);
+
+	// タイマーリセット
+	garbageSpawnTimer = 0.0f;
 	// タイマーリセット
 	dentiSpawnTimer = 0.0f;
 
@@ -148,8 +163,9 @@ void SceneGame::Finalize()
 
 	//オブジェクト終了化
 	objects.clear();
-
-
+	for (auto& g : garbages) delete g;
+	garbages.clear();
+	pause.Finalize();
 	//プレイヤー終了化
 	Player::Instance().Finalize();
 
@@ -164,6 +180,13 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+
+	pause.Update();
+	//ポーズ中ならゲームを止める
+	if (pause.IsPaused())
+	{
+		return;
+	}
 	if (isTimeUp) return;
 
 	// =========================
@@ -524,6 +547,7 @@ void SceneGame::Render()
 	{
 
 	}
+	pause.Render();
 }
 SceneGame* SceneGame::instance = nullptr;
 

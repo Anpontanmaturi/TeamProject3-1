@@ -7,6 +7,7 @@
 #include <gomi.h>
 #include <Denti.h>
 #include <garakuta.h>
+#include <Pause.h>
 
 // ゲームシーン
 //class SceneGame
@@ -87,7 +88,7 @@ private:
 	int combo = 0;
 	float comboTimer = 0.0f;
 	float comboLimit = 2.0f; // 2秒以内で継続
-
+	Pause pause;
 	// ガラクタスポーンタイマー
 	std::vector<garakuta*> garbages;
 	float garbageSpawnTimer = 0.0f;
