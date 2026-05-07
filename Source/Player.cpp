@@ -302,7 +302,7 @@ void Player::CollisionPlayerVsEnemies()
 					int combo = SceneGame::Instance().GetCombo();
 					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
-					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);	
+					SceneGame::Instance().AddScore((100 + (gomi * 10)) * multiplier);	
 					
 				}
 				

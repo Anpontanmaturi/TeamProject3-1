@@ -636,9 +636,7 @@ void SceneGame::AddCombo()
 
 float SceneGame::GetComboMultiplier() const
 {
-	if (combo == 1) return 1.0f;
-	if (combo == 2) return 1.5f;
 	if (combo >= 3) return 3.0f;
-
+	if (combo == 2) return 1.5f;
 	return 1.0f;
 }
