@@ -1,13 +1,14 @@
 #include "UIManager.h"
 #include "Player.h"
 #include "SceneGame.h"
+#include "UiBattery.h"
 
-void UIManager::Init()
+void UIManager::Initialize()
 {
 	uiElements.clear();// 一度クリア
 
 	// ここでUIパーツの実体のみを作成する
-
+	uiElements.push_back(std::make_unique<UIBattery>());
 
 }
 

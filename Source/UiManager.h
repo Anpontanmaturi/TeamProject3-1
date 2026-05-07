@@ -18,7 +18,7 @@ public:
 	}
 
 	// ‰Šú‰»
-	void Init();
+	void Initialize();
 
 	// XV
 	void Update(float elapsedTime);

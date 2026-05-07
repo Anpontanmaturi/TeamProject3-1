@@ -40,6 +40,11 @@ public:
 	// 回復処理
 	void Heal(float amount);
 
+	// バッテリーのゲッター・セッター
+	float GetEnergy() const { return energy; }
+	void SetEnergy(float value) { energy = value; }
+	float GetMaxEnergy() const { return maxenergy; }
+
 	//ジャンプ入力処理
 	void InputJump();
 
