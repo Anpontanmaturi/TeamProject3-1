@@ -17,6 +17,9 @@
 #include"Pause.h"
 std::vector<Object> objects;
 #include <Denti.h>
+#include "UiManager.h"
+
+
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -45,6 +48,8 @@ void SceneGame::Initialize()
 	//プレイヤー初期化
 	Player::Instance().Initialize();
 
+	// UIの初期化
+	UIManager::Instance().Initialize();
 
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
@@ -256,6 +261,9 @@ void SceneGame::Update(float elapsedTime)
 	stage->Update(scaledTime);
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
+
+	// UIの更新
+	UIManager::Instance().Update(scaledTime);
 
 
 	//オブジェクト更新処理
@@ -526,7 +534,6 @@ void SceneGame::Render()
 		stage->Render(rc, modelRenderer);
 
 		//プレイヤー描画
-		//player->Render(rc, modelRenderer);
 		Player::Instance().Render(rc, modelRenderer);
 
 		//エネミー描画
@@ -536,7 +543,6 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
-		//player->RenderDebugPrimitive(rc, shapeRenderer);
 		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
@@ -546,6 +552,9 @@ void SceneGame::Render()
 	// 2Dスプライト描画
 	{
 
+
+		//UI描画
+		UIManager::Instance().Render(rc);
 	}
 	pause.Render();
 }
@@ -578,6 +587,9 @@ void SceneGame::DrawGUI()
 {
 	//プレイヤーデバッグ描画
 	Player::Instance().DrowDebugGUI();
+
+	// UI用デバッグGUI描画
+	UIManager::Instance().DrawDebugGUI();
 
 	//エネミーデバッグ描画
 	//EnemyManager::Instance().DrawDebugGUI();
