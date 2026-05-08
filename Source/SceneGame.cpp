@@ -272,7 +272,7 @@ void SceneGame::Update(float elapsedTime)
 		// ‹——£
 		float distance = GetDistance(playerPos, objPos);
 
-		float radius = 2.0f;
+		float radius = 1.0f;
 
 		if (distance < radius)
 		{
