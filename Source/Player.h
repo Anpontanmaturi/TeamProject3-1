@@ -51,6 +51,8 @@ public:
 	//デバッグプリミティブ描画
 	void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
+
+	void Reset();
 private:
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec() const;
@@ -93,8 +95,8 @@ private:
 	int jumpCount = 0;
 	int jumpLimit = 2;
 	//追加
-	float moveLimit = 5.0f;
-	float boostLimit = 7.5f;
+	float moveLimit = 5.5f;
+	float boostLimit = 8.0f;
 	float energy = 1000.0f;
 	float maxenergy = 1000.0f;
 	ProjectileManager projectileManager;

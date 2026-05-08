@@ -19,6 +19,7 @@ void Player::Initialize()
 	energy = 1000.0f;
 
 	position = { 0.0f,0.0f,0.0f };
+	Reset();
 }
 
 void Player::AddEnergy(float value)
@@ -75,7 +76,12 @@ void Player::AddGarbage(int value)
 {
 	garbageCount += value;
 }
-
+void Player::Reset()
+{
+	garbageCount = 0;
+	energy = maxenergy;
+	position = { 0.0f,0.0f,0.0f };
+}
 
 
 //着地した時に呼ばれる
@@ -296,7 +302,7 @@ void Player::CollisionPlayerVsEnemies()
 					int combo = SceneGame::Instance().GetCombo();
 					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
-					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);	
+					SceneGame::Instance().AddScore((100 + (gomi * 10)) * multiplier);	
 					
 				}
 				

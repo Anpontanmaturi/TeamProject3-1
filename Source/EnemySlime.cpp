@@ -7,7 +7,7 @@
 //コンストラクタ
 EnemySlime::EnemySlime()
 {
-	model = new Model("Data/Model/Slime/pipetto.mdl");
+	model = new Model("Data/Model/pipetto/pipetto.mdl");
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.03f;
