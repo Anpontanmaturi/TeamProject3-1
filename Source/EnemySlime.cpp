@@ -22,7 +22,7 @@ EnemySlime::EnemySlime()
 	}
 	else
 	{
-		model = new Model("Data/Model/futeikei/futeikei.mdl");
+		model = new Model("Data/Model/futeikei/bukuro.mdl");
 	}
 
 	//モデルが大きいのでスケーリング
