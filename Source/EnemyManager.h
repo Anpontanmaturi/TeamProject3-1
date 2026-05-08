@@ -47,6 +47,9 @@ public:
 	//敵を消す処理
 	void RemoveWithDelay(Enemy* enemy, float delay);
 
+	//デコイに対する反応処理
+	void ReactToDecoy(Enemy* enemy, float elapsedTime);
+
 	//エネミー全削除
 	void Clear();
 

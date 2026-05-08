@@ -6,10 +6,12 @@ using namespace DirectX;
 // コンストラクタ
 Denti::Denti()
 {
-    model = new Model("Data/Model/item/dennti.mdl");
+    model = new Model("Data/Model/denti/denti.mdl");
+
+   
 
     // サイズ調整（必要なら）
-    scale = { 0.006f, 0.006f, 0.006f };
+    scale = { 0.02f, 0.02f, 0.02f };
 }
 
 // デストラクタ

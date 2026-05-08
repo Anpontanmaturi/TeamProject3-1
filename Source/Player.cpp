@@ -8,22 +8,17 @@
 #include "ProjectileHoming.h"
 #include <SceneGame.h>
 
-/*//コンストラクタ
-Player::Player()
-{
-	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-
-	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
-}*/
-
 //初期化
 void Player::Initialize()
 {
-	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
+	model = new Model("Data/Model/Player/runba_on_tex.mdl");
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
+	scale.x = scale.y = scale.z = 0.025f;
+
+	energy = 1000.0f;
+
+	position = { 0.0f,0.0f,0.0f };
 	Reset();
 }
 
@@ -38,77 +33,18 @@ void Player::AddEnergy(float value)
 	}
 }
 
-/*//デストラクタ
-Player::~Player()
-{
-	delete model;
-}*/
-
 //終了化
 void Player::Finalize()
 {
 	delete model;
 }
-//int garbageCount = 0;
-//
-//void AddGarbage(int n)
-//{
-//	garbageCount += n;
-//}
-void Player::AddGarbage(int value)
-{
-	garbageCount += value;
-}
-void Player::Reset()
-{
-	garbageCount = 0;
-	energy = maxenergy;
-	position = { 0,0,0 };
-}
+
+
 //更新処理
 void Player::Update(float elapsedTime)
 {
-	/*//信仰ベクトル取得
-	DirectX::XMFLOAT3 moveVec = GetMoveVec();
-
-	//移動処理
-	float moveSpeed = this->moveSpeed * elapsedTime;
-	position.x += moveVec.x * moveSpeed;
-	position.y += moveVec.y * moveSpeed;*/
-
 	//移動入力処理
 	InputMove(elapsedTime);
-
-	/*//入力情報を取得
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	float ax = gamePad.GetAxisLX();
-	float ay = gamePad.GetAxisLY();
-
-	//移動操作
-	float moveSpeed = 5.0f * elapsedTime;
-	{
-		//左スティックの入力情報をもとにXZ平面への移動処理
-		position.x += ax * moveSpeed;
-		position.z += ay * moveSpeed;
-	}
-
-	//回転操作
-	float rotateSpeed = DirectX::XMConvertToRadians(360) * elapsedTime;
-	if (gamePad.GetButton() & GamePad::BTN_A)
-	{
-		//X軸回転操作
-		angle.x += rotateSpeed;
-	}
-	if (gamePad.GetButton() & GamePad::BTN_B)
-	{
-		//Y軸回転操作
-		angle.y += rotateSpeed;
-	}
-	if (gamePad.GetButton() & GamePad::BTN_X)
-	{
-		//Z軸回転操作
-		angle.z += rotateSpeed;
-	}*/
 
 	//ジャンプ入力処理
 	InputJump();
@@ -133,77 +69,20 @@ void Player::Update(float elapsedTime)
 
 	//モデル行列更新
 	model->UpdateTransform();
-	static bool prevE = false;
-	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
 
-	if (nowE && !prevE)
-	{
-		if (garbageCount > 0)
-		{
-
-			garbageCount--;
-
-			DirectX::XMFLOAT3 pos = position;
-			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
-		}
-	}
-
-	prevE = nowE;
-	
 }
 
-
-/*//移動処理
-void Player::Move(float elapsedTime, float vx, float vz, float speed)
+void Player::AddGarbage(int value)
 {
-	speed *= elapsedTime;
-	position.x += vx * speed;
-	position.z += vz * speed;
+	garbageCount += value;
+}
+void Player::Reset()
+{
+	garbageCount = 0;
+	energy = maxenergy;
+	position = { 0.0f,0.0f,0.0f };
 }
 
-旋回処理
-void Player::Turn(float elapsedTime, float vx, float vz, float speed)
-{
-	speed *= elapsedTime;
-
-	//進行ベクトルがゼロベクトルの場合は処理する必要なし
-	float length = sqrtf(vx * vx + vz * vz);
-	if (length < 0.001f)return;
-
-	//進行ベクトルを単位ベクトル化
-	vx /= length;
-	vz /= length;
-
-	//自身の回転値から前方向を求める
-	float frontX = sinf(angle.y);
-	float frontZ = cosf(angle.y);
-	
-	//回転角を求めるため。2つの単位ベクトルの内積を計算する
-	float dot = (frontX * vx) + (frontZ * vz);
-
-	//内積値は-1.0～1.0で表現されており、２つの単位ベクトルの角度が
-	//小さいほど1.0に近づくという性質を利用して回転角度を調整する
-	float rot = 1.0f - dot;
-	if (rot > speed) rot = speed;
-
-	//左右判定を行うために２つの単位ベクトルの外積を計算する
-	float cross = (frontZ * vx) - (frontX * vz);
-
-	//2Dの外積が正の場合か負の場合かによって左右判定が行える
-	//左右判定を行うことによって左右回転を選択する
-	if (cross < 0.0f)
-	{
-		//angle.y -= speed;
-		angle.y -= rot;
-	}
-	else
-	{
-		//angle.y += speed;
-		angle.y += rot;
-	}
-
-	
-}*/
 
 //着地した時に呼ばれる
 void Player::OnLanding()
@@ -228,7 +107,6 @@ void Player::InputMove(float elapsedTime)
 	{
 		moveSpeed = moveSpeed / 2;
 	}
-	GamePad& gamePad = Input::Instance().GetGamePad();
 	isBoost = false; // ←毎フレーム初期化
 
 	moveSpeed = moveLimit;
@@ -241,7 +119,7 @@ void Player::InputMove(float elapsedTime)
 	{
 		energy -= 0.05f;
 
-		if (gamePad.GetButton() & GamePad::BTN_A)
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		{
 			isBoost = true;              // ←これ追加
 			moveSpeed = boostLimit;
@@ -296,6 +174,7 @@ void Player::DrowDebugGUI()
 			ImGui::InputFloat3("Scale", &scale.x);
 		//追加
 			ImGui::InputFloat("energy", &energy);
+			ImGui::Text("Press TAB to toggle the cursor move and stop.");
 		}
 	}
 	ImGui::End();
@@ -362,15 +241,6 @@ void Player::CollisionPlayerVsEnemies()
 
 		//衝突処理
 		DirectX::XMFLOAT3 outPosition;
-		//if (Collision::IntersectSphereVsSphere(
-		//	position, radius,
-		//	enemy->GetPosition(),
-		//	enemy->GetRadius(),
-		//	outPosition))
-		//{
-		//	//押し出し後の位置判定
-		//	enemy->SetPosition(outPosition);
-		//}
 		if (Collision::IntersectCylinderVsCylinder(
 			position,
 			radius,
@@ -381,9 +251,6 @@ void Player::CollisionPlayerVsEnemies()
 			outPosition
 		))
 		{
-			////押し出し後の位置設定
-			//enemy->SetPosition(outPosition);
-
 			//敵の真上に当たったかを判定
 			DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
 			DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
@@ -401,9 +268,11 @@ void Player::CollisionPlayerVsEnemies()
 			{
 				if (isBoost)
 				{
+
+					if (!enemy->ApplyDamage(1, 0.3f))
+						continue;
+
 					// ===== ノックバック処理 =====
-					DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-					DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
 					DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
 					V = DirectX::XMVector3Normalize(V);
 
@@ -414,10 +283,10 @@ void Player::CollisionPlayerVsEnemies()
 					float power = 12.5f;
 
 					impulse.x = dir.x * power;
-					impulse.y = power * 1.5;
+					impulse.y = power * 1.5f;
 					impulse.z = dir.z * power;
 
-					// 既にあるこれ使うのがベスト👇
+					// 既にあるこれ使うのがベスト
 					enemy->AddImpulse(impulse);
 
 					// x秒後に敵を削除する
@@ -433,8 +302,7 @@ void Player::CollisionPlayerVsEnemies()
 					int combo = SceneGame::Instance().GetCombo();
 					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
-					SceneGame::Instance().AddScore(100 + (gomi * 10) * multiplier);
-
+					SceneGame::Instance().AddScore((100 + (gomi * 10)) * multiplier);	
 					
 				}
 				
@@ -448,48 +316,20 @@ void Player::CollisionPlayerVsEnemies()
 	}
 }
 
-//ジャンプ処理
-//void Player::Jump(float speed)
-//{
-//	//上方向の力を設定
-//	velocity.y = speed;
-//}
+void Player::Heal(float amount)
+{
+	hp += amount;
+	if (hp > maxHp) hp = maxHp;
+}
 
-//速力処理更新
-//void Player::UpdateVelocity(float elapsedTime)
-//{
-//	//重力処理
-//	velocity.y += gravity * elapsedTime;
-//
-//	//移動処理
-//	position.y += velocity.y * elapsedTime;
-//
-//	//地面判定
-//	if (position.y < 0.0f)
-//	{
-//		position.y = 0.0f;
-//		velocity.y = 0.0f;
-//	}
-//}
 
 //ジャンプ入力処理
 void Player::InputJump()
 {
-	//GamePad& gamePad = Input::Instance().GetGamePad();
-	//if (gamePad.GetButtonDown() & GamePad::BTN_A)
-	//{
-	//	//Jump(jumpSpeed);
-	//	//ジャンプ回数制限
-	//	if (jumpCount < jumpLimit)
-	//	{
-	//		//ジャンプ
-	//		jumpCount++;
-	//		Jump(jumpSpeed);
-	//	}
-	//}
+	
 }
 
-//弾丸入力処理
+//入力処理
 void Player::InputProjectile()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
@@ -500,60 +340,28 @@ void Player::InputProjectile()
 		energy = maxenergy;
 	}
 
-	
+	static bool prevE = false;
+	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
+
+	if (nowE && !prevE)
+	{
+		OutputDebugStringA("E押された\n");
+
+		if (garbageCount > 0)
+		{
+			OutputDebugStringA("ガラクタ使用\n");
+
+			garbageCount--;
+
+			DirectX::XMFLOAT3 pos = position;
+			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
+		}
+	}
+	prevE = nowE;
+
 }
 
 //弾丸と敵の衝突処理
 void Player::CollisionProjectilesVsEnemies()
 {
-	EnemyManager& enemyManager = EnemyManager::Instance();
-
-	//全ての弾丸と全ての敵を総当たりで衝突処理
-	int projectileCount = projectileManager.GetProjectileCount();
-	int enemyCount = enemyManager.GetEnemyCount();
-	for (int i = 0; i < projectileCount; ++i)
-	{
-		Projectile* projectile = projectileManager.GetProjectile(i);
-		for (int j = 0; j < enemyCount; ++j)
-		{
-			Enemy* enemy = enemyManager.GetEnemy(j);
-
-			//衝突処理
-			DirectX::XMFLOAT3 outPosition;
-			if (Collision::IntersectSphereVsCylinder(
-				projectile->GetPosition(),
-				projectile->GetRadius(),
-				enemy->GetPosition(),
-				enemy->GetRadius(),
-				enemy->GetHeight(),
-				outPosition))
-			{
-				//ダメージを与える
-				//enemy->ApplyDamage(1,0.5f);
-				if (enemy->ApplyDamage(1, 0.5f))
-				{
-					//吹き飛ばす
-					{
-						DirectX::XMFLOAT3 impulse;
-						const float power = 10.0f;
-						const DirectX::XMFLOAT3& e = enemy->GetPosition();
-						const DirectX::XMFLOAT3& p = projectile->GetPosition();
-						float vx = e.x - p.x;
-						float vz = e.z - p.z;
-						float lengthXZ = sqrtf(vx * vx + vz * vz);
-						vx /= lengthXZ;
-						vz /= lengthXZ;
-
-						impulse.x = vx * power;
-						impulse.y = power * 0.5f;
-						impulse.z = vz * power;
-
-						enemy->AddImpulse(impulse);
-					}
-					//弾丸破棄
-					projectile->Destroy();
-				}
-			}
-		}
-	}
 }

@@ -3,14 +3,30 @@
 #include "Player.h"
 #include "ProjectileStraight.h"
 #include <EnemyManager.h>
-
+#include <random>
 //コンストラクタ
 EnemySlime::EnemySlime()
 {
-	model = new Model("Data/Model/Slime/Slime.mdl");
+	// 高品質乱数
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	// 0か1を均等に出す
+	std::uniform_int_distribution<int> dist(0, 1);
+
+	int type = dist(mt);
+
+	if (type == 0)
+	{
+		model = new Model("Data/Model/pipetto/pipet.mdl");
+	}
+	else
+	{
+		model = new Model("Data/Model/futeikei/bukuro.mdl");
+	}
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
+	scale.x = scale.y = scale.z = 0.03f;
 
 	//幅、大きさ設定
 	radius = 0.5f;
@@ -28,43 +44,38 @@ EnemySlime::~EnemySlime()
 //更新処理
 void EnemySlime::Update(float elapsedTime)
 {
-	
-	Enemy::Update(elapsedTime);
+	// 引き寄せ処理
 	if (attractCooldown > 0.0f)
 	{
 		attractCooldown -= elapsedTime;
-		UpdateTransform();
-		return;
 	}
 	if (isAttracting)
 	{
-		UpdateTransform(); // ← モデル更新
-		return;            // ← AI止める（超重要）
-	}
-	if (isAttracting)
-	{
-		Enemy::Update(elapsedTime);
-		return;
-	}
-	//ステート毎の更新処理
-	switch (state)
-	{
-	case State::Wander:
-		UpdateWanderState(elapsedTime);
-		break;
-		
-	case State::Idle:
-		UpdateIdleState(elapsedTime);
-		break;
 
-	case State::Escepe:
-		UpdateEscepeState(elapsedTime);
-		break;
+	}
+	else
+	{
+		//ステート毎の更新処理
+		switch (state)
+		{
+		case State::Wander:
+			UpdateWanderState(elapsedTime);
+			break;
+
+		case State::Idle:
+			UpdateIdleState(elapsedTime);
+			break;
+
+		case State::Escepe:
+			UpdateEscepeState(elapsedTime);
+			break;
+		}
+
 	}
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
-
+	
 	//弾丸更新処理
 	projectileManager.Update(elapsedTime);
 

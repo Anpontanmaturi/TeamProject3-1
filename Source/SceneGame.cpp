@@ -17,6 +17,13 @@
 #include"SceneTitle.h"
 #include <Pause.h>
 #include"kagu.h"
+#include"Pause.h"
+std::vector<Object> objects;
+#include <Denti.h>
+#include "UiManager.h"
+
+
+
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -40,9 +47,18 @@ void SceneGame::Initialize()
 	//ステージ初期化
 	stage = new Stage();
 	instance = this;
+
 	//プレイヤー初期化
 	Player::Instance().Initialize();
 	pause.Initialize();
+
+	pause.Initialize();
+	//プレイヤー初期化
+	Player::Instance().Initialize();
+
+	// UIの初期化
+	UIManager::Instance().Initialize();
+
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
 	
@@ -89,6 +105,16 @@ void SceneGame::Initialize()
 		gomis.push_back(g);
 	}
 
+	// オブジェクト
+	// オブジェクト生成
+
+	objects.emplace_back(); // ← これが必要！！
+
+	// 位置など設定
+	objects[0].SetPosition(0, 0, 0);
+
+	garbages.clear();
+
 	dentis.clear();
 
 	
@@ -100,6 +126,7 @@ void SceneGame::Initialize()
 	float z = GetRandom(-10.0f, 10.0f);
 	d->Init({ x, 0.5f, z });
 	dentis.push_back(d);
+
 	// =========================
 // 冷蔵庫生成
 // =========================
@@ -128,7 +155,22 @@ void SceneGame::Initialize()
 	// 最初の1個
 
 	//dentis.push_back(d);
+	// ガラクタ生成
+	garbages.clear();
 
+
+	// 最初の1個
+	garakuta* g = new garakuta();
+
+	// ガラクタ専用の座標を作る
+	float gx = GetRandom(-10.0f, 10.0f);
+	float gz = GetRandom(-10.0f, 10.0f);
+
+	g->Init({ gx, 0.0f, gz });
+	garbages.push_back(g);
+
+	// タイマーリセット
+	garbageSpawnTimer = 0.0f;
 	// タイマーリセット
 	dentiSpawnTimer = 0.0f;
 
@@ -155,7 +197,18 @@ void SceneGame::Finalize()
 	{
 		delete k;
 	}
+
 	kagus.clear();
+
+	dentis.clear();
+
+	//オブジェクト終了化
+	objects.clear();
+	for (auto& g : garbages) delete g;
+	garbages.clear();
+	pause.Finalize();
+	//プレイヤー終了化
+
 	Player::Instance().Finalize();
 
 	for (auto& g : garbages) delete g;
@@ -173,6 +226,17 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+
+
+
+	pause.Update();
+	//ポーズ中ならゲームを止める
+	if (pause.IsPaused())
+	{
+		return;
+	}
+	if (isTimeUp) return;
+
 
 
 	// ポーズ更新
@@ -208,6 +272,7 @@ void SceneGame::Update(float elapsedTime)
 		currentTime = 0.0f;
 		isTimeUp = true;
 		SceneManager::Instance().ChangeScene(new SceneResult);
+		return;
 	}
 
 	// 電池スポーンタイマー
@@ -249,6 +314,40 @@ void SceneGame::Update(float elapsedTime)
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
 
+
+	// UIの更新
+	UIManager::Instance().Update(scaledTime);
+
+
+	//オブジェクト更新処理
+	for (auto& obj : objects)
+	{
+		obj.Update(elapsedTime);
+
+		// プレイヤー位置
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+
+		// オブジェクト位置
+		DirectX::XMFLOAT3 objPos = obj.GetPosition();
+
+		// 距離
+		float distance = GetDistance(playerPos, objPos);
+
+		float radius = 1.0f;
+
+		if (distance < radius)
+		{
+			// ★ここが回復速度
+			Player::Instance().AddEnergy(85.0f * elapsedTime);
+			gomiCount = 0;
+		}
+	}
+
+	//プレイヤー更新処理
+	//player->Update(elapsedTime);
+	//Player::Instance().Update(elapsedTime);
+
+
 	// =========================
 	// ゴミ処理
 	// =========================
@@ -268,9 +367,16 @@ void SceneGame::Update(float elapsedTime)
 			score += 5;
 		}
 	}
+
 	// =========================
 // ガラクタ処理（←これ追加）
 // =========================
+
+
+	// =========================
+	// ガラクタ処理（←これ追加）
+	// =========================
+
 	for (auto& g : garbages)
 	{
 		g->Update(elapsedTime);
@@ -307,6 +413,10 @@ void SceneGame::Update(float elapsedTime)
 			garbages.push_back(g);
 		}
 	}
+
+
+
+
 	for (auto& d : dentis)
 	{
 		d->Update(elapsedTime);
@@ -451,6 +561,10 @@ void SceneGame::Update(float elapsedTime)
 		dentis.end()
 	);
 
+
+
+	// ガラクタ削除
+
 	garbages.erase(
 		std::remove_if(garbages.begin(), garbages.end(),
 			[](garakuta* g)
@@ -464,6 +578,11 @@ void SceneGame::Update(float elapsedTime)
 			}),
 		garbages.end()
 	);
+
+
+
+
+
 	// =========================
 	// カメラ更新（止めない）
 	// =========================
@@ -514,6 +633,11 @@ void SceneGame::Render()
 	{
 		g->Render(rc, modelRenderer);
 	}
+	// ガラクタ描画
+	for (auto& g : garbages)
+	{
+		g->Render(rc, modelRenderer);
+	}
 	// 電池描画 ← これ追加
 	for (auto& d : dentis)
 	{
@@ -530,7 +654,6 @@ void SceneGame::Render()
 		stage->Render(rc, modelRenderer);
 
 		//プレイヤー描画
-		//player->Render(rc, modelRenderer);
 		Player::Instance().Render(rc, modelRenderer);
 
 		//エネミー描画
@@ -540,7 +663,6 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
-		//player->RenderDebugPrimitive(rc, shapeRenderer);
 		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
@@ -550,13 +672,19 @@ void SceneGame::Render()
 	// 2Dスプライト描画
 	{
 
-	}
-	
 
+		//UI描画
+		UIManager::Instance().Render(rc);
+	}
+
+	
 	
 	// g最後にポーズ描画（上にかぶせる）
 	pause.Render();
 	
+
+	pause.Render();
+
 }
 SceneGame* SceneGame::instance = nullptr;
 
@@ -588,11 +716,24 @@ void SceneGame::DrawGUI()
 	//プレイヤーデバッグ描画
 	Player::Instance().DrowDebugGUI();
 
+	// UI用デバッグGUI描画
+	UIManager::Instance().DrawDebugGUI();
+
 	//エネミーデバッグ描画
 	//EnemyManager::Instance().DrawDebugGUI();
 
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
+	ImGui::Separator();
+	if (ImGui::Button("Spawn Garbage (Player Front)"))
+	{
+		// プレイヤーの前にスポーンさせる
+		DirectX::XMFLOAT3 pos = Player::Instance().GetPosition();
+		pos.x += 2.0f;
+		garakuta* g = new garakuta();
+		g->Init(pos);
+		garbages.push_back(g);
+	}
 	ImGui::End();
 
 
@@ -636,9 +777,7 @@ void SceneGame::AddCombo()
 
 float SceneGame::GetComboMultiplier() const
 {
-	if (combo == 1) return 1.0f;
-	if (combo == 2) return 1.5f;
 	if (combo >= 3) return 3.0f;
-
+	if (combo == 2) return 1.5f;
 	return 1.0f;
 }
