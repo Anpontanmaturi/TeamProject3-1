@@ -7,6 +7,8 @@
 #include <gomi.h>
 #include <Denti.h>
 #include <garakuta.h>
+#include"kagu.h"
+#include <vector>
 // ƒQ[ƒ€ƒV[ƒ“
 //class SceneGame
 class SceneGame : public Scene
@@ -85,6 +87,7 @@ private:
 	float comboTimer = 0.0f;
 	float comboLimit = 2.0f; // 2•bˆÈ“à‚ÅŒp‘±
 	Pause pause;
+	std::vector<kagu*> kagus;
 public:
 	int score = 0;
 

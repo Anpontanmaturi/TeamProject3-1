@@ -16,6 +16,7 @@
 #include <Denti.h>
 #include"SceneTitle.h"
 #include <Pause.h>
+#include"kagu.h"
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -99,7 +100,15 @@ void SceneGame::Initialize()
 	float z = GetRandom(-10.0f, 10.0f);
 	d->Init({ x, 0.5f, z });
 	dentis.push_back(d);
+	// =========================
+// 冷蔵庫生成
+// =========================
+	kagus.clear();
 
+	kagu* k = new kagu();
+	k->Init({ 3.0f, 0.0f, 3.0f });
+
+	kagus.push_back(k);
 	// ガラクタ生成
 	garbages.clear();
 
@@ -142,7 +151,11 @@ void SceneGame::Finalize()
 
 	for (auto& g : gomis) delete g;
 	gomis.clear();
-
+	for (auto& k : kagus)
+	{
+		delete k;
+	}
+	kagus.clear();
 	Player::Instance().Finalize();
 
 	for (auto& g : garbages) delete g;
@@ -312,10 +325,97 @@ void SceneGame::Update(float elapsedTime)
 		}
 	}
 	
-	// Vキー押したら発動
+	for (auto& k : kagus)
+	{
+		k->Update(elapsedTime);
 
-	// Vキー
+		DirectX::XMFLOAT3 p = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 kp = k->GetPosition();
 
+		// =========================
+		// 冷蔵庫の四角い当たり判定
+		// =========================
+
+		float halfWidth = 1.6f; // 横幅
+		float halfDepth = 1.6f; // 奥行き
+
+		float minX = kp.x - halfWidth;
+		float maxX = kp.x + halfWidth;
+
+		float minZ = kp.z - halfDepth;
+		float maxZ = kp.z + halfDepth;
+
+		// プレイヤーが箱の中にいるか
+		bool hit =
+			(p.x > minX && p.x < maxX) &&
+			(p.z > minZ && p.z < maxZ);
+
+		if (!k->IsBroken() && hit)
+		{
+			// =========================
+			// ダッシュ中なら破壊
+			// =========================
+			if (Player::Instance().IsBoost())
+			{
+				k->Break();
+			}
+			else
+			{
+				// =========================
+				// 押し戻し
+				// =========================
+
+				float left = abs(p.x - minX);
+				float right = abs(maxX - p.x);
+				float top = abs(maxZ - p.z);
+				float bottom = abs(p.z - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				float push = 0.05f;
+
+				switch (dir)
+				{
+				case 0: // 左
+					p.x = minX - push;
+					break;
+
+				case 1: // 右
+					p.x = maxX + push;
+					break;
+
+				case 2: // 上
+					p.z = maxZ + push;
+					break;
+
+				case 3: // 下
+					p.z = minZ - push;
+					break;
+				}
+
+				Player::Instance().SetPosition(p);
+			}
+		}
+	}
 
 
 
@@ -418,6 +518,11 @@ void SceneGame::Render()
 	for (auto& d : dentis)
 	{
 		d->Render(rc, modelRenderer);
+	}
+	// 冷蔵庫描画
+	for (auto& k : kagus)
+	{
+		k->Render(rc, modelRenderer);
 	}
 	// 3Dモデル描画
 	{

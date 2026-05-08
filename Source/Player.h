@@ -49,7 +49,7 @@ public:
 
 	//デバッグプリミティブ描画
 	void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
-
+	bool IsBoost() const { return isBoost; }
 private:
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec() const;
@@ -100,7 +100,7 @@ private:
 	bool isBoost = false;
 
 public:
-	bool IsBoost() const { return isBoost; }
+	//bool IsBoost() const { return isBoost; }
 
 	int gomiCount = 0;
 };
