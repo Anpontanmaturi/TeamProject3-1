@@ -9,8 +9,8 @@ UIBattery::UIBattery()
 	back = std::make_unique<Sprite>("Data/Sprite/UI/Battery/back.png");
 
 	// 初期位置とサイズ
-	SetPosition(50.0f, 50.0f);
-	//SetScale(0.5f, 0.5f);
+	SetPosition(780.0f, 0.0f);
+	SetScale(1.0f, 0.5f);
 }
 
 UIBattery::~UIBattery()
@@ -35,27 +35,36 @@ void UIBattery::Render(const RenderContext& rc)
     // 描画パラメータ
     float dx = position.x;
     float dy = position.y;
-    float dw = baseWidth * scale.x;
-    float dh = baseHeight * scale.y;
+
+    float backOffX = (FRAME_W - BACK_W) * 0.5f;
+    float backOffY = (FRAME_H - BACK_H) * 0.5f;
 
     // 背景
-    back->Render(rc, dx, dy, 0.1f, dw, dh, 0.0f, color.x, color.y, color.z, color.w);
+    back->Render(rc, dx + backOffX, dy + backOffY, 0.1f,
+        BACK_W * scale.x, BACK_H * scale.y, 0.0f, color.x, color.y, color.z, color.w);
 
     // 中身
-    float sw = baseWidth * energy;
-    float sh = baseHeight;
-    float currentDw = dw * energy;
+    float fillOffX = (FRAME_W - FILL_W) * 0.5f;
+    float fillOffY = (FRAME_H - FILL_H) * 0.5f;
 
-    fill   ->Render(rc,
-        dx, dy,       // 表示位置
-        0.05f,        // 奥行
-        currentDw, dh,// 表示サイズ
-        0.0f, 0.0f,   // 画像切り抜き開始位置 
-        sw, sh,       // 画像切り抜きサイズ
-        0.0f,         // 回転
+	// エネルギー量に応じて、描画する幅とテクスチャの切り抜き位置を計算
+    float missingW = FILL_W * (1.0f - energy);
+    float drawX = dx + fillOffX + (missingW * scale.x) + (adjX * scale.x);
+    float drawW = (FILL_W * scale.x) * energy;
+    float srcX = missingW;
+    float srcW = FILL_W * energy;
+
+    // 中身の描画
+    fill->Render(rc,
+        drawX, dy + fillOffY,         // ずらした座標
+        0.05f,                        // 奥行
+        drawW, FILL_H * scale.y,      // 残りの幅で表示
+		srcX, 0.0f,                   // ずらしたテクスチャ座標
+        srcW, FILL_H,                 // 残りの幅だけ切り出す
+        0.0f,                         // 角度
         color.x, color.y, color.z, color.w
     );
 
     // フレーム
-    frame->Render(rc, dx, dy, 0.0f, dw, dh, 0.0f, color.x, color.y, color.z, color.w);
+    frame->Render(rc, dx, dy, 0.0f, FRAME_W * scale.x, FRAME_H * scale.y, 0.0f, color.x, color.y, color.z, color.w);
 }

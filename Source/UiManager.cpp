@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "SceneGame.h"
 #include "UiBattery.h"
+#include <imgui.h>
 
 void UIManager::Initialize()
 {
@@ -42,6 +43,20 @@ void UIManager::DrawDebugGUI()
 {
 #ifdef _DEBUG
 	// ImGuiで数値を変えたいときに!!
+	ImGui::Begin("UI Manager Debug");
 
+	//ImGui::SliderFloat("Battery Adjust X", &static_cast<UIBattery*>(uiElements[0].get())->adjX, -20.0f, 20.0f); //batteryの微調整用スライダー
+	
+	// 位置調整用
+	{
+		UIBattery* battery = static_cast<UIBattery*>(uiElements[0].get());
+		DirectX::XMFLOAT2 pos = battery->GetPosition();
+		float posArr[2] = { pos.x, pos.y };
+		if (ImGui::DragFloat2("BatteryUI Position", posArr, 1.0f)) {
+			battery->SetPosition(posArr[0], posArr[1]);
+		}
+	}
+
+	ImGui::End();
 #endif
 }

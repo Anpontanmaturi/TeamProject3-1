@@ -239,6 +239,9 @@ void SceneGame::Update(float elapsedTime)
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
 
+	// UIの更新
+	UIManager::Instance().Update(scaledTime);
+
 
 	//オブジェクト更新処理
 	for (auto& obj : objects)
