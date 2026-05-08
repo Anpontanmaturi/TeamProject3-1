@@ -9,8 +9,8 @@ UIBattery::UIBattery()
 	back = std::make_unique<Sprite>("Data/Sprite/UI/Battery/back.png");
 
 	// 初期位置とサイズ
-	SetPosition(780.0f, 0.0f);
-	SetScale(1.0f, 0.5f);
+	SetPosition(883.0f, 141.0f);
+	SetScale(0.8f, 0.5f);
 }
 
 UIBattery::~UIBattery()

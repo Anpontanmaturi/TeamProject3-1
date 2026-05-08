@@ -1,8 +1,9 @@
 #include "UIManager.h"
 #include "Player.h"
 #include "SceneGame.h"
-#include "UiBattery.h"
 #include <imgui.h>
+#include "UiBattery.h"
+#include "UiDustCount.h"
 
 void UIManager::Initialize()
 {
@@ -10,6 +11,7 @@ void UIManager::Initialize()
 
 	// ‚±‚±‚ÅUIƒp[ƒc‚ÌÀ‘Ì‚Ì‚İ‚ğì¬‚·‚é
 	uiElements.push_back(std::make_unique<UIBattery>());
+	uiElements.push_back(std::make_unique<UIDustCount>());
 
 }
 
@@ -54,6 +56,25 @@ void UIManager::DrawDebugGUI()
 		float posArr[2] = { pos.x, pos.y };
 		if (ImGui::DragFloat2("BatteryUI Position", posArr, 1.0f)) {
 			battery->SetPosition(posArr[0], posArr[1]);
+		}
+		DirectX::XMFLOAT2 scale = battery->GetScale();
+		float scaleArr[2] = { scale.x, scale.y };
+		if (ImGui::DragFloat2("BatteryUI Scale", scaleArr, 0.01f)) {
+			battery->SetScale(scaleArr[0], scaleArr[1]);
+		}
+	}
+	ImGui::Separator();
+	{
+		UIDustCount* dustCount = static_cast<UIDustCount*>(uiElements[1].get());
+		DirectX::XMFLOAT2 pos = dustCount->GetPosition();
+		float posArr[2] = { pos.x, pos.y };
+		if (ImGui::DragFloat2("DustCountUI Position", posArr, 1.0f)) {
+			dustCount->SetPosition(posArr[0], posArr[1]);
+		}
+		DirectX::XMFLOAT2 scale = dustCount->GetScale();
+		float scaleArr[2] = { scale.x, scale.y };
+		if (ImGui::DragFloat2("DustCountUI Scale", scaleArr, 0.01f)) {
+			dustCount->SetScale(scaleArr[0], scaleArr[1]);
 		}
 	}
 

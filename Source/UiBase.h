@@ -17,6 +17,7 @@ public:
 	const DirectX::XMFLOAT2& GetPosition() const { return position; }
 
 	void SetScale(float x, float y) { scale.x = x; scale.y = y; }
+	const DirectX::XMFLOAT2& GetScale() const { return scale; }
 	void SetColor(float r, float g, float b, float a) { color = { r, g, b, a }; }
 
 	void SetVisible(bool visible) { isVisible = visible; }

@@ -17,6 +17,7 @@ public:
 	// 微調整用
 	float adjX = 7.5f;
 	void SetBatteryPosition(float x, float y) { batteryUI_position = DirectX::XMFLOAT2(x, y); }
+	void SetBatteryScale(float x, float y) { batteryUI_scale = DirectX::XMFLOAT2(x, y); }
 
 private:
 	// テクスチャ
@@ -34,6 +35,7 @@ private:
 	const float BACK_W = 465.0f;
 	const float BACK_H = 140.0f;
 
-	DirectX::XMFLOAT2 batteryUI_position = {780.0f, 0.0f};
+	DirectX::XMFLOAT2 batteryUI_position;
+	DirectX::XMFLOAT2 batteryUI_scale;
 	
 };
