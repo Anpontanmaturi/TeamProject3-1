@@ -30,26 +30,27 @@ void UIDustCount::Update(float elapsedTime)
 
 void UIDustCount::Render(const RenderContext& rc)
 {
-    // 1. 親となるアイコン画像の描画
-    float dx = DustUI_position.x;
-    float dy = DustUI_position.y;
+	// 親の描画
+    float dx = position.x;
+    float dy = position.y;
 
     counter->Render(rc, dx, dy, 0.1f,
-        Origin_W * DustUI_scale.x, Origin_H * DustUI_scale.y, 0.0f,
+        Origin_W * scale.x, Origin_H * scale.y, 0.0f, 
         1.0f, 1.0f, 1.0f, 1.0f);
 
-    // 2. フォントの描画位置を計算（親の座標 + オフセット）
-    // 親のスケールも考慮するとより正確になります
+    // フォントの描画位置を計算
     DirectX::XMFLOAT2 fontPos;
-    fontPos.x = dx + (FontOffset.x * DustUI_scale.x);
-    fontPos.y = dy + (FontOffset.y * DustUI_scale.y);
+    fontPos.x = dx + (FontOffset.x * scale.x);
+    fontPos.y = dy + (FontOffset.y * scale.y);
 
-    // 3. 文字の描画
+	fontScale = { scale.x * 3.0f, scale.y * 3.0f };
+
+    // 文字の描画
     spriteBatch->Begin();
 
     // とりあえずテスト用の数字を表示
-    std::wstring text = L"x 10";
-
+    std::wstring text = L"1"; 
+    
     spriteFont->DrawString(
         spriteBatch.get(),
         text.c_str(),
@@ -57,7 +58,7 @@ void UIDustCount::Render(const RenderContext& rc)
         DirectX::Colors::White,
         0.0f,                   // 回転
         DirectX::XMFLOAT2(0, 0), // 原点
-        DustUI_scale.x          // スケールを画像に合わせる
+        fontScale       // スケールを画像に合わせる
     );
 
     spriteBatch->End();

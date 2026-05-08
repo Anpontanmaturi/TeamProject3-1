@@ -16,10 +16,6 @@ public:
 	// 描画
 	virtual void Render(const RenderContext& rc) override;
 
-	// 調整用
-	void SetDustPosition(float x, float y) { DustUI_position = DirectX::XMFLOAT2(x, y); }
-	void SetDustScale(float x, float y) { DustUI_scale = DirectX::XMFLOAT2(x, y); }
-
 private:
 	// テクスチャ
 	std::unique_ptr<Sprite> counter;
@@ -28,13 +24,12 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont>  spriteFont;
 
-	const DirectX::XMFLOAT2 FontOffset = { 150.0f, 50.0f };
+	const DirectX::XMFLOAT2 FontOffset = { 70.0f, 100.0f };
+	DirectX::XMFLOAT2 fontScale;
 
 	// 画像の元のサイズ
 	const float Origin_W = 500.0f;
 	const float Origin_H = 200.0f;
 
-	DirectX::XMFLOAT2 DustUI_position;
-	DirectX::XMFLOAT2 DustUI_scale;
 
 };
