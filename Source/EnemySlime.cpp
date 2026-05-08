@@ -3,11 +3,27 @@
 #include "Player.h"
 #include "ProjectileStraight.h"
 #include <EnemyManager.h>
-
+#include <random>
 //コンストラクタ
 EnemySlime::EnemySlime()
 {
-	model = new Model("Data/Model/pipetto/pipetto.mdl");
+	// 高品質乱数
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	// 0か1を均等に出す
+	std::uniform_int_distribution<int> dist(0, 1);
+
+	int type = dist(mt);
+
+	if (type == 0)
+	{
+		model = new Model("Data/Model/pipetto/pipet.mdl");
+	}
+	else
+	{
+		model = new Model("Data/Model/futeikei/bukuro.mdl");
+	}
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.03f;
