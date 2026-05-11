@@ -284,9 +284,22 @@ void SceneGame::Update(float elapsedTime)
 
 		if (distance < radius)
 		{
-			// ★ここが回復速度
+			// 動けなくする
+			Player::Instance().SetCanMove(false);
+
+			// 回復
 			Player::Instance().AddEnergy(85.0f * elapsedTime);
-			gomiCount = 0;
+
+			// 最大値チェック
+			if (Player::Instance().GetEnergy() >= 1000.0f)
+			{
+				Player::Instance().SetEnergy(1000.0f);
+
+				// 回復完了で動ける
+				Player::Instance().SetCanMove(true);
+
+				gomiCount = 0;
+			}
 		}
 	}
 

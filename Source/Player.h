@@ -77,6 +77,9 @@ private:
 	//’eŠÛ‚Æ“G‚ÌÕ“Ëˆ—
 	void CollisionProjectilesVsEnemies();
 
+	//[“d’†“®‚¯‚È‚¢‚æ‚¤‚É‚·‚é
+	bool canMove = true;
+
 protected:
 	//’…’n‚µ‚½‚ÉŒÄ‚Î‚ê‚é
 	void OnLanding() override;
@@ -112,4 +115,7 @@ public:
 	bool IsBoost() const { return isBoost; }
 
 	int gomiCount = 0;
+
+	void SetCanMove(bool flag) { canMove = flag; }
+	bool CanMove() const { return canMove; }
 };

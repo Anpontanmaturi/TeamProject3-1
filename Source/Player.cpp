@@ -43,6 +43,13 @@ void Player::Finalize()
 //更新処理
 void Player::Update(float elapsedTime)
 {
+
+	if (!canMove)
+	{
+		// 動けない間はここで終了
+		return;
+	}
+
 	//移動入力処理
 	InputMove(elapsedTime);
 

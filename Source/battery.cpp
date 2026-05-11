@@ -5,11 +5,11 @@ using namespace DirectX;
 Object::Object()
 {
 	//ステージモデルを読み込み
-	model = new Model("Data/Model/object/Hatena.mdl");
+	model = new Model("Data/Model/object/jyuu.mdl");
 
 
 	// モデルが大きいのでスケーリング
-	scale = { 0.003f, 0.003f, 0.003f };
+	scale = { 0.0225f, 0.0225f, 0.0225f };
 }
 
 Object::~Object()
