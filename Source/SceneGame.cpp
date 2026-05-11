@@ -305,13 +305,16 @@ void SceneGame::Update(float elapsedTime)
 			DirectX::XMFLOAT3 target = objPos;
 
 			// è≠ÇµéËëOÇ…é~ÇﬂÇÈ
-			target.z += 0.5f;
+			target.z += 0.6f;
+			/*target.z += 0.7f;*/
 
 			//========================
 			// ãzÇ¢çûÇ›èàóù
 			//========================
 
+
 			float pullSpeed = 6.0f;
+			/*float pullSpeed = 2.0f;*/
 
 			pos.x += (target.x - pos.x) * pullSpeed * elapsedTime;
 			pos.y += (target.y - pos.y) * pullSpeed * elapsedTime;
