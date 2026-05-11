@@ -118,4 +118,20 @@ public:
 
 	void SetCanMove(bool flag) { canMove = flag; }
 	bool CanMove() const { return canMove; }
+
+	//========================================
+	// Œü‚«æ“¾
+	//========================================
+	const DirectX::XMFLOAT3& GetAngle() const
+	{
+		return angle;
+	}
+
+	//========================================
+	// Œü‚«İ’è
+	//========================================
+	void SetAngle(const DirectX::XMFLOAT3& a)
+	{
+		angle = a;
+	}
 };

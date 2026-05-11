@@ -46,9 +46,17 @@ void Player::Update(float elapsedTime)
 
 	if (!canMove)
 	{
-		// 動けない間はここで終了
+		// 横方向速度停止
+		velocity.x = 0.0f;
+		velocity.z = 0.0f;
+
+		// Transform更新は必要
+		UpdateTransform();
+		model->UpdateTransform();
+
 		return;
 	}
+
 
 	//移動入力処理
 	InputMove(elapsedTime);
@@ -221,7 +229,7 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 	{
 		//単位ベクトル化
 		cameraFrontX /= cameraFrontLength;
-		cameraFrontX /= cameraFrontLength;		
+		cameraFrontZ /= cameraFrontLength;		
 	}
 	//スティックの水平入力値をカメラ右方向に反映し、
 	//スティックの垂直入力値をカメラ前方向に反映し、
@@ -341,11 +349,7 @@ void Player::InputProjectile()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
-	if (gamePad.GetButtonDown() & GamePad::BTN_Y)
-	{
-		//追加
-		energy = maxenergy;
-	}
+	
 
 	static bool prevE = false;
 	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;
