@@ -46,9 +46,17 @@ void Player::Update(float elapsedTime)
 
 	if (!canMove)
 	{
-		// 動けない間はここで終了
+		// 横方向速度停止
+		velocity.x = 0.0f;
+		velocity.z = 0.0f;
+
+		// Transform更新は必要
+		UpdateTransform();
+		model->UpdateTransform();
+
 		return;
 	}
+
 
 	//移動入力処理
 	InputMove(elapsedTime);
@@ -85,9 +93,60 @@ void Player::AddGarbage(int value)
 }
 void Player::Reset()
 {
+	//========================
+	// 基本ステータス
+	//========================
+
 	garbageCount = 0;
+
 	energy = maxenergy;
+
+	hp = maxHp;
+
+	//========================
+	// 座標
+	//========================
+
 	position = { 0.0f,0.0f,0.0f };
+
+	angle = { 0.0f,0.0f,0.0f };
+
+	scale = { 0.025f,0.025f,0.025f };
+
+	//========================
+	// 速度
+	//========================
+
+	velocity = { 0.0f,0.0f,0.0f };
+
+	//========================
+	// ジャンプ
+	//========================
+
+	jumpCount = 0;
+
+	//========================
+	// ブースト
+	//========================
+
+	isBoost = false;
+
+	//========================
+	// 操作可能状態
+	//========================
+
+	canMove = true;
+
+	//========================
+	// Transform更新
+	//========================
+
+	UpdateTransform();
+
+	if (model != nullptr)
+	{
+		model->UpdateTransform();
+	}
 }
 
 
@@ -221,7 +280,7 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 	{
 		//単位ベクトル化
 		cameraFrontX /= cameraFrontLength;
-		cameraFrontX /= cameraFrontLength;		
+		cameraFrontZ /= cameraFrontLength;		
 	}
 	//スティックの水平入力値をカメラ右方向に反映し、
 	//スティックの垂直入力値をカメラ前方向に反映し、
@@ -341,11 +400,7 @@ void Player::InputProjectile()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
-	if (gamePad.GetButtonDown() & GamePad::BTN_Y)
-	{
-		//追加
-		energy = maxenergy;
-	}
+	
 
 	static bool prevE = false;
 	bool nowE = (GetAsyncKeyState('E') & 0x8000) != 0;

@@ -335,21 +335,75 @@ void SceneGame::Update(float elapsedTime)
 
 		float radius = 1.0f;
 
-		if (distance < radius)
+		if (distance < radius && Player::Instance().GetEnergy() < 1000.0f)
 		{
-			// 動けなくする
-			Player::Instance().SetCanMove(false);
+			Player& player = Player::Instance();
 
+			//========================
+			// 操作不能
+			//========================
+
+			player.SetCanMove(false);
+
+			//========================
+			// 現在位置取得
+			//========================
+
+			DirectX::XMFLOAT3 pos = player.GetPosition();
+
+			//========================
+			// 充電器位置
+			//========================
+
+			DirectX::XMFLOAT3 target = objPos;
+
+			// 少し手前に止める
+			target.z += 0.6f;
+			/*target.z += 0.7f;*/
+
+			//========================
+			// 吸い込み処理
+			//========================
+
+
+			float pullSpeed = 6.0f;
+			/*float pullSpeed = 2.0f;*/
+
+			pos.x += (target.x - pos.x) * pullSpeed * elapsedTime;
+			pos.y += (target.y - pos.y) * pullSpeed * elapsedTime;
+			pos.z += (target.z - pos.z) * pullSpeed * elapsedTime;
+
+			player.SetPosition(pos);
+
+			//========================
+			// 向き補正
+			//========================
+
+			float dx = target.x - pos.x;
+			float dz = target.z - pos.z;
+
+			DirectX::XMFLOAT3 angle = player.GetAngle();
+
+			angle.y = atan2f(dx, dz);
+
+			player.SetAngle(angle);
+
+			//========================
 			// 回復
-			Player::Instance().AddEnergy(85.0f * elapsedTime);
+			//========================
 
-			// 最大値チェック
-			if (Player::Instance().GetEnergy() >= 1000.0f)
+			player.AddEnergy(85.0f * elapsedTime);
+
+			//========================
+			// 回復完了
+			//========================
+
+			if (player.GetEnergy() >= 1000.0f)
 			{
-				Player::Instance().SetEnergy(1000.0f);
+				player.SetEnergy(1000.0f);
 
-				// 回復完了で動ける
-				Player::Instance().SetCanMove(true);
+				// 操作再開
+				player.SetCanMove(true);
 
 				gomiCount = 0;
 			}
@@ -508,40 +562,7 @@ void SceneGame::Update(float elapsedTime)
 					dir = 2;
 				}
 
-				if (bottom < minDist)
-				{
-					minDist = bottom;
-					dir = 3;
-				}
-
-				float push = 0.05f;
-
-				switch (dir)
-				{
-				case 0: // 左
-					p.x = minX - push;
-					break;
-
-				case 1: // 右
-					p.x = maxX + push;
-					break;
-
-				case 2: // 上
-					p.z = maxZ + push;
-					break;
-
-				case 3: // 下
-					p.z = minZ - push;
-					break;
-				}
-
-				Player::Instance().SetPosition(p);
-			}
-		}
-	}
-
-
-
+	
 
 	// =========================
 	// ゴミ削除

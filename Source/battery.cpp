@@ -9,7 +9,7 @@ Object::Object()
 
 
 	// モデルが大きいのでスケーリング
-	scale = { 0.0225f, 0.0225f, 0.0225f };
+	scale = { 0.023f, 0.023f, 0.023f };
 }
 
 Object::~Object()
