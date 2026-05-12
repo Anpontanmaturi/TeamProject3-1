@@ -18,10 +18,10 @@
 #include <Pause.h>
 #include"kagu.h"
 #include"Pause.h"
+#include <battery.h>
 std::vector<Object> objects;
 #include <Denti.h>
-#include "UiManager.h"
-
+//#include "UiManager.h"
 
 
 // 距離計算
@@ -57,7 +57,7 @@ void SceneGame::Initialize()
 	Player::Instance().Initialize();
 
 	// UIの初期化
-	UIManager::Instance().Initialize();
+	//UIManager::Instance().Initialize();
 
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
@@ -137,20 +137,20 @@ void SceneGame::Initialize()
 
 	kagus.push_back(k);
 	// ガラクタ生成
-	garbages.clear();
+	//garbages.clear();
 
-	// 最初の1個
-	garakuta* g = new garakuta();
+	//// 最初の1個
+	//garakuta* g = new garakuta();
 
-	// ガラクタ専用の座標を作る
-	float gx = GetRandom(-10.0f, 10.0f);
-	float gz = GetRandom(-10.0f, 10.0f);
+	//// ガラクタ専用の座標を作る
+	//float gx = GetRandom(-10.0f, 10.0f);
+	//float gz = GetRandom(-10.0f, 10.0f);
 
-	g->Init({ gx, 0.0f, gz });
-	garbages.push_back(g);
+	//g->Init({ gx, 0.0f, gz });
+	//garbages.push_back(g);
 
-	// タイマーリセット
-	garbageSpawnTimer = 0.0f;
+	//// タイマーリセット
+	//garbageSpawnTimer = 0.0f;
 
 	// 最初の1個
 
@@ -316,7 +316,7 @@ void SceneGame::Update(float elapsedTime)
 
 
 	// UIの更新
-	UIManager::Instance().Update(scaledTime);
+	//UIManager::Instance().Update(scaledTime);
 
 
 	//オブジェクト更新処理
@@ -687,7 +687,7 @@ void SceneGame::Render()
 
 
 		//UI描画
-		UIManager::Instance().Render(rc);
+		//UIManager::Instance().Render(rc);
 	}
 
 	
@@ -730,7 +730,7 @@ void SceneGame::DrawGUI()
 	Player::Instance().DrowDebugGUI();
 
 	// UI用デバッグGUI描画
-	UIManager::Instance().DrawDebugGUI();
+	//UIManager::Instance().DrawDebugGUI();
 
 	//エネミーデバッグ描画
 	//EnemyManager::Instance().DrawDebugGUI();

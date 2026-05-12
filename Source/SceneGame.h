@@ -104,13 +104,7 @@ private:
 
 	std::vector<kagu*> kagus;
 
-	// ガラクタスポーンタイマー
-	std::vector<garakuta*> garbages;
-	float garbageSpawnTimer = 0.0f;
-	float garbageSpawnInterval = 45.0f;
-	int maxGarbage = 1;
-
-
+	
 public:
 	int score = 0;
 

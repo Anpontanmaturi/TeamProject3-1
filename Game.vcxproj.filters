@@ -186,6 +186,9 @@
     <ClInclude Include="Source\kagu.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\battery.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -333,6 +336,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\kagu.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\battety.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

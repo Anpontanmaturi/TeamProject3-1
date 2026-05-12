@@ -30,7 +30,7 @@ public:
 
 	// ƒ}ƒEƒXŽæ“¾
 	Mouse& GetMouse() { return *mouse; }
-
+	int GetMouseWheel() const { return mouse->GetWheel(); }
 private:
 	std::unique_ptr<GamePad>	gamePad;
 	std::unique_ptr<Mouse>		mouse;
