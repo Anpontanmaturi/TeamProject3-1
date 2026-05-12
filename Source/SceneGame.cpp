@@ -113,8 +113,6 @@ void SceneGame::Initialize()
 	// 位置など設定
 	objects[0].SetPosition(0, 0, 0);
 
-	garbages.clear();
-
 	dentis.clear();
 
 	
@@ -510,11 +508,18 @@ void SceneGame::Update(float elapsedTime)
 		DirectX::XMFLOAT3 kp = k->GetPosition();
 
 		// =========================
-		// 冷蔵庫の四角い当たり判定
+		// 冷蔵庫サイズ
 		// =========================
 
-		float halfWidth = 1.6f; // 横幅
-		float halfDepth = 1.6f; // 奥行き
+		float halfWidth = 1.55f;
+		float halfDepth = 1.55f;
+
+		// プレイヤー半径
+		float playerRadius = 0.35f;
+
+		// =========================
+		// AABB
+		// =========================
 
 		float minX = kp.x - halfWidth;
 		float maxX = kp.x + halfWidth;
@@ -522,16 +527,22 @@ void SceneGame::Update(float elapsedTime)
 		float minZ = kp.z - halfDepth;
 		float maxZ = kp.z + halfDepth;
 
-		// プレイヤーが箱の中にいるか
+		// =========================
+		// 半径込み当たり判定
+		// =========================
+
 		bool hit =
-			(p.x > minX && p.x < maxX) &&
-			(p.z > minZ && p.z < maxZ);
+			(p.x + playerRadius > minX) &&
+			(p.x - playerRadius < maxX) &&
+			(p.z + playerRadius > minZ) &&
+			(p.z - playerRadius < maxZ);
 
 		if (!k->IsBroken() && hit)
 		{
 			// =========================
 			// ダッシュ中なら破壊
 			// =========================
+
 			if (Player::Instance().IsBoost())
 			{
 				k->Break();
@@ -542,10 +553,10 @@ void SceneGame::Update(float elapsedTime)
 				// 押し戻し
 				// =========================
 
-				float left = abs(p.x - minX);
-				float right = abs(maxX - p.x);
-				float top = abs(maxZ - p.z);
-				float bottom = abs(p.z - minZ);
+				float left = fabs((p.x + playerRadius) - minX);
+				float right = fabs(maxX - (p.x - playerRadius));
+				float top = fabs(maxZ - (p.z - playerRadius));
+				float bottom = fabs((p.z + playerRadius) - minZ);
 
 				float minDist = left;
 				int dir = 0;
@@ -562,7 +573,38 @@ void SceneGame::Update(float elapsedTime)
 					dir = 2;
 				}
 
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
 
+				switch (dir)
+				{
+				case 0:
+					p.x = minX - playerRadius;
+					break;
+
+				case 1:
+					p.x = maxX + playerRadius;
+					break;
+
+				case 2:
+					p.z = maxZ + playerRadius;
+					break;
+
+				case 3:
+					p.z = minZ - playerRadius;
+					break;
+				}
+
+				Player::Instance().SetPosition(p);
+			
+		
+	
+			
+		
+	
 
 				// =========================
 				// ゴミ削除
@@ -612,11 +654,6 @@ void SceneGame::Update(float elapsedTime)
 						}),
 					garbages.end()
 				);
-
-
-
-
-
 				// =========================
 				// カメラ更新（止めない）
 				// =========================
@@ -720,7 +757,7 @@ void SceneGame::Render()
 	pause.Render();
 	
 
-	pause.Render();
+	
 
 
 }
