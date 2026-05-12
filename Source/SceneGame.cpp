@@ -305,7 +305,7 @@ void SceneGame::Update(float elapsedTime)
 			DirectX::XMFLOAT3 target = objPos;
 
 			// è≠ÇµéËëOÇ…é~ÇﬂÇÈ
-			target.z += 0.6f;
+			target.z += 0.2f;
 			/*target.z += 0.7f;*/
 
 			//========================
