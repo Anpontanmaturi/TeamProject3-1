@@ -140,7 +140,9 @@
     <ClInclude Include="Source\Framework.h" />
     <ClInclude Include="Source\Garakuta.h" />
     <ClInclude Include="Source\gomi.h" />
+    <ClInclude Include="Source\kagu.h" />
     <ClInclude Include="Source\MathUtils.h" />
+    <ClInclude Include="Source\Pause.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\ProjectileHoming.h" />
@@ -174,6 +176,8 @@
     <ClInclude Include="Source\System\Shader.h" />
     <ClInclude Include="Source\System\ShapeRenderer.h" />
     <ClInclude Include="Source\System\Sprite.h" />
+    <ClInclude Include="Source\UiBase.h" />
+    <ClInclude Include="Source\UiBattery.h" />
     <ClInclude Include="Source\UiManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -195,8 +199,10 @@
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\Garakuta.cpp" />
     <ClCompile Include="Source\gomi.cpp" />
+    <ClCompile Include="Source\kagu.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MathUtils.cpp" />
+    <ClCompile Include="Source\Pause.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\ProjectileHoming.cpp" />
@@ -225,6 +231,7 @@
     <ClCompile Include="Source\System\RenderState.cpp" />
     <ClCompile Include="Source\System\ShapeRenderer.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
+    <ClCompile Include="Source\UiBattery.cpp" />
     <ClCompile Include="Source\UiManager.cpp" />
   </ItemGroup>
   <ItemGroup>
