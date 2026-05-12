@@ -368,7 +368,7 @@ void SceneGame::Update(float elapsedTime)
 			DirectX::XMFLOAT3 target = objPos;
 
 			// 少し手前に止める
-			target.z += 0.6f;
+			target.z += 0.2f;
 			/*target.z += 0.7f;*/
 
 			//========================
@@ -671,15 +671,32 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 
+
+	// 3Dモデル描画
+	{
+		//ステージ描画
+		stage->Render(rc, modelRenderer);
+
+		//プレイヤー描画
+		Player::Instance().Render(rc, modelRenderer);
+
+		//エネミー描画
+		EnemyManager::Instance().Render(rc, modelRenderer);
+	}
+	// 3Dデバッグ描画
+	{
+		//プレイヤーデバッグプリミティブ
+		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+
+		//エネミーデバッグプリミティブ描画
+		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+	}
 	// ゴミ描画
 	for (auto& g : gomis)
 	{
 		g->Render(rc, modelRenderer);
 	}
-	for (auto& g : garbages)
-	{
-		g->Render(rc, modelRenderer);
-	}
+	
 	// ガラクタ描画
 	for (auto& g : garbages)
 	{
@@ -695,31 +712,13 @@ void SceneGame::Render()
 	{
 		k->Render(rc, modelRenderer);
 	}
-	// 3Dモデル描画
+	// オブジェクト描画
+	for (auto& obj : objects)
 	{
-		//ステージ描画
-		stage->Render(rc, modelRenderer);
-
-		//プレイヤー描画
-		Player::Instance().Render(rc, modelRenderer);
-
-		//エネミー描画
-		EnemyManager::Instance().Render(rc, modelRenderer);
+		obj.Render(rc, modelRenderer);
 	}
-
-	// 3Dデバッグ描画
-	{
-		//プレイヤーデバッグプリミティブ
-		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
-
-		//エネミーデバッグプリミティブ描画
-		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
-	}
-
 	// 2Dスプライト描画
 	{
-
-
 		//UI描画
 		UIManager::Instance().Render(rc);
 	}
