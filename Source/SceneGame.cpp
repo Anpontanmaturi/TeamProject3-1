@@ -21,7 +21,7 @@
 #include <battery.h>
 std::vector<Object> objects;
 #include <Denti.h>
-//#include "UiManager.h"
+#include "UiManager.h"
 
 
 // 距離計算
@@ -57,7 +57,7 @@ void SceneGame::Initialize()
 	Player::Instance().Initialize();
 
 	// UIの初期化
-	//UIManager::Instance().Initialize();
+	UIManager::Instance().Initialize();
 
 	//カメラコントローラー初期化
 	cameraController = new CameraController();
@@ -316,7 +316,7 @@ void SceneGame::Update(float elapsedTime)
 
 
 	// UIの更新
-	//UIManager::Instance().Update(scaledTime);
+	UIManager::Instance().Update(scaledTime);
 
 
 	//オブジェクト更新処理
@@ -711,7 +711,7 @@ void SceneGame::Render()
 
 
 		//UI描画
-		//UIManager::Instance().Render(rc);
+		UIManager::Instance().Render(rc);
 	}
 
 	
@@ -755,7 +755,7 @@ void SceneGame::DrawGUI()
 	Player::Instance().DrowDebugGUI();
 
 	// UI用デバッグGUI描画
-	//UIManager::Instance().DrawDebugGUI();
+	UIManager::Instance().DrawDebugGUI();
 
 	//エネミーデバッグ描画
 	//EnemyManager::Instance().DrawDebugGUI();
