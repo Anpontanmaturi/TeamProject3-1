@@ -560,26 +560,6 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 
-	// ゴミ描画
-	for (auto& g : gomis)
-	{
-		g->Render(rc, modelRenderer);
-	}
-	// オブジェクト描画
-	for (auto& obj : objects)
-	{
-		obj.Render(rc, modelRenderer);
-	}
-	// ガラクタ描画
-	for (auto& g : garbages)
-	{
-		g->Render(rc, modelRenderer);
-	}
-	// 電池描画 ← これ追加
-	for (auto& d : dentis)
-	{
-		d->Render(rc, modelRenderer);
-	}
 	// 3Dモデル描画
 	{
 		//ステージ描画
@@ -591,7 +571,6 @@ void SceneGame::Render()
 		//エネミー描画
 		EnemyManager::Instance().Render(rc, modelRenderer);
 	}
-
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
@@ -600,11 +579,29 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 	}
-
+	// ゴミ描画
+	for (auto& g : gomis)
+	{
+		g->Render(rc, modelRenderer);
+	}
+	
+	// ガラクタ描画
+	for (auto& g : garbages)
+	{
+		g->Render(rc, modelRenderer);
+	}
+	// 電池描画 ← これ追加
+	for (auto& d : dentis)
+	{
+		d->Render(rc, modelRenderer);
+	}
+	// オブジェクト描画
+	for (auto& obj : objects)
+	{
+		obj.Render(rc, modelRenderer);
+	}
 	// 2Dスプライト描画
 	{
-
-
 		//UI描画
 		UIManager::Instance().Render(rc);
 	}
