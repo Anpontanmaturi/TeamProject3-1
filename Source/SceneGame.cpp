@@ -400,7 +400,7 @@ void SceneGame::Update(float elapsedTime)
 			// ‰ñ•œ
 			//========================
 
-			player.AddEnergy(85.0f * elapsedTime);
+			player.AddEnergy(85.5f * elapsedTime);
 
 			//========================
 			// ‰ñ•œŠ®—¹
