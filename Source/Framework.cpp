@@ -3,6 +3,7 @@
 #include <imgui.h>
 
 #include "Framework.h"
+#include "System/Audio.h"
 #include "System/Input.h"
 #include "System/Graphics.h"
 #include "System/ImGuiRenderer.h"
@@ -20,6 +21,8 @@ Framework::Framework(HWND hWnd)
 	: hWnd(hWnd)
 {
 	hDC = GetDC(hWnd);
+
+	Audio::Instance().Initialize();
 
 	// インプット初期化
 	Input::Instance().Initialize(hWnd);
@@ -44,6 +47,8 @@ Framework::~Framework()
 
 	// IMGUI終了化
 	ImGuiRenderer::Finalize();
+
+	Audio::Instance().Finalize();
 
 	ReleaseDC(hWnd, hDC);
 }

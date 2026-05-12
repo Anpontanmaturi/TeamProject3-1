@@ -16,6 +16,7 @@
 #include <ctime>
 std::vector<Object> objects;
 #include <Denti.h>
+#include <System/Audio.h>
 // 距離計算
 float GetDistance(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
 {
@@ -62,7 +63,11 @@ void SceneGame::Initialize()
 		0.1f,	//グリップ距離(近)
 		1000.0f	//グリップ距離(遠)
 	);
-
+// =========================
+// BGM読み込み
+// =========================
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lantern’s_Curse.wav");
+	SGAu->Play(true);
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	for (int i = 0; i < ENEMY_MAX; ++i)
@@ -146,6 +151,8 @@ void SceneGame::Finalize()
 	}
 	dentis.clear();
 
+	// BGM停止
+	SGAu->Stop();
 	//オブジェクト終了化
 	objects.clear();
 
