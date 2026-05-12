@@ -21,7 +21,11 @@
 #include <battery.h>
 std::vector<Object> objects;
 #include <Denti.h>
+
+#include <System/Audio.h>
+
 #include "UiManager.h"
+
 
 
 // 距離計算
@@ -76,7 +80,11 @@ void SceneGame::Initialize()
 		0.1f,	//グリップ距離(近)
 		1000.0f	//グリップ距離(遠)
 	);
-
+// =========================
+// BGM読み込み
+// =========================
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lantern’s_Curse.wav");
+	SGAu->Play(true);
 	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	for (int i = 0; i < ENEMY_MAX; ++i)
@@ -200,6 +208,8 @@ void SceneGame::Finalize()
 
 	dentis.clear();
 
+	// BGM停止
+	SGAu->Stop();
 	//オブジェクト終了化
 	objects.clear();
 	for (auto& g : garbages) delete g;
@@ -356,7 +366,7 @@ void SceneGame::Update(float elapsedTime)
 			DirectX::XMFLOAT3 target = objPos;
 
 			// 少し手前に止める
-			target.z += 0.6f;
+			target.z += 0.2f;
 			/*target.z += 0.7f;*/
 
 			//========================
@@ -698,15 +708,32 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 
+
+	// 3Dモデル描画
+	{
+		//ステージ描画
+		stage->Render(rc, modelRenderer);
+
+		//プレイヤー描画
+		Player::Instance().Render(rc, modelRenderer);
+
+		//エネミー描画
+		EnemyManager::Instance().Render(rc, modelRenderer);
+	}
+	// 3Dデバッグ描画
+	{
+		//プレイヤーデバッグプリミティブ
+		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+
+		//エネミーデバッグプリミティブ描画
+		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+	}
 	// ゴミ描画
 	for (auto& g : gomis)
 	{
 		g->Render(rc, modelRenderer);
 	}
-	for (auto& g : garbages)
-	{
-		g->Render(rc, modelRenderer);
-	}
+	
 	// ガラクタ描画
 	for (auto& g : garbages)
 	{
@@ -722,31 +749,13 @@ void SceneGame::Render()
 	{
 		k->Render(rc, modelRenderer);
 	}
-	// 3Dモデル描画
+	// オブジェクト描画
+	for (auto& obj : objects)
 	{
-		//ステージ描画
-		stage->Render(rc, modelRenderer);
-
-		//プレイヤー描画
-		Player::Instance().Render(rc, modelRenderer);
-
-		//エネミー描画
-		EnemyManager::Instance().Render(rc, modelRenderer);
+		obj.Render(rc, modelRenderer);
 	}
-
-	// 3Dデバッグ描画
-	{
-		//プレイヤーデバッグプリミティブ
-		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
-
-		//エネミーデバッグプリミティブ描画
-		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
-	}
-
 	// 2Dスプライト描画
 	{
-
-
 		//UI描画
 		UIManager::Instance().Render(rc);
 	}

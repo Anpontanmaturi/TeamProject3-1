@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "CameraController.h"
 #include "Scene.h"
+#include <System/AudioSource.h>
 #include <gomi.h>
 #include <Denti.h>
 #include <garakuta.h>
@@ -76,6 +77,10 @@ private:
 	std::vector<Gomi*> gomis; // ƒSƒ~‚ÌƒŠƒXƒg
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
+
+
+	AudioSource* SGAu = nullptr;
+	AudioSource* SGSe = nullptr;
 
 	std::vector<garakuta*> garbages;
 
