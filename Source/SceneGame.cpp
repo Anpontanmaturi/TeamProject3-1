@@ -562,75 +562,78 @@ void SceneGame::Update(float elapsedTime)
 					dir = 2;
 				}
 
-	
 
-	// =========================
-	// ゴミ削除
-	// =========================
-	gomis.erase(
-		std::remove_if(gomis.begin(), gomis.end(),
-			[](Gomi* g)
-			{
-				if (g->IsCollected())
+
+				// =========================
+				// ゴミ削除
+				// =========================
+				gomis.erase(
+					std::remove_if(gomis.begin(), gomis.end(),
+						[](Gomi* g)
+						{
+							if (g->IsCollected())
+							{
+								delete g;
+								return true;
+							}
+							return false;
+						}),
+					gomis.end()
+				);
+
+				dentis.erase(
+					std::remove_if(dentis.begin(), dentis.end(),
+						[](Denti* d)
+						{
+							if (d->IsCollected())
+							{
+								delete d;
+								return true;
+							}
+							return false;
+						}),
+					dentis.end()
+				);
+
+
+
+				// ガラクタ削除
+
+				garbages.erase(
+					std::remove_if(garbages.begin(), garbages.end(),
+						[](garakuta* g)
+						{
+							if (g->IsCollected())
+							{
+								delete g;
+								return true;
+							}
+							return false;
+						}),
+					garbages.end()
+				);
+
+
+
+
+
+				// =========================
+				// カメラ更新（止めない）
+				// =========================
+				Camera::Instance().Update(elapsedTime);
+
+
+				// コンボ管理
+				if (combo > 0)
 				{
-					delete g;
-					return true;
+					comboTimer -= elapsedTime;
+
+					if (comboTimer <= 0.0f)
+					{
+						combo = 0;
+					}
 				}
-				return false;
-			}),
-		gomis.end()
-	);
-
-	dentis.erase(
-		std::remove_if(dentis.begin(), dentis.end(),
-			[](Denti* d)
-			{
-				if (d->IsCollected())
-				{
-					delete d;
-					return true;
-				}
-				return false;
-			}),
-		dentis.end()
-	);
-
-
-
-	// ガラクタ削除
-
-	garbages.erase(
-		std::remove_if(garbages.begin(), garbages.end(),
-			[](garakuta* g)
-			{
-				if (g->IsCollected())
-				{
-					delete g;
-					return true;
-				}
-				return false;
-			}),
-		garbages.end()
-	);
-
-
-
-
-
-	// =========================
-	// カメラ更新（止めない）
-	// =========================
-	Camera::Instance().Update(elapsedTime);
-
-
-	// コンボ管理
-	if (combo > 0)
-	{
-		comboTimer -= elapsedTime;
-
-		if (comboTimer <= 0.0f)
-		{
-			combo = 0;
+			}
 		}
 	}
 }
@@ -718,6 +721,7 @@ void SceneGame::Render()
 	
 
 	pause.Render();
+
 
 }
 SceneGame* SceneGame::instance = nullptr;
