@@ -40,12 +40,19 @@ public:
 	// 回復処理
 	void Heal(float amount);
 
+	// バッテリーのゲッター・セッター
+	float GetEnergy() const { return energy; }
+	void SetEnergy(float value) { energy = value; }
+	float GetMaxEnergy() const { return maxenergy; }
+
 	//ジャンプ入力処理
 	void InputJump();
 
 	//デバッグプリミティブ描画
 	void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
+
+	void Reset();
 private:
 	//スティック入力値から移動ベクトルを取得
 	DirectX::XMFLOAT3 GetMoveVec() const;
@@ -69,6 +76,9 @@ private:
 
 	//弾丸と敵の衝突処理
 	void CollisionProjectilesVsEnemies();
+
+	//充電中動けないようにする
+	bool canMove = true;
 
 protected:
 	//着地した時に呼ばれる
@@ -105,4 +115,23 @@ public:
 	bool IsBoost() const { return isBoost; }
 
 	int gomiCount = 0;
+
+	void SetCanMove(bool flag) { canMove = flag; }
+	bool CanMove() const { return canMove; }
+
+	//========================================
+	// 向き取得
+	//========================================
+	const DirectX::XMFLOAT3& GetAngle() const
+	{
+		return angle;
+	}
+
+	//========================================
+	// 向き設定
+	//========================================
+	void SetAngle(const DirectX::XMFLOAT3& a)
+	{
+		angle = a;
+	}
 };
