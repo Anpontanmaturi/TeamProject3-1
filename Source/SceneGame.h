@@ -78,7 +78,7 @@ private:
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
 
-	std::vector<Object*> objects;
+	//std::vector<Object*> objects;
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
 
