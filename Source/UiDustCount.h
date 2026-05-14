@@ -24,7 +24,7 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont>  spriteFont;
 
-	const DirectX::XMFLOAT2 FontOffset = { 70.0f, 100.0f };
+	const DirectX::XMFLOAT2 FontOffset = { 220.0f, 110.0f };
 	DirectX::XMFLOAT2 fontScale;
 
 	// ‰æ‘œ‚ÌŒ³‚ÌƒTƒCƒY

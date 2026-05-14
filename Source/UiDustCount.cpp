@@ -1,6 +1,7 @@
 #include "UiDustCount.h"
 #include "System/Graphics.h"
 #include "Player.h"
+#include <SceneGame.h>
 
 UIDustCount::UIDustCount()
 {
@@ -38,18 +39,27 @@ void UIDustCount::Render(const RenderContext& rc)
         Origin_W * scale.x, Origin_H * scale.y, 0.0f, 
         1.0f, 1.0f, 1.0f, 1.0f);
 
-    // フォントの描画位置を計算
-    DirectX::XMFLOAT2 fontPos;
-    fontPos.x = dx + (FontOffset.x * scale.x);
-    fontPos.y = dy + (FontOffset.y * scale.y);
+	fontScale = { scale.x * 2.5f, scale.y * 2.5f };
 
-	fontScale = { scale.x * 3.0f, scale.y * 3.0f };
+    // データの準備
+    int count = SceneGame::Instance().GetGomiCount();
+    std::wstring text = std::to_wstring(count);
+
+    // フォントの描画位置を計算
+
+    DirectX::XMVECTOR sizeVec = spriteFont->MeasureString(text.c_str());
+    float baseWidth = DirectX::XMVectorGetX(sizeVec);
+
+    // 実際の描画幅を計算
+    float actualWidth = baseWidth * fontScale.x;
+
+    DirectX::XMFLOAT2 fontPos;
+    fontPos.x = dx + (FontOffset.x * scale.x) - actualWidth;
+    fontPos.y = dy + (FontOffset.y * scale.y);
 
     // 文字の描画
     spriteBatch->Begin();
 
-    // とりあえずテスト用の数字を表示
-    std::wstring text = L"1"; 
     
     spriteFont->DrawString(
         spriteBatch.get(),
