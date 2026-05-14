@@ -183,6 +183,10 @@
     <ClCompile Include="Source\UiBattery.cpp">
       <Filter>Source\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Pause.cpp" />
+    <ClCompile Include="Source\kagu.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui-docking\imconfig.h">
@@ -355,6 +359,10 @@
     </ClInclude>
     <ClInclude Include="Source\UiBattery.h">
       <Filter>Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Pause.h" />
+    <ClInclude Include="Source\kagu.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
