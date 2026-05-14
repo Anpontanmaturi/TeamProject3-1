@@ -213,7 +213,7 @@ void SceneGame::Finalize()
 	//オブジェクト終了化
 	objects.clear();
 	for (auto& g : garbages) delete g;
-	garbages.clear();
+	//garbages.clear();
 	pause.Finalize();
 	//プレイヤー終了化
 
@@ -234,29 +234,23 @@ void SceneGame::Finalize()
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
-
-
-
-	pause.Update();
-	//ポーズ中ならゲームを止める
-	if (pause.IsPaused())
-	{
-		return;
-	}
-	if (isTimeUp) return;
-
-
-
-	// ポーズ更新
-	pause.Update();
-
-	// ポーズ中ならゲーム止める
-	if (pause.IsPaused())
-	{
-		return;
-	}
 	// =========================
-	// ヒットストップ処理（追加）
+	// ポーズ
+	// =========================
+	pause.Update();
+
+	if (pause.IsPaused())
+	{
+		return;
+	}
+
+	if (isTimeUp)
+	{
+		return;
+	}
+
+	// =========================
+	// ヒットストップ
 	// =========================
 	if (hitStopTimer > 0.0f)
 	{
@@ -271,7 +265,7 @@ void SceneGame::Update(float elapsedTime)
 	float scaledTime = elapsedTime * timeScale;
 
 	// =========================
-	// タイマー（※これは止めない）
+	// タイマー
 	// =========================
 	currentTime -= elapsedTime;
 
@@ -279,11 +273,14 @@ void SceneGame::Update(float elapsedTime)
 	{
 		currentTime = 0.0f;
 		isTimeUp = true;
+
 		SceneManager::Instance().ChangeScene(new SceneResult);
 		return;
 	}
 
-	// 電池スポーンタイマー
+	// =========================
+	// 電池スポーン
+	// =========================
 	dentiSpawnTimer += elapsedTime;
 
 	if (dentiSpawnTimer >= dentiSpawnInterval)
@@ -302,13 +299,10 @@ void SceneGame::Update(float elapsedTime)
 			dentis.push_back(d);
 		}
 	}
-	//カメラコントローラー更新処理
-	//DirectX::XMFLOAT3 target = player->GetPosition();
 
 	// =========================
 	// カメラ
 	// =========================
-
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	target.y += 0.5f;
 
@@ -316,101 +310,78 @@ void SceneGame::Update(float elapsedTime)
 	cameraController->Update(scaledTime);
 
 	// =========================
-	// ゲーム更新（全部 scaledTime）
+	// 更新
 	// =========================
 	stage->Update(scaledTime);
+
 	Player::Instance().Update(scaledTime);
+
 	EnemyManager::Instance().Update(scaledTime);
 
-
-	// UIの更新
 	UIManager::Instance().Update(scaledTime);
 
-
-	//オブジェクト更新処理
+	// =========================
+	// オブジェクト更新
+	// =========================
 	for (auto& obj : objects)
 	{
 		obj.Update(elapsedTime);
 
-		// プレイヤー位置
-		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 playerPos =
+			Player::Instance().GetPosition();
 
-		// オブジェクト位置
-		DirectX::XMFLOAT3 objPos = obj.GetPosition();
+		DirectX::XMFLOAT3 objPos =
+			obj.GetPosition();
 
-		// 距離
-		float distance = GetDistance(playerPos, objPos);
+		float distance =
+			GetDistance(playerPos, objPos);
 
 		float radius = 1.0f;
 
-		if (distance < radius && Player::Instance().GetEnergy() < 1000.0f)
+		if (distance < radius &&
+			Player::Instance().GetEnergy() < 1000.0f)
 		{
 			Player& player = Player::Instance();
 
-			//========================
-			// 操作不能
-			//========================
-
 			player.SetCanMove(false);
 
-			//========================
-			// 現在位置取得
-			//========================
+			DirectX::XMFLOAT3 pos =
+				player.GetPosition();
 
-			DirectX::XMFLOAT3 pos = player.GetPosition();
+			DirectX::XMFLOAT3 target =
+				objPos;
 
-			//========================
-			// 充電器位置
-			//========================
-
-			DirectX::XMFLOAT3 target = objPos;
-
-			// 少し手前に止める
 			target.z += 0.2f;
-			/*target.z += 0.7f;*/
-
-			//========================
-			// 吸い込み処理
-			//========================
-
 
 			float pullSpeed = 6.0f;
-			/*float pullSpeed = 2.0f;*/
 
-			pos.x += (target.x - pos.x) * pullSpeed * elapsedTime;
-			pos.y += (target.y - pos.y) * pullSpeed * elapsedTime;
-			pos.z += (target.z - pos.z) * pullSpeed * elapsedTime;
+			pos.x += (target.x - pos.x)
+				* pullSpeed * elapsedTime;
+
+			pos.y += (target.y - pos.y)
+				* pullSpeed * elapsedTime;
+
+			pos.z += (target.z - pos.z)
+				* pullSpeed * elapsedTime;
 
 			player.SetPosition(pos);
-
-			//========================
-			// 向き補正
-			//========================
 
 			float dx = target.x - pos.x;
 			float dz = target.z - pos.z;
 
-			DirectX::XMFLOAT3 angle = player.GetAngle();
+			DirectX::XMFLOAT3 angle =
+				player.GetAngle();
 
 			angle.y = atan2f(dx, dz);
 
 			player.SetAngle(angle);
 
-			//========================
-			// 回復
-			//========================
-
 			player.AddEnergy(85.5f * elapsedTime);
-
-			//========================
-			// 回復完了
-			//========================
 
 			if (player.GetEnergy() >= 1000.0f)
 			{
 				player.SetEnergy(1000.0f);
 
-				// 操作再開
 				player.SetCanMove(true);
 
 				gomiCount = 0;
@@ -418,54 +389,56 @@ void SceneGame::Update(float elapsedTime)
 		}
 	}
 
-	//プレイヤー更新処理
-	//player->Update(elapsedTime);
-	//Player::Instance().Update(elapsedTime);
-
+	// =========================
+	// プレイヤー位置
+	// =========================
+	DirectX::XMFLOAT3 playerPos =
+		Player::Instance().GetPosition();
 
 	// =========================
-	// ゴミ処理
+	// ゴミ
 	// =========================
-	DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
-
 	for (auto& g : gomis)
 	{
 		g->Update(scaledTime);
 
-		float dist = GetDistance(playerPos, g->GetPosition());
+		float dist =
+			GetDistance(playerPos, g->GetPosition());
+
 		float playerRadius = 0.7f;
 
-		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		if (!g->IsCollected() &&
+			dist < playerRadius + g->GetRadius())
 		{
 			g->Collect();
+
 			gomiCount++;
+
 			score += 5;
 		}
 	}
 
 	// =========================
-// ガラクタ処理（←これ追加）
-// =========================
-
-
+	// ガラクタ
 	// =========================
-	// ガラクタ処理（←これ追加）
-	// =========================
-
 	for (auto& g : garbages)
 	{
 		g->Update(elapsedTime);
 
-		float dist = GetDistance(playerPos, g->GetPosition());
+		float dist =
+			GetDistance(playerPos, g->GetPosition());
+
 		float playerRadius = 0.7f;
 
-		if (!g->IsCollected() && dist < playerRadius + g->GetRadius())
+		if (!g->IsCollected() &&
+			dist < playerRadius + g->GetRadius())
 		{
 			g->Collect();
 
-			Player::Instance().AddGarbage(1); // ← 持ってる数増やす
+			Player::Instance().AddGarbage(1);
 		}
 	}
+
 	// =========================
 	// ガラクタスポーン
 	// =========================
@@ -475,7 +448,6 @@ void SceneGame::Update(float elapsedTime)
 	{
 		garbageSpawnTimer = 0.0f;
 
-		// 最大数チェック（1個だけ）
 		if (garbages.size() < maxGarbage)
 		{
 			garakuta* g = new garakuta();
@@ -489,58 +461,55 @@ void SceneGame::Update(float elapsedTime)
 		}
 	}
 
-
-
-
+	// =========================
+	// 電池
+	// =========================
 	for (auto& d : dentis)
 	{
 		d->Update(elapsedTime);
 
-
-		float dist = GetDistance(playerPos, d->GetPosition());
+		float dist =
+			GetDistance(playerPos, d->GetPosition());
 
 		float playerRadius = 0.7f;
 
-		if (!d->IsCollected() && dist < playerRadius + d->GetRadius())
+		if (!d->IsCollected() &&
+			dist < playerRadius + d->GetRadius())
 		{
 			d->Collect();
 
-			
 			Player::Instance().AddEnergy(300.0f);
 		}
 	}
-	
+
+	// =========================
+	// 冷蔵庫
+	// =========================
 	for (auto& k : kagus)
 	{
 		k->Update(elapsedTime);
 
-		DirectX::XMFLOAT3 p = Player::Instance().GetPosition();
-		DirectX::XMFLOAT3 kp = k->GetPosition();
+		DirectX::XMFLOAT3 p =
+			Player::Instance().GetPosition();
 
-		// =========================
+		DirectX::XMFLOAT3 kp =
+			k->GetPosition();
+
 		// 冷蔵庫サイズ
-		// =========================
-
-		float halfWidth = 1.55f;
-		float halfDepth = 1.55f;
+		float halfWidth = 0.55f;
+		float halfDepth = 0.55f;
 
 		// プレイヤー半径
 		float playerRadius = 0.35f;
 
-		// =========================
 		// AABB
-		// =========================
-
 		float minX = kp.x - halfWidth;
 		float maxX = kp.x + halfWidth;
 
 		float minZ = kp.z - halfDepth;
 		float maxZ = kp.z + halfDepth;
 
-		// =========================
-		// 半径込み当たり判定
-		// =========================
-
+		// 当たり判定
 		bool hit =
 			(p.x + playerRadius > minX) &&
 			(p.x - playerRadius < maxX) &&
@@ -549,10 +518,7 @@ void SceneGame::Update(float elapsedTime)
 
 		if (!k->IsBroken() && hit)
 		{
-			// =========================
-			// ダッシュ中なら破壊
-			// =========================
-
+			// ダッシュ破壊
 			if (Player::Instance().IsBoost())
 			{
 				k->Break();
@@ -563,12 +529,20 @@ void SceneGame::Update(float elapsedTime)
 				// 押し戻し
 				// =========================
 
-				float left = fabs((p.x + playerRadius) - minX);
-				float right = fabs(maxX - (p.x - playerRadius));
-				float top = fabs(maxZ - (p.z - playerRadius));
-				float bottom = fabs((p.z + playerRadius) - minZ);
+				float left =
+					fabs((p.x + playerRadius) - minX);
+
+				float right =
+					fabs(maxX - (p.x - playerRadius));
+
+				float top =
+					fabs(maxZ - (p.z - playerRadius));
+
+				float bottom =
+					fabs((p.z + playerRadius) - minZ);
 
 				float minDist = left;
+
 				int dir = 0;
 
 				if (right < minDist)
@@ -609,82 +583,88 @@ void SceneGame::Update(float elapsedTime)
 				}
 
 				Player::Instance().SetPosition(p);
-			
-		
-	
-			
-		
-	
-
-				// =========================
-				// ゴミ削除
-				// =========================
-				gomis.erase(
-					std::remove_if(gomis.begin(), gomis.end(),
-						[](Gomi* g)
-						{
-							if (g->IsCollected())
-							{
-								delete g;
-								return true;
-							}
-							return false;
-						}),
-					gomis.end()
-				);
-
-				dentis.erase(
-					std::remove_if(dentis.begin(), dentis.end(),
-						[](Denti* d)
-						{
-							if (d->IsCollected())
-							{
-								delete d;
-								return true;
-							}
-							return false;
-						}),
-					dentis.end()
-				);
-
-
-
-				// ガラクタ削除
-
-				garbages.erase(
-					std::remove_if(garbages.begin(), garbages.end(),
-						[](garakuta* g)
-						{
-							if (g->IsCollected())
-							{
-								delete g;
-								return true;
-							}
-							return false;
-						}),
-					garbages.end()
-				);
-				// =========================
-				// カメラ更新（止めない）
-				// =========================
-				Camera::Instance().Update(elapsedTime);
-
-
-				// コンボ管理
-				if (combo > 0)
-				{
-					comboTimer -= elapsedTime;
-
-					if (comboTimer <= 0.0f)
-					{
-						combo = 0;
-					}
-				}
 			}
 		}
 	}
-}
 
+	// =========================
+	// ゴミ削除
+	// =========================
+	gomis.erase(
+		std::remove_if(
+			gomis.begin(),
+			gomis.end(),
+			[](Gomi* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+
+				return false;
+			}),
+		gomis.end()
+	);
+
+	// =========================
+	// 電池削除
+	// =========================
+	dentis.erase(
+		std::remove_if(
+			dentis.begin(),
+			dentis.end(),
+			[](Denti* d)
+			{
+				if (d->IsCollected())
+				{
+					delete d;
+					return true;
+				}
+
+				return false;
+			}),
+		dentis.end()
+	);
+
+	// =========================
+	// ガラクタ削除
+	// =========================
+	garbages.erase(
+		std::remove_if(
+			garbages.begin(),
+			garbages.end(),
+			[](garakuta* g)
+			{
+				if (g->IsCollected())
+				{
+					delete g;
+					return true;
+				}
+
+				return false;
+			}),
+		garbages.end()
+	);
+
+	// =========================
+	// カメラ更新
+	// =========================
+	Camera::Instance().Update(elapsedTime);
+
+	// =========================
+	// コンボ
+	// =========================
+	if (combo > 0)
+	{
+		comboTimer -= elapsedTime;
+
+		if (comboTimer <= 0.0f)
+		{
+			combo = 0;
+		}
+	}
+}
 
 // 描画処理
 void SceneGame::Render()
@@ -700,7 +680,7 @@ void SceneGame::Render()
 	rc.lightDirection = { 0.0f, -1.0f, 0.0f };	// ライト方向（下方向）
 
 	// 描画準備
-	
+
 	rc.renderState = graphics.GetRenderState();
 
 	//カメラパラメータ設定
@@ -733,7 +713,7 @@ void SceneGame::Render()
 	{
 		g->Render(rc, modelRenderer);
 	}
-	
+
 	// ガラクタ描画
 	for (auto& g : garbages)
 	{
@@ -760,13 +740,12 @@ void SceneGame::Render()
 		UIManager::Instance().Render(rc);
 	}
 
-	
-	
+
+
 	// g最後にポーズ描画（上にかぶせる）
 	pause.Render();
-	
 
-	
+
 
 
 }

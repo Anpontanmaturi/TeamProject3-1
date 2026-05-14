@@ -4,9 +4,9 @@
 UIBattery::UIBattery()
 {
     // テクスチャの読み込み
-    frame = std::make_unique<Sprite>("Data/Sprite/UI/Battery/frame.png");
-    fill = std::make_unique<Sprite>("Data/Sprite/UI/Battery/battery.png");
-    back = std::make_unique<Sprite>("Data/Sprite/UI/Battery/back.png");
+    frame = std::make_unique<Sprite>("Data/Sprite/UI/frame.png");
+    fill = std::make_unique<Sprite>("Data/Sprite/UI/battery.png");
+    back = std::make_unique<Sprite>("Data/Sprite/UI/back.png");
 
     // 初期位置とサイズ
     SetPosition(780.0f, 0.0f);

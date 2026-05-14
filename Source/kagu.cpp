@@ -33,10 +33,7 @@ void kagu::Update(float elapsedTime)
 
     UpdateTransform();
 
-    if (model)
-    {
-        model->UpdateTransform();
-    }
+    model->UpdateTransform();
 }
 
 // •`‰æ
