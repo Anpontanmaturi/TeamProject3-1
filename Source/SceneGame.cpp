@@ -18,6 +18,7 @@
 #include"kagu.h"
 std::vector<Object> objects;
 #include <Denti.h>
+#include <System/Audio.h>
 #include "UiManager.h"
 
 
@@ -81,6 +82,11 @@ void SceneGame::Initialize()
 
 		enemyManager.Register(slime);
 	}
+	// =========================
+// BGM読み込み
+// =========================
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lantern’s_Curse.wav");
+	SGAu->Play(true);
 	// =========================
    // ゴミ生成（ここが本命）
    // =========================

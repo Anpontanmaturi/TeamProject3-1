@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "CameraController.h"
 #include "Scene.h"
+#include <System/AudioSource.h>
 #include <gomi.h>
 #include <Denti.h>
 #include <garakuta.h>
@@ -77,7 +78,8 @@ private:
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
 
-
+	AudioSource* SGAu = nullptr;
+	AudioSource* SGSe = nullptr;
 
 #if 1
 	float timeLimit = 180.0f;   // êßå¿éûä‘ÅiïbÅj
