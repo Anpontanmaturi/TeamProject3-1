@@ -172,6 +172,14 @@ void SceneGame::Finalize()
 		delete g;
 	}
 	gomis.clear();
+	//‰Æ‹ï‰ð•ú
+	for (auto& k : kagus)
+	{
+		delete k;
+	}
+
+	kagus.clear();
+
 	// “d’r‚Ì‰ð•ú
 	for (auto& b : dentis)
 	{
