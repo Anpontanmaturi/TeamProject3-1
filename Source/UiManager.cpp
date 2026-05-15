@@ -4,6 +4,14 @@
 #include <imgui.h>
 #include "UiBattery.h"
 #include "UiDustCount.h"
+#include "UiTimer.h"
+
+enum
+{
+	BATTERY = 0,
+	DUSTCOUNT,
+	TIMER,
+};
 
 void UIManager::Initialize()
 {
@@ -12,6 +20,7 @@ void UIManager::Initialize()
 	// ここでUIパーツの実体のみを作成する
 	uiElements.push_back(std::make_unique<UIBattery>());
 	uiElements.push_back(std::make_unique<UIDustCount>());
+	uiElements.push_back(std::make_unique<UiTimer>());
 
 }
 
@@ -51,7 +60,7 @@ void UIManager::DrawDebugGUI()
 	
 	// 位置調整用
 	{
-		UIBattery* battery = static_cast<UIBattery*>(uiElements[0].get());
+		UIBattery* battery = static_cast<UIBattery*>(uiElements[BATTERY].get());
 		DirectX::XMFLOAT2 pos = battery->GetPosition();
 		float posArr[2] = { pos.x, pos.y };
 		if (ImGui::DragFloat2("BatteryUI Position", posArr, 1.0f)) {
@@ -65,7 +74,7 @@ void UIManager::DrawDebugGUI()
 	}
 	ImGui::Separator();
 	{
-		UIDustCount* dustCount = static_cast<UIDustCount*>(uiElements[1].get());
+		UIDustCount* dustCount = static_cast<UIDustCount*>(uiElements[DUSTCOUNT].get());
 		DirectX::XMFLOAT2 pos = dustCount->GetPosition();
 		float posArr[2] = { pos.x, pos.y };
 		if (ImGui::DragFloat2("DustCountUI Position", posArr, 1.0f)) {
@@ -75,6 +84,30 @@ void UIManager::DrawDebugGUI()
 		float scaleArr[2] = { scale.x, scale.y };
 		if (ImGui::DragFloat2("DustCountUI Scale", scaleArr, 0.01f)) {
 			dustCount->SetScale(scaleArr[0], scaleArr[1]);
+		}
+		DirectX::XMFLOAT2 fontOffset = dustCount->GetFontOffset();
+		float fontOffsetArr[2] = { fontOffset.x, fontOffset.y };
+		if (ImGui::DragFloat2("DustCountUI Font Offset", fontOffsetArr, 1.0f)) {
+			dustCount->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
+		}
+	}
+	ImGui::Separator();
+	{
+		UiTimer* timer = static_cast<UiTimer*>(uiElements[TIMER].get());
+		DirectX::XMFLOAT2 pos = timer->GetPosition();
+		float posArr[2] = { pos.x, pos.y };
+		if (ImGui::DragFloat2("TimerUI Position", posArr, 1.0f)) {
+			timer->SetPosition(posArr[0], posArr[1]);
+		}
+		DirectX::XMFLOAT2 scale = timer->GetScale();
+		float scaleArr[2] = { scale.x, scale.y };
+		if (ImGui::DragFloat2("TimerUI Scale", scaleArr, 0.01f)) {
+			timer->SetScale(scaleArr[0], scaleArr[1]);
+		}
+		DirectX::XMFLOAT2 fontOffset = timer->GetFontOffset();
+		float fontOffsetArr[2] = { fontOffset.x, fontOffset.y };
+		if (ImGui::DragFloat2("TimerUI Font Offset", fontOffsetArr, 1.0f)) {
+			timer->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
 		}
 	}
 

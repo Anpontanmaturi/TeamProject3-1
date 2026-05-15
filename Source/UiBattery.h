@@ -15,7 +15,7 @@ public:
 	virtual void Render(const RenderContext& rc) override;
 
 	// 微調整用
-	float adjX = 7.5f;
+	float adjX = 6.0f;
 
 private:
 	// テクスチャ

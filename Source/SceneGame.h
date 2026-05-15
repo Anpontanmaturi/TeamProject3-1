@@ -68,6 +68,10 @@ public:
 	int GetCombo() const { return combo; }
 
 	float GetComboMultiplier() const;
+
+	// ƒQƒbƒ^[
+	float GetTimer() const { return currentTime; }
+
 private:
 	// ?? ’Ç‰Á
 	static SceneGame* instance;

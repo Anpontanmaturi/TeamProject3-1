@@ -180,6 +180,7 @@
     <ClInclude Include="Source\UiBattery.h" />
     <ClInclude Include="Source\UiDustCount.h" />
     <ClInclude Include="Source\UiManager.h" />
+    <ClInclude Include="Source\UiTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp" />
@@ -235,6 +236,7 @@
     <ClCompile Include="Source\UiBattery.cpp" />
     <ClCompile Include="Source\UiDustCount.cpp" />
     <ClCompile Include="Source\UiManager.cpp" />
+    <ClCompile Include="Source\UiTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Font\Font1.spritefont" />

@@ -1,7 +1,7 @@
 #include "UiDustCount.h"
 #include "System/Graphics.h"
 #include "Player.h"
-#include <SceneGame.h>
+#include "SceneGame.h"
 
 UIDustCount::UIDustCount()
 {
@@ -16,8 +16,8 @@ UIDustCount::UIDustCount()
 	spriteFont = std::make_unique<DirectX::SpriteFont>(device, L"Data/Font/Font1.spritefont");
 
 	// 初期位置とサイズ
-	SetPosition(880.0f, -19.0f);
-	SetScale(0.8f, 0.8f);
+	SetPosition(1030.0f, -12.0f);
+	SetScale(0.5f, 0.5f);
 }
 
 UIDustCount::~UIDustCount()
@@ -26,7 +26,28 @@ UIDustCount::~UIDustCount()
 
 void UIDustCount::Update(float elapsedTime)
 {
-	
+    // 準備
+    int count = SceneGame::Instance().GetGomiCount();
+
+	// カウントが変わったときだけテキストを更新
+    if (count != lastCount)
+    {
+        lastCount = count;
+        text = std::to_wstring(count);
+
+        fontScale = { scale.x * scaleMag, scale.y * scaleMag };
+
+        // フォントの描画位置を計算
+
+        DirectX::XMVECTOR sizeVec = spriteFont->MeasureString(text.c_str());
+        float baseWidth = DirectX::XMVectorGetX(sizeVec);
+
+        // 実際の描画幅を計算
+        float actualWidth = baseWidth * fontScale.x;
+
+        fontPos.x = position.x + (FontOffset.x * scale.x) - actualWidth;
+        fontPos.y = position.y + (FontOffset.y * scale.y);
+    }
 }
 
 void UIDustCount::Render(const RenderContext& rc)
@@ -39,33 +60,14 @@ void UIDustCount::Render(const RenderContext& rc)
         Origin_W * scale.x, Origin_H * scale.y, 0.0f, 
         1.0f, 1.0f, 1.0f, 1.0f);
 
-	fontScale = { scale.x * 2.5f, scale.y * 2.5f };
-
-    // データの準備
-    int count = SceneGame::Instance().GetGomiCount();
-    std::wstring text = std::to_wstring(count);
-
-    // フォントの描画位置を計算
-
-    DirectX::XMVECTOR sizeVec = spriteFont->MeasureString(text.c_str());
-    float baseWidth = DirectX::XMVectorGetX(sizeVec);
-
-    // 実際の描画幅を計算
-    float actualWidth = baseWidth * fontScale.x;
-
-    DirectX::XMFLOAT2 fontPos;
-    fontPos.x = dx + (FontOffset.x * scale.x) - actualWidth;
-    fontPos.y = dy + (FontOffset.y * scale.y);
-
     // 文字の描画
     spriteBatch->Begin();
-
     
     spriteFont->DrawString(
         spriteBatch.get(),
         text.c_str(),
         fontPos,
-        DirectX::Colors::White,
+        fontColor,
         0.0f,                   // 回転
         DirectX::XMFLOAT2(0, 0), // 原点
         fontScale       // スケールを画像に合わせる
