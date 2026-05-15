@@ -86,6 +86,7 @@ void SceneGame::Initialize()
 // BGM読み込み
 // =========================
 	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lantern’s_Curse.wav");
+	SGSe = Audio::Instance().LoadAudioSource("Data/Sound/tya-zi.wav");
 	SGAu->Play(true);
 	// =========================
    // ゴミ生成（ここが本命）
@@ -313,6 +314,7 @@ void SceneGame::Update(float elapsedTime)
 		{
 			Player& player = Player::Instance();
 
+			SGSe->Play(true);
 			//========================
 			// 操作不能
 			//========================
@@ -380,6 +382,7 @@ void SceneGame::Update(float elapsedTime)
 				player.SetCanMove(true);
 
 				gomiCount = 0;
+				SGSe->Stop();
 			}
 		}
 	}

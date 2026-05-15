@@ -6,7 +6,7 @@ using namespace DirectX;
 // コンストラクタ
 Gomi::Gomi()
 {
-    model = new Model("Data/Model/Slime/Slime.mdl");
+    model = new Model("Data/Model/hoko/hoko.mdl");
 
     // サイズ調整（必要なら）
     scale = { 0.006f, 0.006f, 0.006f };
