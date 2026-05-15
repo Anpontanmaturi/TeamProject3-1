@@ -183,10 +183,8 @@
     <ClCompile Include="Source\UiBattery.cpp">
       <Filter>Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\UiDustCount.cpp">
-      <Filter>Source\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Pause.cpp">
+    <ClCompile Include="Source\Pause.cpp" />
+    <ClCompile Include="Source\kagu.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -362,10 +360,8 @@
     <ClInclude Include="Source\UiBattery.h">
       <Filter>Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\UiDustCount.h">
-      <Filter>Source\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Pause.h">
+    <ClInclude Include="Source\Pause.h" />
+    <ClInclude Include="Source\kagu.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
@@ -391,9 +387,6 @@
     <None Include="Shader\Sprite.hlsli">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Data\Font\Font1.spritefont">
-      <Filter>Source\Font</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External">
@@ -413,9 +406,6 @@
     </Filter>
     <Filter Include="Source\UI">
       <UniqueIdentifier>{80035d00-0898-41ec-973a-617a2170cbd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Font">
-      <UniqueIdentifier>{d2382eed-1e67-4f61-82eb-71c4da4b40f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

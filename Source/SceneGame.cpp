@@ -15,8 +15,10 @@
 #include <SceneManager.h>
 #include <ctime>
 #include"Pause.h"
+#include"kagu.h"
 std::vector<Object> objects;
 #include <Denti.h>
+#include <System/Audio.h>
 #include "UiManager.h"
 
 
@@ -81,6 +83,11 @@ void SceneGame::Initialize()
 		enemyManager.Register(slime);
 	}
 	// =========================
+// BGM読み込み
+// =========================
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lantern’s_Curse.wav");
+	SGAu->Play(true);
+	// =========================
    // ゴミ生成（ここが本命）
    // =========================
 	gomis.clear();
@@ -116,6 +123,18 @@ void SceneGame::Initialize()
 	d->Init({ x, 0.5f, z });
 
 	dentis.push_back(d);
+
+	// =========================
+// 冷蔵庫生成
+// =========================
+	kagus.clear();
+
+	kagu* k = new kagu();
+	k->Init({ 3.0f, 0.0f, 3.0f });
+
+	kagus.push_back(k);
+
+
 	// ガラクタ生成
 	garbages.clear();
 
@@ -159,6 +178,14 @@ void SceneGame::Finalize()
 		delete g;
 	}
 	gomis.clear();
+	//家具解放
+	for (auto& k : kagus)
+	{
+		delete k;
+	}
+
+	kagus.clear();
+
 	// 電池の解放
 	for (auto& b : dentis)
 	{
@@ -282,11 +309,78 @@ void SceneGame::Update(float elapsedTime)
 
 		float radius = 1.0f;
 
-		if (distance < radius)
+		if (distance < radius && Player::Instance().GetEnergy() < 1000.0f)
 		{
-			// ★ここが回復速度
-			Player::Instance().AddEnergy(85.0f * elapsedTime);
-			gomiCount = 0;
+			Player& player = Player::Instance();
+
+			//========================
+			// 操作不能
+			//========================
+
+			player.SetCanMove(false);
+
+			//========================
+			// 現在位置取得
+			//========================
+
+			DirectX::XMFLOAT3 pos = player.GetPosition();
+
+			//========================
+			// 充電器位置
+			//========================
+
+			DirectX::XMFLOAT3 target = objPos;
+
+			// 少し手前に止める
+			target.z += 0.2f;
+			/*target.z += 0.7f;*/
+
+			//========================
+			// 吸い込み処理
+			//========================
+
+
+			float pullSpeed = 6.0f;
+			/*float pullSpeed = 2.0f;*/
+
+			pos.x += (target.x - pos.x) * pullSpeed * elapsedTime;
+			pos.y += (target.y - pos.y) * pullSpeed * elapsedTime;
+			pos.z += (target.z - pos.z) * pullSpeed * elapsedTime;
+
+			player.SetPosition(pos);
+
+			//========================
+			// 向き補正
+			//========================
+
+			float dx = target.x - pos.x;
+			float dz = target.z - pos.z;
+
+			DirectX::XMFLOAT3 angle = player.GetAngle();
+
+			angle.y = atan2f(dx, dz);
+
+			player.SetAngle(angle);
+
+			//========================
+			// 回復
+			//========================
+
+			player.AddEnergy(85.5f * elapsedTime);
+
+			//========================
+			// 回復完了
+			//========================
+
+			if (player.GetEnergy() >= 1000.0f)
+			{
+				player.SetEnergy(1000.0f);
+
+				// 操作再開
+				player.SetCanMove(true);
+
+				gomiCount = 0;
+			}
 		}
 	}
 
@@ -373,52 +467,107 @@ void SceneGame::Update(float elapsedTime)
 			Player::Instance().AddEnergy(300.0f);
 		}
 	}
-	// Vキー押したら発動
 
 
-	for (auto& obj : objects)
+
+	for (auto& k : kagus)
 	{
-		obj.Update(elapsedTime);
+		k->Update(elapsedTime);
 
-		// プレイヤー位置
-		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 p = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 kp = k->GetPosition();
 
-		// オブジェクト位置
-		DirectX::XMFLOAT3 objPos = obj.GetPosition(); // ←後で追加する
+		// =========================
+		// 冷蔵庫の四角い当たり判定
+		// =========================
 
-		// 距離計算
-		DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&playerPos);
-		DirectX::XMVECTOR o = DirectX::XMLoadFloat3(&objPos);
+		float halfWidth = 1.6f; // 横幅
+		float halfDepth = 1.6f; // 奥行き
 
-		float distance = DirectX::XMVectorGetX(
-			DirectX::XMVector3Length(DirectX::XMVectorSubtract(p, o))
-		);
+		float minX = kp.x - halfWidth;
+		float maxX = kp.x + halfWidth;
 
-		// 範囲内なら回復
-		float radius = 2.0f; // 当たり範囲
+		float minZ = kp.z - halfDepth;
+		float maxZ = kp.z + halfDepth;
 
-		if (distance < radius)
+		// プレイヤーが箱の中にいるか
+		bool hit =
+			(p.x > minX && p.x < maxX) &&
+			(p.z > minZ && p.z < maxZ);
+
+		if (!k->IsBroken() && hit)
 		{
-			Player::Instance().Heal(0.1f); // 回復量
+			// =========================
+			// ダッシュ中なら破壊
+			// =========================
+			if (Player::Instance().IsBoost())
+			{
+				k->Break();
+			}
+			else
+			{
+				// =========================
+				// 押し戻し
+				// =========================
+
+				float left = abs(p.x - minX);
+				float right = abs(maxX - p.x);
+				float top = abs(maxZ - p.z);
+				float bottom = abs(p.z - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				float push = 0.05f;
+
+				switch (dir)
+				{
+				case 0: // 左
+					p.x = minX - push;
+					break;
+
+				case 1: // 右
+					p.x = maxX + push;
+					break;
+
+				case 2: // 上
+					p.z = maxZ + push;
+					break;
+
+				case 3: // 下
+					p.z = minZ - push;
+					break;
+				}
+
+				Player::Instance().SetPosition(p);
+			}
 		}
 	}
 
-	// Vキー
-
-	static bool prev = false;
-	bool now = (GetAsyncKeyState('V') & 0x8000) != 0;
-
-	if (now && !prev)
-	{
-		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
-		EnemyManager::Instance().AttractEnemies(playerPos, 5.0f);
 
 
-		//仮置き！！！！！
-		gomiCount = 0;
-	}
 
-	prev = now;
+
+
+	
 
 	// =========================
 	// ゴミ削除
@@ -508,26 +657,6 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 
-	// ゴミ描画
-	for (auto& g : gomis)
-	{
-		g->Render(rc, modelRenderer);
-	}
-	// オブジェクト描画
-	for (auto& obj : objects)
-	{
-		obj.Render(rc, modelRenderer);
-	}
-	// ガラクタ描画
-	for (auto& g : garbages)
-	{
-		g->Render(rc, modelRenderer);
-	}
-	// 電池描画 ← これ追加
-	for (auto& d : dentis)
-	{
-		d->Render(rc, modelRenderer);
-	}
 	// 3Dモデル描画
 	{
 		//ステージ描画
@@ -539,7 +668,6 @@ void SceneGame::Render()
 		//エネミー描画
 		EnemyManager::Instance().Render(rc, modelRenderer);
 	}
-
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
@@ -548,11 +676,35 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 	}
+	// ゴミ描画
+	for (auto& g : gomis)
+	{
+		g->Render(rc, modelRenderer);
+	}
+	
+	// ガラクタ描画
+	for (auto& g : garbages)
+	{
+		g->Render(rc, modelRenderer);
+	}
+	// 電池描画 ← これ追加
+	for (auto& d : dentis)
+	{
+		d->Render(rc, modelRenderer);
+	}
+	// 冷蔵庫描画
+	for (auto& k : kagus)
+	{
+		k->Render(rc, modelRenderer);
+	}
 
+	// オブジェクト描画
+	for (auto& obj : objects)
+	{
+		obj.Render(rc, modelRenderer);
+	}
 	// 2Dスプライト描画
 	{
-
-
 		//UI描画
 		UIManager::Instance().Render(rc);
 	}

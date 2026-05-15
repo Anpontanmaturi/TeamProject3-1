@@ -196,6 +196,13 @@ void Sprite::Render(const RenderContext& rc,
 	dc->RSSetState(rc.renderState->GetRasterizerState(RasterizerState::SolidCullNone));
 	dc->OMSetBlendState(rc.renderState->GetBlendState(BlendState::Transparency), nullptr, 0xFFFFFFFF);
 
+	// サンプラステート設定
+	ID3D11SamplerState* samplerStates[] =
+	{
+		rc.renderState->GetSamplerState(SamplerState::LinearWrap)
+	};
+	dc->PSSetSamplers(0, _countof(samplerStates), samplerStates);
+
 	// 描画
 	dc->Draw(4, 0);
 }

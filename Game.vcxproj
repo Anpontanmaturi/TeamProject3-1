@@ -140,6 +140,7 @@
     <ClInclude Include="Source\Framework.h" />
     <ClInclude Include="Source\Garakuta.h" />
     <ClInclude Include="Source\gomi.h" />
+    <ClInclude Include="Source\kagu.h" />
     <ClInclude Include="Source\MathUtils.h" />
     <ClInclude Include="Source\Pause.h" />
     <ClInclude Include="Source\Player.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\Garakuta.cpp" />
     <ClCompile Include="Source\gomi.cpp" />
+    <ClCompile Include="Source\kagu.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MathUtils.cpp" />
     <ClCompile Include="Source\Pause.cpp" />
