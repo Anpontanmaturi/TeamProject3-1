@@ -39,7 +39,7 @@
     dcl t0  // pixel<4,5,6,7>
     dcl t2.xyz  // pixel<10,11,12>
 
-#line 95 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\DGSLLambert.hlsl"
+#line 95 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\DGSLLambert.hlsl"
     nrm r0.xyz, t2  // ::worldNormal<0,1,2>
 
 #line 78
@@ -103,10 +103,10 @@ ret
 
 const BYTE DGSLLambert_main[] =
 {
-     68,  88,  66,  67, 151,  12, 
-    240,  57, 122, 246, 201, 174, 
-    232, 100, 144, 237, 163,  31, 
-    233,  38,   1,   0,   0,   0, 
+     68,  88,  66,  67,  34,  13, 
+     77, 139, 198, 185,  60,  96, 
+    171,  47,  72,  22,  23, 162, 
+    250, 106,   1,   0,   0,   0, 
      24,   9,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     132,   5,   0,   0, 248,   7, 
@@ -135,7 +135,7 @@ const BYTE DGSLLambert_main[] =
       0,   0,  12,   2,   0,   0, 
      67,  58,  92,  85, 115, 101, 
     114, 115,  92,  50,  50,  52, 
-     48,  48,  55,  48,  92,  68, 
+     48,  48,  52,  55,  92,  68, 
     101, 115, 107, 116, 111, 112, 
      92,  84, 101,  97, 109,  80, 
     114, 111, 106, 101,  99, 116, 

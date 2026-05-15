@@ -34,11 +34,11 @@
     dcl t2.xy  // pin<8,9>
     dcl_2d s0
 
-#line 350 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
+#line 350 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
     texld r0, t2, s0
     mul r0, r0, t0  // ::color<0,1,2,3>
 
-#line 23 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
+#line 23 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
     mad r0.xyz, t1, r0.w, r0  // AddSpecular::color<0,1,2>
     mov oC0, r0  // ::PSSkinnedVertexLightingNoFog<0,1,2,3>
 
@@ -61,10 +61,10 @@ ret
 
 const BYTE SkinnedEffect_PSSkinnedVertexLightingNoFog[] =
 {
-     68,  88,  66,  67,   8,  35, 
-    232, 120,   9,  11,  84,  28, 
-    130,   7, 192, 242, 151,  70, 
-     94, 165,   1,   0,   0,   0, 
+     68,  88,  66,  67, 125, 210, 
+     88,  70, 206,  44, 207, 184, 
+     32,  98,  70,  76, 177,  45, 
+    231, 200,   1,   0,   0,   0, 
     236,   4,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     112,   3,   0,   0,  80,   4, 
@@ -88,7 +88,7 @@ const BYTE SkinnedEffect_PSSkinnedVertexLightingNoFog[] =
      36,   1,   0,   0,  67,  58, 
      92,  85, 115, 101, 114, 115, 
      92,  50,  50,  52,  48,  48, 
-     55,  48,  92,  68, 101, 115, 
+     52,  55,  92,  68, 101, 115, 
     107, 116, 111, 112,  92,  84, 
     101,  97, 109,  80, 114, 111, 
     106, 101,  99, 116,  51,  45, 
@@ -103,7 +103,7 @@ const BYTE SkinnedEffect_PSSkinnedVertexLightingNoFog[] =
     101,  99, 116,  46, 102, 120, 
       0,  67,  58,  92,  85, 115, 
     101, 114, 115,  92,  50,  50, 
-     52,  48,  48,  55,  48,  92, 
+     52,  48,  48,  52,  55,  92, 
      68, 101, 115, 107, 116, 111, 
     112,  92,  84, 101,  97, 109, 
      80, 114, 111, 106, 101,  99, 

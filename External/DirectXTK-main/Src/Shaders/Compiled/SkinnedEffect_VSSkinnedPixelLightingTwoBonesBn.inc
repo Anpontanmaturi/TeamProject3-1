@@ -50,7 +50,7 @@
     dcl_texcoord3 v3  // vin<9,10,11,12>
     dcl_texcoord4 v4  // vin<13,14,15,16>
 
-#line 15 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Skinning.fxh"
+#line 15 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Skinning.fxh"
     mul r0.xy, v3, c243.z
     mova a0.xy, r0.yxzw
     mul r0, v4.y, c26[a0.x]
@@ -69,22 +69,22 @@
     dp4 r1.y, v0, r2  // Skin::vin<1>
     dp4 r1.z, v0, r3  // Skin::vin<2>
 
-#line 82 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 82 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     mov r1.w, v0.w
     dp4 oPos.z, r1, c24  // ::VSSkinnedPixelLightingTwoBonesBn<15>
     dp4 oT1.x, r1, c15  // ::VSSkinnedPixelLightingTwoBonesBn<2>
     dp4 oT1.y, r1, c16  // ::VSSkinnedPixelLightingTwoBonesBn<3>
     dp4 oT1.z, r1, c17  // ::VSSkinnedPixelLightingTwoBonesBn<4>
 
-#line 11 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Utilities.fxh"
+#line 11 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Utilities.fxh"
     mad r4.xyz, v1, c243.x, c243.y  // ::BiasX2<0,1,2>
 
-#line 19 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Skinning.fxh"
+#line 19 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Skinning.fxh"
     dp3 r0.x, r4, r0  // ::Skin<0>
     dp3 r0.y, r4, r2  // ::Skin<1>
     dp3 r0.z, r4, r3  // ::Skin<2>
 
-#line 84 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 84 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     dp3 r2.x, r0, c19
     dp3 r2.y, r0, c20
     dp3 r2.z, r0, c21
@@ -92,17 +92,17 @@
     rsq r0.x, r0.x
     mul oT2.xyz, r0.x, r2  // ::VSSkinnedPixelLightingTwoBonesBn<6,7,8>
 
-#line 11 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
+#line 11 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
     dp4 r0.x, r1, c14
     max r0.x, r0.x, c243.w
     min oT1.w, r0.x, -c243.y  // ::VSSkinnedPixelLightingTwoBonesBn<5>
 
-#line 82 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 82 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     dp4 r0.x, r1, c22  // ::vout<0>
     dp4 r0.y, r1, c23  // ::vout<1>
     dp4 r0.z, r1, c25  // ::vout<3>
 
-#line 283 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
+#line 283 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
     mad oPos.xy, r0.z, c242, r0  // ::VSSkinnedPixelLightingTwoBonesBn<13,14>
     mov oPos.w, r0.z  // ::VSSkinnedPixelLightingTwoBonesBn<16>
 
@@ -165,10 +165,10 @@ ret
 
 const BYTE SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn[] =
 {
-     68,  88,  66,  67,  72, 143, 
-     69, 179,   2, 166, 190, 253, 
-    101, 100,  41,  47,  11, 182, 
-    243,  69,   1,   0,   0,   0, 
+     68,  88,  66,  67, 155,  74, 
+     37, 141, 242, 195, 209, 238, 
+    175, 122, 244, 117, 245, 236, 
+    163,  23,   1,   0,   0,   0, 
     176,  16,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     128,  10,   0,   0,  76,  15, 
@@ -194,7 +194,7 @@ const BYTE SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn[] =
     172,   3,   0,   0,  67,  58, 
      92,  85, 115, 101, 114, 115, 
      92,  50,  50,  52,  48,  48, 
-     55,  48,  92,  68, 101, 115, 
+     52,  55,  92,  68, 101, 115, 
     107, 116, 111, 112,  92,  84, 
     101,  97, 109,  80, 114, 111, 
     106, 101,  99, 116,  51,  45, 
@@ -208,8 +208,8 @@ const BYTE SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn[] =
     110, 105, 110, 103,  46, 102, 
     120, 104,   0,  67,  58,  92, 
      85, 115, 101, 114, 115,  92, 
-     50,  50,  52,  48,  48,  55, 
-     48,  92,  68, 101, 115, 107, 
+     50,  50,  52,  48,  48,  52, 
+     55,  92,  68, 101, 115, 107, 
     116, 111, 112,  92,  84, 101, 
      97, 109,  80, 114, 111, 106, 
     101,  99, 116,  51,  45,  49, 
@@ -223,7 +223,7 @@ const BYTE SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn[] =
     105, 110, 103,  46, 102, 120, 
     104,   0,  67,  58,  92,  85, 
     115, 101, 114, 115,  92,  50, 
-     50,  52,  48,  48,  55,  48, 
+     50,  52,  48,  48,  52,  55, 
      92,  68, 101, 115, 107, 116, 
     111, 112,  92,  84, 101,  97, 
     109,  80, 114, 111, 106, 101, 
@@ -238,7 +238,7 @@ const BYTE SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn[] =
     105, 101, 115,  46, 102, 120, 
     104,   0,  67,  58,  92,  85, 
     115, 101, 114, 115,  92,  50, 
-     50,  52,  48,  48,  55,  48, 
+     50,  52,  48,  48,  52,  55, 
      92,  68, 101, 115, 107, 116, 
     111, 112,  92,  84, 101,  97, 
     109,  80, 114, 111, 106, 101, 
@@ -253,7 +253,7 @@ const BYTE SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn[] =
      46, 102, 120, 104,   0,  67, 
      58,  92,  85, 115, 101, 114, 
     115,  92,  50,  50,  52,  48, 
-     48,  55,  48,  92,  68, 101, 
+     48,  52,  55,  92,  68, 101, 
     115, 107, 116, 111, 112,  92, 
      84, 101,  97, 109,  80, 114, 
     111, 106, 101,  99, 116,  51, 

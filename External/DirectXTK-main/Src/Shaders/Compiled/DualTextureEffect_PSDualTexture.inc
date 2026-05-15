@@ -45,7 +45,7 @@
     dcl_2d s0
     dcl_2d s1
 
-#line 93 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\DualTextureEffect.fx"
+#line 93 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\DualTextureEffect.fx"
     mov r0.xy, t2.wzyx
     texld r0, r0, s1  // ::overlay<0,1,2,3>
     texld r1, t2, s0  // ::color<0,1,2,3>
@@ -55,7 +55,7 @@
     mul r1, r1, c1
     mul r0, r0, r1  // ::color<0,1,2,3>
 
-#line 17 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
+#line 17 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
     mad r1.xyz, c0, r0.w, -r0
     mad r0.xyz, t1.w, r1, r0  // ApplyFog::color<0,1,2>
     mov oC0, r0  // ::PSDualTexture<0,1,2,3>
@@ -87,10 +87,10 @@ ret
 
 const BYTE DualTextureEffect_PSDualTexture[] =
 {
-     68,  88,  66,  67, 232, 111, 
-    220, 190,  75, 224, 227, 101, 
-    176, 137, 173, 159, 129, 216, 
-    138, 238,   1,   0,   0,   0, 
+     68,  88,  66,  67, 184,  71, 
+    175,  41, 200, 249, 163, 121, 
+     21, 127,  69, 111,  77,  29, 
+    149, 246,   1,   0,   0,   0, 
     196,   6,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     100,   4,   0,   0,  16,   6, 
@@ -116,7 +116,7 @@ const BYTE DualTextureEffect_PSDualTexture[] =
     116,   2,   0,   0,  96,   1, 
       0,   0,  67,  58,  92,  85, 
     115, 101, 114, 115,  92,  50, 
-     50,  52,  48,  48,  55,  48, 
+     50,  52,  48,  48,  52,  55, 
      92,  68, 101, 115, 107, 116, 
     111, 112,  92,  84, 101,  97, 
     109,  80, 114, 111, 106, 101, 
@@ -132,8 +132,8 @@ const BYTE DualTextureEffect_PSDualTexture[] =
     102, 102, 101,  99, 116,  46, 
     102, 120,   0,  67,  58,  92, 
      85, 115, 101, 114, 115,  92, 
-     50,  50,  52,  48,  48,  55, 
-     48,  92,  68, 101, 115, 107, 
+     50,  50,  52,  48,  48,  52, 
+     55,  92,  68, 101, 115, 107, 
     116, 111, 112,  92,  84, 101, 
      97, 109,  80, 114, 111, 106, 
     101,  99, 116,  51,  45,  49, 
