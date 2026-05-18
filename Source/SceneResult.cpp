@@ -9,20 +9,35 @@
 #include <imgui.h>
 #include <SceneManager.h>
 #include <SceneGame.h>
+#include "ScoreManager.h"
+//#include <Instance.h>
 
 void SceneResult::Initialize() {
     //スプライト初期化
     sprite = new Sprite("Data/Sprite/gameclear.png");
 
- 
+    //最終スコアを獲得してランキングに登録・保存
+    int finalScore = SceneGame::Instance().GetScore();
+    ScoreManager::Instance().RegisterScore(finalScore);
+
+	// ランキングUIの生成
+    rankingUI = std::make_unique<UiRanking>(); 
 }
 void SceneResult::Finalize() {
+
+    if (rankingUI != nullptr)
+    {
+        rankingUI->Finalize();
+    }
+
+    rankingUI.reset();
+
     //スプライト終了化
     if (sprite != nullptr)
     {
         delete sprite;
         sprite = nullptr;
-      
+
     }
 }
 
@@ -30,6 +45,13 @@ void SceneResult::Finalize() {
 
 void SceneResult::Update(float elapsedTime)
 {
+
+    // ランキングUIの文字更新や座標計算を呼ぶ
+    if (rankingUI)
+    {
+        rankingUI->Update(elapsedTime);
+    }
+
     // 入力でシーンを戻すなど
     //Input& input = Input::Instance();
     GamePad& gamePad = Input::Instance().GetGamePad();
@@ -62,6 +84,11 @@ void SceneResult::Render() {
         float screenHeight = static_cast<float>(graphics.GetScreenHeight());
         sprite->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
 
+		// ランキングUIの描画
+        if (rankingUI)
+        {
+            rankingUI->Render(rc);
+        }
 
     }
 }

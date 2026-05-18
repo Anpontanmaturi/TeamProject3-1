@@ -85,12 +85,12 @@ private:
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
 
-#if 1
+#if 0
 	float timeLimit = 180.0f;   // 制限時間（秒）
 	float currentTime = 180.0f; // 残り時間
 #else
-	float timeLimit = 10.0f;   // 制限時間（秒）
-	float currentTime = 10.0f; // 残り時間
+	float timeLimit = 1.0f;   // 制限時間（秒）
+	float currentTime = 1.0f; // 残り時間
 #endif
 	bool isTimeUp = false;
 	float garbageSpawnTimer = 0.0f;

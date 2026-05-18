@@ -20,6 +20,7 @@ std::vector<Object> objects;
 #include <Denti.h>
 #include <System/Audio.h>
 #include "UiManager.h"
+#include "ScoreManager.h"
 
 
 // 距離計算
@@ -241,10 +242,12 @@ void SceneGame::Update(float elapsedTime)
 	// =========================
 	currentTime -= elapsedTime;
 
+	// タイムアップ処理
 	if (currentTime <= 0.0f)
 	{
 		currentTime = 0.0f;
 		isTimeUp = true;
+		ScoreManager::Instance().RegisterScore(score);
 		SceneManager::Instance().ChangeScene(new SceneResult);
 		return;
 	}
@@ -749,6 +752,7 @@ void SceneGame::DrawGUI()
 	ImGui::Begin("UI");
 	ImGui::Text("Gomi : %d", gomiCount);
 	ImGui::Separator();
+	ImGui::Text("Garbage : %d", garbages.size());
 	if (ImGui::Button("Spawn Garbage (Player Front)"))
 	{
 		// プレイヤーの前にスポーンさせる
@@ -778,6 +782,18 @@ void SceneGame::DrawGUI()
 	ImGui::Begin("Score");
 	ImGui::Text("Score : %d", score);
 	ImGui::Text("Combo : %d", SceneGame::Instance().GetCombo());
+	if(ImGui::Button("Add Score 100"))
+	{
+		SceneGame::Instance().AddScore(100);
+	}
+	if(ImGui::Button("Add Score 1000"))
+	{
+		SceneGame::Instance().AddScore(1000);
+	}
+	if(ImGui::Button("Add Score 10000"))
+	{
+		SceneGame::Instance().AddScore(10000);
+	}
 	ImGui::End();
 }
 void SceneGame::StartHitStop(float time)

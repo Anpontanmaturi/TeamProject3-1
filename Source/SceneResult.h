@@ -3,6 +3,7 @@
 #pragma once
 #include "Scene.h"
 #include "System/Sprite.h"
+#include "UiRanking.h"
 
 class SceneResult : public Scene
 {
@@ -16,4 +17,6 @@ public:
 
 private:
     Sprite* sprite = nullptr;
+
+    std::unique_ptr<UiRanking> rankingUI;
 };

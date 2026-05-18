@@ -1,16 +1,16 @@
 #pragma once
 #include "UiBase.h"
-#include "System/Sprite.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
-class UiMyScore : public UIBase
+class UiRanking : public UIBase
 {
 public:
-	UiMyScore();
-	virtual ~UiMyScore() override;
+	UiRanking();
+	virtual ~UiRanking() override;
 	// 更新
 	virtual void Update(float elapsedTime) override;
 	// 描画
@@ -18,23 +18,24 @@ public:
 	// セッター・ゲッター
 	DirectX::XMFLOAT2 GetFontOffset() const { return FontOffset; }
 	void SetFontOffset(float x, float y) { FontOffset = { x, y }; }
-private:
-	//テクスチャ
-	std::unique_ptr<Sprite> myScore;
 
+	// 終了化
+	void Finalize() {
+		spriteBatch.reset();
+		spriteFont.reset();
+	}
+private:
 	// --- フォント描画用 ---
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont>  spriteFont;
-	std::wstring text; // 描画するテキスト
 
-	DirectX::XMFLOAT2 FontOffset = { 240.0f, 90.0f };// フォント描画位置のオフセット
+	std::vector<std::wstring> rankingTexts; // 5位までのランキングテキストを格納
+
+	DirectX::XMFLOAT2 FontOffset = { 240.0f, 90.0f }; // フォント描画位置のオフセット
 	DirectX::XMFLOAT2 fontPos{};
 	DirectX::XMFLOAT2 fontScale{};
 	DirectX::XMVECTORF32 fontColor = DirectX::Colors::White;
+	float scaleMag = 3.0f; // フォントの拡大率（UIのスケールに合わせて調整）
 
-	// 画像の元のサイズ
-	const float Origin_W = 500.0f;
-	const float Origin_H = 215.0f;
-
-	float scaleMag = 4.0f; // フォントの拡大率（UIのスケールに合わせて調整）
+	float lineSpace = 120.0f;// 行間
 };

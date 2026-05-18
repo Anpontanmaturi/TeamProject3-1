@@ -6,11 +6,11 @@
 #include <string>
 #include <memory>
 
-class UiMyScore : public UIBase
+class UiHighScore : public UIBase
 {
 public:
-	UiMyScore();
-	virtual ~UiMyScore() override;
+	UiHighScore();
+	virtual ~UiHighScore() override;
 	// 更新
 	virtual void Update(float elapsedTime) override;
 	// 描画
@@ -20,21 +20,21 @@ public:
 	void SetFontOffset(float x, float y) { FontOffset = { x, y }; }
 private:
 	//テクスチャ
-	std::unique_ptr<Sprite> myScore;
+	std::unique_ptr<Sprite> highScore;
 
 	// --- フォント描画用 ---
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont>  spriteFont;
 	std::wstring text; // 描画するテキスト
 
-	DirectX::XMFLOAT2 FontOffset = { 240.0f, 90.0f };// フォント描画位置のオフセット
+	DirectX::XMFLOAT2 FontOffset = { 240.0f, 270.0f };// フォント描画位置のオフセット
 	DirectX::XMFLOAT2 fontPos{};
 	DirectX::XMFLOAT2 fontScale{};
 	DirectX::XMVECTORF32 fontColor = DirectX::Colors::White;
 
 	// 画像の元のサイズ
 	const float Origin_W = 500.0f;
-	const float Origin_H = 215.0f;
+	const float Origin_H = 400.0f;
 
 	float scaleMag = 4.0f; // フォントの拡大率（UIのスケールに合わせて調整）
 };

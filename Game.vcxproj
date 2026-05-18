@@ -154,6 +154,7 @@
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\SceneResult.h" />
     <ClInclude Include="Source\SceneTitle.h" />
+    <ClInclude Include="Source\ScoreManager.h" />
     <ClInclude Include="Source\Stage.h" />
     <ClInclude Include="Source\System\Audio.h" />
     <ClInclude Include="Source\System\AudioResource.h" />
@@ -179,8 +180,10 @@
     <ClInclude Include="Source\UiBase.h" />
     <ClInclude Include="Source\UiBattery.h" />
     <ClInclude Include="Source\UiDustCount.h" />
+    <ClInclude Include="Source\UiHighScore.h" />
     <ClInclude Include="Source\UiManager.h" />
     <ClInclude Include="Source\UiMyScore.h" />
+    <ClInclude Include="Source\UiRanking.h" />
     <ClInclude Include="Source\UiTimer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +219,7 @@
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneResult.cpp" />
     <ClCompile Include="Source\SceneTitle.cpp" />
+    <ClCompile Include="Source\ScoreManager.cpp" />
     <ClCompile Include="Source\Stage.cpp" />
     <ClCompile Include="Source\System\Audio.cpp" />
     <ClCompile Include="Source\System\AudioResource.cpp" />
@@ -236,8 +240,10 @@
     <ClCompile Include="Source\System\Sprite.cpp" />
     <ClCompile Include="Source\UiBattery.cpp" />
     <ClCompile Include="Source\UiDustCount.cpp" />
+    <ClCompile Include="Source\UiHighScore.cpp" />
     <ClCompile Include="Source\UiManager.cpp" />
     <ClCompile Include="Source\UiMyScore.cpp" />
+    <ClCompile Include="Source\UiRanking.cpp" />
     <ClCompile Include="Source\UiTimer.cpp" />
   </ItemGroup>
   <ItemGroup>

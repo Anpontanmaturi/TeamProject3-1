@@ -6,13 +6,15 @@
 #include "UiDustCount.h"
 #include "UiTimer.h"
 #include "UiMyScore.h"
+#include "UiHighScore.h"
 
 enum
 {
 	BATTERY = 0,
 	DUSTCOUNT,
 	TIMER,
-	MYSCORE
+	HIGHSCORE,
+	MYSCORE,
 };
 
 void UIManager::Initialize()
@@ -23,6 +25,7 @@ void UIManager::Initialize()
 	uiElements.push_back(std::make_unique<UIBattery>());
 	uiElements.push_back(std::make_unique<UIDustCount>());
 	uiElements.push_back(std::make_unique<UiTimer>());
+	uiElements.push_back(std::make_unique<UiHighScore>());
 	uiElements.push_back(std::make_unique<UiMyScore>());
 
 }
@@ -113,7 +116,7 @@ void UIManager::DrawDebugGUI()
 			timer->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
 		}
 	}
-	ImGui::Separator;
+	ImGui::Separator();
 	{
 		UiMyScore* myScore = static_cast<UiMyScore*>(uiElements[MYSCORE].get());
 		DirectX::XMFLOAT2 pos = myScore->GetPosition();
@@ -125,6 +128,30 @@ void UIManager::DrawDebugGUI()
 		float scaleArr[2] = { scale.x, scale.y };
 		if (ImGui::DragFloat2("MyScoreUI Scale", scaleArr, 0.01f)) {
 			myScore->SetScale(scaleArr[0], scaleArr[1]);
+		}
+		DirectX::XMFLOAT2 fontOffset = myScore->GetFontOffset();
+		float fontOffsetArr[2] = { fontOffset.x, fontOffset.y };
+		if (ImGui::DragFloat2("MyScoreUI Font Offset", fontOffsetArr, 1.0f)) {
+			myScore->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
+		}
+	}
+	ImGui::Separator();
+	{
+		UiHighScore* highScore = static_cast<UiHighScore*>(uiElements[HIGHSCORE].get());
+		DirectX::XMFLOAT2 pos = highScore->GetPosition();
+		float posArr[2] = { pos.x, pos.y };
+		if (ImGui::DragFloat2("HighScoreUI Position", posArr, 1.0f)) {
+			highScore->SetPosition(posArr[0], posArr[1]);
+		}
+		DirectX::XMFLOAT2 scale = highScore->GetScale();
+		float scaleArr[2] = { scale.x, scale.y };
+		if (ImGui::DragFloat2("HighScoreUI Scale", scaleArr, 0.01f)) {
+			highScore->SetScale(scaleArr[0], scaleArr[1]);
+		}
+		DirectX::XMFLOAT2 fontOffset = highScore->GetFontOffset();
+		float fontOffsetArr[2] = { fontOffset.x, fontOffset.y };
+		if (ImGui::DragFloat2("HighScoreUI Font Offset", fontOffsetArr, 1.0f)) {
+			highScore->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
 		}
 	}
 
