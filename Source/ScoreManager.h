@@ -5,7 +5,7 @@
 class ScoreManager
 {
 private:
-	ScoreManager() {}
+	ScoreManager();
 	~ScoreManager() = default;
 
 public:
@@ -24,6 +24,9 @@ public:
 	// ランキングの取得
 	const std::vector<int>& GetTopScores() const { return myScores; }
 
+	// 最後にプレイしたスコアの取得
+	int GetLastPlayScore() const { return lastPlayScore; }
+
 private:
 	void SaveScore();
 	void LoadScore();
@@ -31,4 +34,6 @@ private:
 	std::vector<int> myScores; // プレイヤーのスコアを保存するベクター
 	const int MaxScoresCount = 5; // 上位5件を保存
 	const std::string savePath = "Data/Save/ranking.dat"; // スコアを保存するファイル名
+
+	int lastPlayScore = 0; // 最後にプレイしたスコアを保存する変数
 };

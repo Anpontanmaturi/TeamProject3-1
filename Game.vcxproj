@@ -180,6 +180,7 @@
     <ClInclude Include="Source\UiBase.h" />
     <ClInclude Include="Source\UiBattery.h" />
     <ClInclude Include="Source\UiDustCount.h" />
+    <ClInclude Include="Source\UiGabageIcon.h" />
     <ClInclude Include="Source\UiHighScore.h" />
     <ClInclude Include="Source\UiManager.h" />
     <ClInclude Include="Source\UiMyScore.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="Source\System\Sprite.cpp" />
     <ClCompile Include="Source\UiBattery.cpp" />
     <ClCompile Include="Source\UiDustCount.cpp" />
+    <ClCompile Include="Source\UiGabageIcon.cpp" />
     <ClCompile Include="Source\UiHighScore.cpp" />
     <ClCompile Include="Source\UiManager.cpp" />
     <ClCompile Include="Source\UiMyScore.cpp" />

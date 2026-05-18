@@ -22,6 +22,8 @@ UIDustCount::UIDustCount()
 
 UIDustCount::~UIDustCount()
 {
+    spriteFont.reset();
+    spriteBatch.reset();
 }
 
 void UIDustCount::Update(float elapsedTime)

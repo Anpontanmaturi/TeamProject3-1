@@ -7,6 +7,7 @@
 #include "UiTimer.h"
 #include "UiMyScore.h"
 #include "UiHighScore.h"
+#include "UiGabageIcon.h"
 
 enum
 {
@@ -15,6 +16,7 @@ enum
 	TIMER,
 	HIGHSCORE,
 	MYSCORE,
+	GARBAGEICON,
 };
 
 void UIManager::Initialize()
@@ -27,6 +29,7 @@ void UIManager::Initialize()
 	uiElements.push_back(std::make_unique<UiTimer>());
 	uiElements.push_back(std::make_unique<UiHighScore>());
 	uiElements.push_back(std::make_unique<UiMyScore>());
+	uiElements.push_back(std::make_unique<UiGarbageIcon>());
 
 }
 
@@ -152,6 +155,20 @@ void UIManager::DrawDebugGUI()
 		float fontOffsetArr[2] = { fontOffset.x, fontOffset.y };
 		if (ImGui::DragFloat2("HighScoreUI Font Offset", fontOffsetArr, 1.0f)) {
 			highScore->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
+		}
+	}
+	ImGui::Separator();
+	{
+		UiGarbageIcon* garbageIcon = static_cast<UiGarbageIcon*>(uiElements[GARBAGEICON].get());
+		DirectX::XMFLOAT2 pos = garbageIcon->GetPosition();
+		float posArr[2] = { pos.x, pos.y };
+		if (ImGui::DragFloat2("GarbageIconUI Position", posArr, 1.0f)) {
+			garbageIcon->SetPosition(posArr[0], posArr[1]);
+		}
+		DirectX::XMFLOAT2 scale = garbageIcon->GetScale();
+		float scaleArr[2] = { scale.x, scale.y };
+		if (ImGui::DragFloat2("GarbageIconUI Scale", scaleArr, 0.01f)) {
+			garbageIcon->SetScale(scaleArr[0], scaleArr[1]);
 		}
 	}
 

@@ -22,6 +22,8 @@ UiHighScore::UiHighScore()
 
 UiHighScore::~UiHighScore()
 {
+	spriteFont.reset();
+	spriteBatch.reset();
 }
 
 void UiHighScore::Update(float elapsedTime)

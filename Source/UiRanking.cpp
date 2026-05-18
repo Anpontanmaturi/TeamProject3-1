@@ -1,6 +1,7 @@
 #include "UiRanking.h"
 #include "ScoreManager.h"	
 #include "System/Graphics.h"
+#include "SceneGame.h"
 
 UiRanking::UiRanking()
 {
@@ -22,6 +23,10 @@ UiRanking::~UiRanking()
 void UiRanking::Update(float elapsedTime)
 {
 	if (!spriteFont) return;
+
+    // 今回のスコアを取得してテキストにする
+    int currentScore = ScoreManager::Instance().GetLastPlayScore();
+    m_currentScoreText = L"YOUR SCORE : " + std::to_wstring(currentScore);
 
 	// ランキング配列を取得
 	const auto& scores = ScoreManager::Instance().GetTopScores();
@@ -52,12 +57,32 @@ void UiRanking::Render(const RenderContext& rc)
     // 行間
     float lineSpacing = lineSpace * scale.y;
 
+    // 一番上に今回のスコアを描画
+    DirectX::XMFLOAT2 myScorePos = {
+        position.x + (FontOffset.x * scale.x),
+        position.y + (FontOffset.y * scale.y)
+    };
+
+    DirectX::XMFLOAT2 myScoreScale = { fontScale.x * 1.2f, fontScale.y * 1.2f };
+
+    spriteFont->DrawString(
+        spriteBatch.get(),
+        m_currentScoreText.c_str(),
+        myScorePos,
+        DirectX::Colors::Cyan,
+        0.0f,
+        DirectX::XMFLOAT2(0, 0),
+        myScoreScale
+    );
+
+    float rankingOffsetY = lineSpacing * 2.0f;
+
     for (size_t i = 0; i < rankingTexts.size(); ++i)
     {
         // 1行ごとに Y 座標を（i * 行間）分だけ下にずらしていく
         DirectX::XMFLOAT2 currentPos = {
             position.x + (FontOffset.x * scale.x),
-            position.y + (FontOffset.y * scale.y) + (i * lineSpacing)
+            position.y + (FontOffset.y * scale.y) + (i * lineSpacing) + rankingOffsetY
         };
 
         // 順位（i）に応じて文字の色を変えて豪華にする

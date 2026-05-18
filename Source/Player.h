@@ -45,6 +45,9 @@ public:
 	void SetEnergy(float value) { energy = value; }
 	float GetMaxEnergy() const { return maxenergy; }
 
+	// 現在のガラクタ所持数を取得する
+	int GetGarbageCount() const { return garbageCount; }
+
 	//ジャンプ入力処理
 	void InputJump();
 

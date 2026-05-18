@@ -3,8 +3,17 @@
 #include <algorithm>
 #include <filesystem>
 
+ScoreManager::ScoreManager()
+{
+	// 起動時に自動でファイルを読み込む
+	LoadScore();
+}
+
 void ScoreManager::RegisterScore(int score)
 {
+	// 最後にプレイしたスコアを保存
+	lastPlayScore = score;
+
 	// スコアを追加
 	myScores.push_back(score);
 
@@ -52,5 +61,9 @@ void ScoreManager::LoadScore()
 	if (size > 0) {
 		myScores.resize(size);
 		inFile.read(reinterpret_cast<char*>(myScores.data()), size * sizeof(int));
+	}
+
+	while(myScores.size()< MaxScoresCount) {
+		myScores.push_back(0); // 足りない分は0で埋める
 	}
 }

@@ -21,6 +21,8 @@ UiMyScore::UiMyScore()
 
 UiMyScore::~UiMyScore()
 {
+	spriteFont.reset();
+	spriteBatch.reset();
 }
 
 void UiMyScore::Update(float elapsedTime)

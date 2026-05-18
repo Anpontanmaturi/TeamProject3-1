@@ -30,8 +30,9 @@ private:
 	std::unique_ptr<DirectX::SpriteFont>  spriteFont;
 
 	std::vector<std::wstring> rankingTexts; // 5位までのランキングテキストを格納
+	std::wstring m_currentScoreText; // 今回のスコア用テキスト
 
-	DirectX::XMFLOAT2 FontOffset = { 240.0f, 90.0f }; // フォント描画位置のオフセット
+	DirectX::XMFLOAT2 FontOffset = { 0.0f, 0.0f }; // フォント描画位置のオフセット
 	DirectX::XMFLOAT2 fontPos{};
 	DirectX::XMFLOAT2 fontScale{};
 	DirectX::XMVECTORF32 fontColor = DirectX::Colors::White;

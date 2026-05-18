@@ -22,6 +22,8 @@ UiTimer::UiTimer()
 
 UiTimer::~UiTimer()
 {
+	spriteFont.reset();
+	spriteBatch.reset();
 }
 
 void UiTimer::Update(float elapsedTime)

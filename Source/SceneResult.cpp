@@ -16,10 +16,6 @@ void SceneResult::Initialize() {
     //スプライト初期化
     sprite = new Sprite("Data/Sprite/gameclear.png");
 
-    //最終スコアを獲得してランキングに登録・保存
-    int finalScore = SceneGame::Instance().GetScore();
-    ScoreManager::Instance().RegisterScore(finalScore);
-
 	// ランキングUIの生成
     rankingUI = std::make_unique<UiRanking>(); 
 }
