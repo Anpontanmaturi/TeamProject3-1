@@ -486,8 +486,8 @@ void SceneGame::Update(float elapsedTime)
 		// —â‘ ŒÉ‚ÌlŠp‚¢“–‚½‚è”»’è
 		// =========================
 
-		float halfWidth = 1.6f; // ‰¡•
-		float halfDepth = 1.6f; // ‰œs‚«
+		float halfWidth = 1.8f; // ‰¡•
+		float halfDepth = 1.8f; // ‰œs‚«
 
 		float minX = kp.x - halfWidth;
 		float maxX = kp.x + halfWidth;
