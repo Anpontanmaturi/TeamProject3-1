@@ -192,6 +192,9 @@
     <ClCompile Include="Source\Pause.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Sceneplay.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui-docking\imconfig.h">
@@ -372,6 +375,9 @@
       <Filter>Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Pause.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sceneplay.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

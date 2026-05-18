@@ -122,6 +122,7 @@ public:
 
 	AudioSource* PSE1 = nullptr;
 	AudioSource* PSE2 = nullptr;
+	AudioSource* PSE3 = nullptr;
 
 	//========================================
 	// Œü‚«Žæ“¾

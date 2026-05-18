@@ -24,6 +24,7 @@ void Player::Initialize()
 
 	PSE1 = Audio::Instance().LoadAudioSource("Data/Sound/runba.wav");
 	PSE2 = Audio::Instance().LoadAudioSource("Data/Sound/tobasu.wav");
+	PSE3 = Audio::Instance().LoadAudioSource("Data/Sound/seti.wav");
 }
 
 void Player::AddEnergy(float value)
@@ -447,6 +448,7 @@ void Player::InputProjectile()
 
 			DirectX::XMFLOAT3 pos = position;
 			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
+			PSE3->Play(false);
 		}
 	}
 	prevE = nowE;

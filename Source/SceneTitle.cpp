@@ -2,81 +2,118 @@
 #include "SceneTitle.h"
 #include "System/Input.h"
 #include "SceneGame.h"
-#include "SceneManager.h"
 #include "SceneLoading.h"
+#include "SceneManager.h"
+#include "Sceneplay.h"
+#include <imgui.h>
 
-//初期化
+// 初期化
 void SceneTitle::Initialize()
-{
-	//スプライト初期化
-	sprite = new Sprite("Data/Sprite/Title.png");
+{   //1番
+	// スプライト初期化
+	spriteBG = new Sprite("Data/Sprite/Title.png");
+	spriteStart = new Sprite("Data/Sprite/start.png");
+	spriteTutorial = new Sprite("Data/Sprite/tutorial.png");
+
+
+	
+	choice = true;
+	timer = 0;
 }
 
-//終了化
+// 終了化
 void SceneTitle::Finalize()
 {
-	//スプライト終了化
-	if (sprite != nullptr)
-	{
-		delete sprite;
-		sprite = nullptr;
-	}
+	delete spriteBG;
+	delete spriteStart;
+	delete spriteTutorial;
+
+	spriteBG = nullptr;
+	spriteStart = nullptr;
+	spriteTutorial = nullptr;
+	
+
 }
 
-//更新処理
+// 更新処理
 void SceneTitle::Update(float elapsedTime)
 {
-	GamePad& gamePad = Input::Instance().GetGamePad();
+	timer++;
 
-	/*//何かボタンを押したらゲームシーンへ切り替え
-	const GamePadButton anyButton =
-		GamePad::BTN_A | GamePad::BTN_B |
-		GamePad::BTN_X | GamePad::BTN_Y;
-	if (gamePad.GetButtonDown() & anyButton)
+	static bool prevUp = false;
+	static bool prevDown = false;
+	static bool prevSpace = false;
+
+	bool nowUp = (GetAsyncKeyState('W') & 0x8000) != 0;
+	bool nowDown = (GetAsyncKeyState('S') & 0x8000) != 0;
+	bool nowSpace = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
+
+	if (nowUp && !prevUp)    choice = true;
+	if (nowDown && !prevDown) choice = false;
+
+	if (nowSpace && !prevSpace)
 	{
-		SceneManager::Instance().ChangeScene(new SceneGame);
-	}*/
-	/*//何かボタンを押したらローディングシーンへ切り替え
-	const GamePadButton anyButton =
-		GamePad::BTN_A | GamePad::BTN_B |
-		GamePad::BTN_X | GamePad::BTN_Y;
-	if (gamePad.GetButtonDown() & anyButton)
-	{
-		SceneManager::Instance().ChangeScene(new SceneLoading);
-	}*/
-	//何かボタンを押したらローディングシーンへ切り替え
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
-	{
-		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+		if (choice)
+		{
+			SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+		}
+		else
+		{
+			SceneManager::Instance().ChangeScene(new SceneLoading(new ScenePlay));
+		}
 	}
+
+	prevUp = nowUp;
+	prevDown = nowDown;
+	prevSpace = nowSpace;
 }
 
-//描画処理
+// 描画処理
 void SceneTitle::Render()
 {
 	Graphics& graphics = Graphics::Instance();
 	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
-	RenderState* renderState = graphics.GetRenderState();
 
-	//描画準備
 	RenderContext rc;
 	rc.deviceContext = dc;
 	rc.renderState = graphics.GetRenderState();
 
-	//2Dスプライト描画
-	{
-		//タイトル描画
-		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
-		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
-		sprite->Render(rc,
-			0, 0, 0, screenWidth, screenHeight,
-			0,
-			1, 1, 1, 1);
-	}
+	float screenWidth = (float)graphics.GetScreenWidth();
+	float screenHeight = (float)graphics.GetScreenHeight();
+
+	// 背景全画面
+	spriteBG->Render(rc,
+		0, 0, 0,
+		screenWidth, screenHeight,
+		0,
+		1, 1, 1, 1);
+
+	// 選択中は 1.2倍
+	float scaleStart = (choice ? 1.2f : 1.0f);
+	float scaleTutorial = (!choice ? 1.2f : 1.0f);
+
+	float width = 300.0f;
+	float height = 100.0f;
+
+	// Start
+	spriteStart->Render(rc,
+		775, 250, 0,
+		width * scaleStart, height * scaleStart,
+		0,
+		1, 1, 1, 1);
+
+	// Tutorial
+	spriteTutorial->Render(rc,
+		775, 450, 0,
+		width * scaleTutorial, height * scaleTutorial,
+		0,
+		1, 1, 1, 1);
 }
 
-//GUI描画
+// GUI描画
 void SceneTitle::DrawGUI()
 {
+
+
 
 }

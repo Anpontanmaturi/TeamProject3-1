@@ -87,6 +87,7 @@ void SceneGame::Initialize()
 // =========================
 	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lanternfs_Curse.wav");
 	SGSe = Audio::Instance().LoadAudioSource("Data/Sound/tya-zi.wav");
+	SGSe2 = Audio::Instance().LoadAudioSource("Data/Sound/hirou.wav");
 	SGAu->Play(true);
 	// =========================
    // ƒSƒ~¶¬i‚±‚±‚ª–{–½j
@@ -409,6 +410,7 @@ void SceneGame::Update(float elapsedTime)
 			g->Collect();
 			gomiCount++;
 			score += 5;
+			SGSe2->Play(false);
 		}
 	}
 
