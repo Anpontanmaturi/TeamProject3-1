@@ -86,7 +86,9 @@ void SceneGame::Initialize()
 	// =========================
 // BGM読み込み
 // =========================
-	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lantern’s_Curse.wav");
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/game.wav");
+	SGSe = Audio::Instance().LoadAudioSource("Data/Sound/tya-zi.wav");
+	SGSe2 = Audio::Instance().LoadAudioSource("Data/Sound/hirou.wav");
 	SGAu->Play(true);
 	// =========================
    // ゴミ生成（ここが本命）
@@ -316,6 +318,7 @@ void SceneGame::Update(float elapsedTime)
 		{
 			Player& player = Player::Instance();
 
+			SGSe->Play(true);
 			//========================
 			// 操作不能
 			//========================
@@ -383,6 +386,7 @@ void SceneGame::Update(float elapsedTime)
 				player.SetCanMove(true);
 
 				gomiCount = 0;
+				SGSe->Stop();
 			}
 		}
 	}
@@ -409,6 +413,7 @@ void SceneGame::Update(float elapsedTime)
 			g->Collect();
 			gomiCount++;
 			score += 5;
+			SGSe2->Play(false);
 		}
 	}
 
@@ -484,8 +489,8 @@ void SceneGame::Update(float elapsedTime)
 		// 冷蔵庫の四角い当たり判定
 		// =========================
 
-		float halfWidth = 1.6f; // 横幅
-		float halfDepth = 1.6f; // 奥行き
+		float halfWidth = 1.8f; // 横幅
+		float halfDepth = 1.8f; // 奥行き
 
 		float minX = kp.x - halfWidth;
 		float maxX = kp.x + halfWidth;

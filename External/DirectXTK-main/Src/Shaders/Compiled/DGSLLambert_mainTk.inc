@@ -40,7 +40,7 @@
     dcl t0  // pixel<4,5,6,7>
     dcl t2.xyz  // pixel<10,11,12>
 
-#line 126 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\DGSLLambert.hlsl"
+#line 126 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\DGSLLambert.hlsl"
     mul r0.w, t0.w, t0.w
     cmp r0, -r0.w, c10.x, c10.y
     texkill r0
@@ -115,10 +115,10 @@ ret
 
 const BYTE DGSLLambert_mainTk[] =
 {
-     68,  88,  66,  67, 168,  45, 
-    124, 193,  97,  24,  27,  81, 
-     66,  62, 246, 254, 238,  50, 
-    222,  99,   1,   0,   0,   0, 
+     68,  88,  66,  67, 179,  55, 
+     49, 178, 234,  51, 222,  29, 
+    167, 236, 244, 121, 173,  62, 
+     52,  43,   1,   0,   0,   0, 
     164,   9,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     232,   5,   0,   0, 132,   8, 
@@ -147,7 +147,7 @@ const BYTE DGSLLambert_mainTk[] =
       0,   0,  44,   2,   0,   0, 
      67,  58,  92,  85, 115, 101, 
     114, 115,  92,  50,  50,  52, 
-     48,  48,  55,  48,  92,  68, 
+     48,  48,  52,  55,  92,  68, 
     101, 115, 107, 116, 111, 112, 
      92,  84, 101,  97, 109,  80, 
     114, 111, 106, 101,  99, 116, 

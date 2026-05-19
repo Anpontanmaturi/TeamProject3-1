@@ -3,6 +3,7 @@
 #include"System/ModelRenderer.h"
 #include"Character.h"
 #include"ProjectileManager.h"
+#include <System/AudioSource.h>
 
 //ƒvƒŒƒCƒ„[
 class Player : public Character
@@ -121,6 +122,10 @@ public:
 
 	void SetCanMove(bool flag) { canMove = flag; }
 	bool CanMove() const { return canMove; }
+
+	AudioSource* PSE1 = nullptr;
+	AudioSource* PSE2 = nullptr;
+	AudioSource* PSE3 = nullptr;
 
 	//========================================
 	// Œü‚«æ“¾

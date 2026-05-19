@@ -6,10 +6,10 @@ using namespace DirectX;
 // コンストラクタ
 garakuta::garakuta()
 {
-    model = new Model("Data/Model/SpikeBall/SpikeBall.mdl");
+    model = new Model("Data/Model/Garakuta/Garakuta.mdl");
 
     // サイズ調整（必要なら）
-    scale = { 0.6f, 0.6f, 0.6f };
+    scale = { 0.05f, 0.05f, 0.05f };
 }
 
 // デストラクタ

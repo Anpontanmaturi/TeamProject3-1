@@ -4,9 +4,10 @@
 Stage::Stage()
 {
 	//ステージモデルを読み込み
-	model = new Model("Data/Model/Stage/ExampleStage.mdl");
+	model = new Model("Data/Model/Stage/kari_map.mdl");
 }
 
+//デストラクタ
 Stage::~Stage()
 {
 	//ステージモデルを破棄
@@ -22,9 +23,29 @@ void Stage::Update(float elapsedTime)
 //描画処理
 void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	DirectX::XMFLOAT4X4 transform;
-	DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
+	// 拡大率
+	float scale = 0.025f;
 
-	//レンダラにモデルを描画してもらう
+	// 位置
+	float posX = 0.0f;
+	float posY = 0.0f;
+	float posZ = 0.0f;
+
+	// スケール行列
+	DirectX::XMMATRIX S =
+		DirectX::XMMatrixScaling(scale, scale, scale);
+
+	// 移動行列
+	DirectX::XMMATRIX T =
+		DirectX::XMMatrixTranslation(posX, posY, posZ);
+
+	// 合成行列
+	DirectX::XMMATRIX world = S * T;
+
+	// float4x4へ変換
+	DirectX::XMFLOAT4X4 transform;
+	DirectX::XMStoreFloat4x4(&transform, world);
+
+	// 描画
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }

@@ -7,6 +7,7 @@
 #include "ProjectileStraight.h"
 #include "ProjectileHoming.h"
 #include <SceneGame.h>
+#include <System/Audio.h>
 
 //初期化
 void Player::Initialize()
@@ -20,6 +21,10 @@ void Player::Initialize()
 
 	position = { 0.0f,0.0f,0.0f };
 	Reset();
+
+	PSE1 = Audio::Instance().LoadAudioSource("Data/Sound/runba.wav");
+	PSE2 = Audio::Instance().LoadAudioSource("Data/Sound/tobasu.wav");
+	PSE3 = Audio::Instance().LoadAudioSource("Data/Sound/seti.wav");
 }
 
 void Player::AddEnergy(float value)
@@ -172,6 +177,9 @@ void Player::InputMove(float elapsedTime)
 	if (energy <= 0.0f)
 	{
 		moveSpeed = moveSpeed / 2;
+
+		// エネルギー切れなら音停止
+		PSE1->Stop();
 	}
 	isBoost = false; // ←毎フレーム初期化
 
@@ -185,12 +193,32 @@ void Player::InputMove(float elapsedTime)
 	{
 		energy -= 0.05f;
 
-		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+		
+		bool boostKey = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
+
+		if (boostKey)
 		{
-			isBoost = true;              // ←これ追加
+			isBoost = true;
 			moveSpeed = boostLimit;
 			energy -= 1.0f;
+
+			// まだ再生してない時だけ再生
+			static bool isPlaying = false;
+
+			
+				PSE1->Play(true);
+			
 		}
+		else
+		{
+			// スペース離したら停止
+			PSE1->Stop();
+
+			
+		}
+		
+		
+	
 	}
 }
 
@@ -369,6 +397,8 @@ void Player::CollisionPlayerVsEnemies()
 					float multiplier = SceneGame::Instance().GetComboMultiplier();
 					int gomi = SceneGame::Instance().GetGomiCount();
 					SceneGame::Instance().AddScore((100 + (gomi * 10)) * multiplier);	
+
+					PSE2->Play(false);
 					
 				}
 				
@@ -376,6 +406,7 @@ void Player::CollisionPlayerVsEnemies()
 				{
 					//通常
 					enemy->SetPosition(outPosition);
+					
 				}
 			}
 		}
@@ -417,6 +448,7 @@ void Player::InputProjectile()
 
 			DirectX::XMFLOAT3 pos = position;
 			EnemyManager::Instance().AttractEnemies(pos, 10.0f);
+			PSE3->Play(false);
 		}
 	}
 	prevE = nowE;

@@ -84,6 +84,7 @@ private:
 
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
+	AudioSource* SGSe2 = nullptr;
 
 #if 0
 	float timeLimit = 180.0f;   // êßå¿éûä‘ÅiïbÅj
