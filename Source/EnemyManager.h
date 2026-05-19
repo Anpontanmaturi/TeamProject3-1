@@ -9,8 +9,8 @@
 class EnemyManager
 {
 private:
-	EnemyManager(){}
-	~EnemyManager(){}
+	EnemyManager() {}
+	~EnemyManager() {}
 
 public:
 	//唯一のインスタンス取得
@@ -62,7 +62,8 @@ private:
 
 	DirectX::XMFLOAT3 respawnPoint = { 0,5,0 };//エネミーの再出現位置
 	int maxEnemies = 3; // エネミーの最大数
-	
-	std::map<Enemy*, float> delayRemoves;//遅延削除用のマップ
-};
 
+	std::map<Enemy*, float> delayRemoves;//遅延削除用のマップ
+
+	float gomiTimer = 0.0f;
+};
