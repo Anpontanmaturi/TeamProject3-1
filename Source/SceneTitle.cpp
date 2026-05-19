@@ -13,7 +13,7 @@
 void SceneTitle::Initialize()
 {
 	// スプライト初期化
-	spriteBG = new Sprite("Data/Sprite/Title.png");
+	spriteBG = new Sprite("Data/Sprite/tai.png");
 	spriteStart = new Sprite("Data/Sprite/start.png");
 	spriteTutorial = new Sprite("Data/Sprite/tutorial.png");
 	spriteSentaku = new Sprite("Data/Sprite/yazirusi.png");
@@ -119,18 +119,17 @@ void SceneTitle::Render()
 	);
 
 	// 選択中は拡大
-	float scaleStart = (choice ? 1.2f : 1.0f);
-	float scaleTutorial = (!choice ? 1.2f : 1.0f);
+	
 
-	float width = 300.0f;
-	float height = 100.0f;
+	float width = 175.0f;
+	float height = 75.0f;
 
 	// START
 	spriteStart->Render(
 		rc,
-		775, 250, 0,
-		width * scaleStart,
-		height * scaleStart,
+		610, 525, 0,
+		width,
+		height,
 		0,
 		1, 1, 1, 1
 	);
@@ -138,23 +137,22 @@ void SceneTitle::Render()
 	// TUTORIAL
 	spriteTutorial->Render(
 		rc,
-		775, 450, 0,
-		width * scaleTutorial,
-		height * scaleTutorial,
+		610, 625, 0,
+		width,
+		height,
 		0,
 		1, 1, 1, 1
 	);
-
 	// 矢印アニメーション
-	float arrowY = choice ? 250.0f : 450.0f;
+	float arrowY = choice ? 525.0f : 625.0f;
 
 	// 左右にふわふわ動く
-	float arrowX = 620.0f + sinf(timer * 0.1f) * 10.0f;
+	float arrowX = 520.0f + sinf(timer * 0.1f) * 10.0f;
 
 	spriteSentaku->Render(
 		rc,
 		arrowX, arrowY, 0,
-		80, 80,
+		70, 70,
 		0,
 		1, 1, 1, 1
 	);
