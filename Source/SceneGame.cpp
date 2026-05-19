@@ -85,7 +85,7 @@ void SceneGame::Initialize()
 	// =========================
 // BGM“Ç‚Ýž‚Ý
 // =========================
-	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/The_Lanternfs_Curse.wav");
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/game.wav");
 	SGSe = Audio::Instance().LoadAudioSource("Data/Sound/tya-zi.wav");
 	SGSe2 = Audio::Instance().LoadAudioSource("Data/Sound/hirou.wav");
 	SGAu->Play(true);

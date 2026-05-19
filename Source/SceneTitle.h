@@ -1,5 +1,5 @@
 #pragma once
-
+#include <System/AudioSource.h>
 #include "System/Sprite.h"
 #include "Scene.h"
 
@@ -31,5 +31,6 @@ private:
 	Sprite* spriteTutorial = nullptr;
 	bool choice = true; // true = Start, false = Tutorial
 	int timer = 0;
+	AudioSource* ST = nullptr;
 
 };

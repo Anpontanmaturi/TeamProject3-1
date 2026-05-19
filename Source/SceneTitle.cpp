@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "Sceneplay.h"
 #include <imgui.h>
+#include <System/Audio.h>
 
 // ‰Šú‰»
 void SceneTitle::Initialize()
@@ -16,9 +17,10 @@ void SceneTitle::Initialize()
 	spriteTutorial = new Sprite("Data/Sprite/tutorial.png");
 
 
-	
+	ST = Audio::Instance().LoadAudioSource("Data/Sound/tai.wav");
 	choice = true;
 	timer = 0;
+	ST->Play(true);
 }
 
 // I—¹‰»
@@ -56,10 +58,12 @@ void SceneTitle::Update(float elapsedTime)
 		if (choice)
 		{
 			SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+			ST->Stop();
 		}
 		else
 		{
 			SceneManager::Instance().ChangeScene(new SceneLoading(new ScenePlay));
+			ST->Stop();
 		}
 	}
 
