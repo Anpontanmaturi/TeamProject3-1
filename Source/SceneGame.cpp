@@ -86,7 +86,7 @@ void SceneGame::Initialize()
 	// =========================
 // BGM“Ç‚Ýž‚Ý
 // =========================
-	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/game.wav");
+	SGAu = Audio::Instance().LoadAudioSource("Data/Sound/fruitsparfait.wav");
 	SGSe = Audio::Instance().LoadAudioSource("Data/Sound/tya-zi.wav");
 	SGSe2 = Audio::Instance().LoadAudioSource("Data/Sound/hirou.wav");
 	SGAu->Play(true);
@@ -210,6 +210,8 @@ void SceneGame::Finalize()
 		delete cameraController;
 		cameraController = nullptr;
 	}
+	// ‰¹Šy’âŽ~
+	SGAu->Stop();
 }
 
 // XVˆ—
