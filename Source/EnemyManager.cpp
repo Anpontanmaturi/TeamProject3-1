@@ -98,6 +98,19 @@ void EnemyManager::Update(float elapsedTime)
 		}
 	}
 
+	//ステージモデルとの衝突判定
+	//for(Enemy* enemy : enemies)
+	//{
+	//	if (enemy == nullptr ||
+	//		removes.find(enemy) != removes.end() ||
+	//		delayRemoves.find(enemy) != delayRemoves.end()) // 廃棄リストに入っている場合は以降の処理をスキップ
+	//	{
+	//		continue;
+	//	}
+	//	if (enemy == nullptr) _ASSERT_EXPR(false, L"EnemyManager::Update : NULLポインタが含まれています");
+	//	enemy->ResolveStageCollision(SceneGame::Instance().GetStage()->GetModel(), SceneGame::Instance().GetStage()->GetWorldTransform());
+	//}
+
 	//敵同士の衝突処理
 	CollisionEnemyVsEnemies();
 }
