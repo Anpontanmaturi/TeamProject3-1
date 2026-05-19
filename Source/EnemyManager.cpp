@@ -98,6 +98,7 @@ void EnemyManager::Update(float elapsedTime)
 		}
 	}
 
+
 	//“G“¯m‚ÌÕ“Ëˆ—
 	CollisionEnemyVsEnemies();
 }

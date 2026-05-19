@@ -296,6 +296,90 @@ void SceneGame::Update(float elapsedTime)
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
 
+
+	EnemyManager::Instance().Update(scaledTime);
+
+	// =========================
+	// “G‚Æ—â‘ ŒÉ‚Ì“–‚½‚è”»’è
+	// =========================
+	for (Enemy* enemy : EnemyManager::Instance().GetEnemies())
+	{
+		DirectX::XMFLOAT3 ep = enemy->GetPosition();
+
+		for (auto& k : kagus)
+		{
+			if (k->IsBroken())
+				continue;
+
+			DirectX::XMFLOAT3 kp = k->GetPosition();
+
+			float halfWidth = 1.55f;
+			float halfDepth = 1.55f;
+			float enemyRadius = 0.4f;
+
+			float minX = kp.x - halfWidth;
+			float maxX = kp.x + halfWidth;
+
+			float minZ = kp.z - halfDepth;
+			float maxZ = kp.z + halfDepth;
+
+			bool hit =
+				(ep.x + enemyRadius > minX) &&
+				(ep.x - enemyRadius < maxX) &&
+				(ep.z + enemyRadius > minZ) &&
+				(ep.z - enemyRadius < maxZ);
+
+			if (hit)
+			{
+				float left = fabs((ep.x + enemyRadius) - minX);
+				float right = fabs(maxX - (ep.x - enemyRadius));
+				float top = fabs(maxZ - (ep.z - enemyRadius));
+				float bottom = fabs((ep.z + enemyRadius) - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0:
+					ep.x = minX - enemyRadius;
+					break;
+
+				case 1:
+					ep.x = maxX + enemyRadius;
+					break;
+
+				case 2:
+					ep.z = maxZ + enemyRadius;
+					break;
+
+				case 3:
+					ep.z = minZ - enemyRadius;
+					break;
+				}
+
+				enemy->SetPosition(ep);
+			}
+		}
+	}
 	// UI‚ÌXV
 	UIManager::Instance().Update(scaledTime);
 

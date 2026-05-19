@@ -53,6 +53,11 @@ public:
 	//エネミー全削除
 	void Clear();
 
+public:
+	std::vector<Enemy*>& GetEnemies()
+	{
+		return enemies;
+	}
 private:
 	//エネミー同士の衝突処理
 	void CollisionEnemyVsEnemies();

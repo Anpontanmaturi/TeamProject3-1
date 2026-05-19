@@ -81,7 +81,7 @@ private:
 	std::vector<Gomi*> gomis; // ゴミのリスト
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
-
+	std::vector<kagu*> kagus;
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
 	AudioSource* SGSe2 = nullptr;
@@ -107,7 +107,7 @@ private:
 	float comboLimit = 2.0f; // 2秒以内で継続
 	Pause pause;
 
-	std::vector<kagu*> kagus;
+	//std::vector<kagu*> kagus;
 
 	// ガラクタスポーンタイマー
 	std::vector<garakuta*> garbages;
