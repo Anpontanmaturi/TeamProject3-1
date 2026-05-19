@@ -16,11 +16,17 @@ public:
     void Render() override;
     void DrawGUI() override;
 
-
+    
 private:
     Sprite* sprite = nullptr;
 
     std::unique_ptr<UiRanking> rankingUI;
     AudioSource* resultAu = nullptr;
     AudioSource* resultSe = nullptr;
+    std::unique_ptr<Sprite> rankS;
+    std::unique_ptr<Sprite> rankA;
+    std::unique_ptr<Sprite> rankB;
+    std::unique_ptr<Sprite> rankC;
+
+    Sprite* currentRank = nullptr;
 };
