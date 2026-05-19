@@ -4,7 +4,7 @@
 Stage::Stage()
 {
 	//ステージモデルを読み込み
-	model = new Model("Data/Model/Stage/kari_map.mdl");
+	model = new Model("Data/Model/Stage/map.mdl");
 }
 
 //デストラクタ
