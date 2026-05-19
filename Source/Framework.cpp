@@ -216,10 +216,6 @@ LRESULT CALLBACK Framework::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LP
 		EndPaint(hWnd, &ps);
 		break;
 	}
-	case WM_MOUSEWHEEL:
-		// マウスホイールの回転量をInputクラスに渡す
-		Input::Instance().GetMouse().SetWheel(GET_WHEEL_DELTA_WPARAM(wParam));
-		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

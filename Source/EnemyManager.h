@@ -64,7 +64,5 @@ private:
 	int maxEnemies = 3; // エネミーの最大数
 	
 	std::map<Enemy*, float> delayRemoves;//遅延削除用のマップ
-
-	float gomiTimer = 0.0f;
 };
 
