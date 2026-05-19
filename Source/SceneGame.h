@@ -86,7 +86,7 @@ private:
 	AudioSource* SGSe = nullptr;
 	AudioSource* SGSe2 = nullptr;
 
-#if 0
+#if 1
 	float timeLimit = 180.0f;   // §ŒÀŠÔi•bj
 	float currentTime = 180.0f; // c‚èŠÔ
 #else
