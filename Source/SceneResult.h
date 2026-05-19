@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "System/Sprite.h"
 #include "UiRanking.h"
+#include "System/Audio.h"
+#include "System/AudioSource.h"
 
 class SceneResult : public Scene
 {
@@ -19,4 +21,6 @@ private:
     Sprite* sprite = nullptr;
 
     std::unique_ptr<UiRanking> rankingUI;
+    AudioSource* resultAu = nullptr;
+    AudioSource* resultSe = nullptr;
 };
