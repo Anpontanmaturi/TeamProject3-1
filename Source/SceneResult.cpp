@@ -10,12 +10,14 @@
 #include <SceneManager.h>
 #include <SceneGame.h>
 #include "ScoreManager.h"
+
 //#include <Instance.h>
 
 void SceneResult::Initialize() {
     //スプライト初期化
     sprite = new Sprite("Data/Sprite/gameclear.png");
-
+    resultAu = Audio::Instance().LoadAudioSource("Data/Sound/tanoshiibouken.wav");
+    resultAu->Play(true);
 	// ランキングUIの生成
     rankingUI = std::make_unique<UiRanking>(); 
 }
@@ -35,6 +37,9 @@ void SceneResult::Finalize() {
         sprite = nullptr;
 
     }
+
+    // 音楽停止
+    resultAu->Stop();
 }
 
 
