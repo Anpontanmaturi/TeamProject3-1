@@ -12,7 +12,8 @@ UiGarbageIcon::UiGarbageIcon()
 
 UiGarbageIcon::~UiGarbageIcon()
 {
-    
+    sprEmpty.reset();
+    sprHave.reset();
 }
 
 void UiGarbageIcon::Update(float elapsedTime)
