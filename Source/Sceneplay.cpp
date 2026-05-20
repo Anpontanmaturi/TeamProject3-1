@@ -13,12 +13,7 @@ void ScenePlay::Initialize()
     if (!tutorialSprites.empty()) return;
 
     // チュートリアル画像を読み込み
-    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu1.png"));
-    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu2.png"));
-    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu3.png"));
-    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu4.png"));
-    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu5.png"));
-    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu6.png"));
+    tutorialSprites.push_back(new Sprite("Data/Sprite/tyu.png"));
 
     currentIndex = 0;      // 最初の画像
 
