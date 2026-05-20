@@ -144,15 +144,15 @@ void SceneResult::Render()
     // ƒ‰ƒ“ƒN”»’è
     //========================
 
-    if (score >= 600)
+    if (score >= 10000)
     {
         currentRank = rankS.get();
     }
-    else if (score >= 300)
+    else if (score >= 5000) 
     {
         currentRank = rankA.get();
     }
-    else if (score >= 10)
+    else if (score >= 2500)
     {
         currentRank = rankB.get();
     }
