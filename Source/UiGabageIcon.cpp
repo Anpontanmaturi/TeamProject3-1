@@ -6,7 +6,7 @@ UiGarbageIcon::UiGarbageIcon()
 	sprEmpty = std::make_unique<Sprite>("Data/Sprite/UI/Item/emptyItem.png");
 	sprHave = std::make_unique<Sprite>("Data/Sprite/UI/Item/haveItem.png");
 	// 初期位置とサイズ
-	SetPosition(1170.0f, 145.0f);
+	SetPosition(1065.0f, 145.0f);
 	SetScale(0.6f, 0.6f);
 }
 

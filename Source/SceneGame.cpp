@@ -885,6 +885,10 @@ void SceneGame::DrawGUI()
 	{
 		SceneGame::Instance().AddScore(10000);
 	}
+	if(ImGui::Button("Add Combo"))
+	{
+		SceneGame::Instance().AddCombo();
+	}
 	ImGui::End();
 }
 void SceneGame::StartHitStop(float time)

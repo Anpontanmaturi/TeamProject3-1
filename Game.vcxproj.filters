@@ -213,6 +213,9 @@
     <ClCompile Include="Source\Sceneplay.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UiComboCounter.cpp">
+      <Filter>Source\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui-docking\imconfig.h">
@@ -415,6 +418,9 @@
     </ClInclude>
     <ClInclude Include="Source\Sceneplay.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UiComboCounter.h">
+      <Filter>Source\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

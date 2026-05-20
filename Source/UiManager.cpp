@@ -8,6 +8,7 @@
 #include "UiMyScore.h"
 #include "UiHighScore.h"
 #include "UiGabageIcon.h"
+#include "UiComboCounter.h"
 
 enum
 {
@@ -17,6 +18,7 @@ enum
 	HIGHSCORE,
 	MYSCORE,
 	GARBAGEICON,
+	COMBOCOUNTER,
 };
 
 void UIManager::Initialize()
@@ -30,6 +32,7 @@ void UIManager::Initialize()
 	uiElements.push_back(std::make_unique<UiHighScore>());
 	uiElements.push_back(std::make_unique<UiMyScore>());
 	uiElements.push_back(std::make_unique<UiGarbageIcon>());
+	uiElements.push_back(std::make_unique<UIComboCounter>());
 
 }
 
@@ -169,6 +172,25 @@ void UIManager::DrawDebugGUI()
 		float scaleArr[2] = { scale.x, scale.y };
 		if (ImGui::DragFloat2("GarbageIconUI Scale", scaleArr, 0.01f)) {
 			garbageIcon->SetScale(scaleArr[0], scaleArr[1]);
+		}
+	}
+	ImGui::Separator();
+	{
+		UIComboCounter* comboCounter = static_cast<UIComboCounter*>(uiElements[COMBOCOUNTER].get());
+		DirectX::XMFLOAT2 pos = comboCounter->GetPosition();
+		float posArr[2] = { pos.x, pos.y };
+		if (ImGui::DragFloat2("ComboCounterUI Position", posArr, 1.0f)) {
+			comboCounter->SetPosition(posArr[0], posArr[1]);
+		}
+		DirectX::XMFLOAT2 scale = comboCounter->GetScale();
+		float scaleArr[2] = { scale.x, scale.y };
+		if (ImGui::DragFloat2("ComboCounterUI Scale", scaleArr, 0.01f)) {
+			comboCounter->SetScale(scaleArr[0], scaleArr[1]);
+		}
+		DirectX::XMFLOAT2 fontOffset = comboCounter->GetFontOffset();
+		float fontOffsetArr[2] = { fontOffset.x, fontOffset.y };
+		if (ImGui::DragFloat2("ComboCounterUI Font Offset", fontOffsetArr, 1.0f)) {
+			comboCounter->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
 		}
 	}
 
