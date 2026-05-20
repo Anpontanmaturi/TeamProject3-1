@@ -86,7 +86,7 @@ void UiRanking::Render(const RenderContext& rc)
         };
 
         // 順位（i）に応じて文字の色を変えて豪華にする
-        DirectX::XMVECTOR color = DirectX::Colors::White;
+        DirectX::XMVECTOR color = DirectX::Colors::Aqua;
         if (i == 0)      color = DirectX::Colors::Gold;       // 1位：金
         else if (i == 1) color = DirectX::Colors::Silver;     // 2位：銀
         else if (i == 2) color = DirectX::Colors::Chocolate;  // 3位：ブロンズ（銅）

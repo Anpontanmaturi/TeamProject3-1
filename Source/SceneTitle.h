@@ -29,6 +29,7 @@ private:
 	Sprite* spriteBG = nullptr;
 	Sprite* spriteStart = nullptr;
 	Sprite* spriteTutorial = nullptr;
+	Sprite* spriteSentaku = nullptr;
 	bool choice = true; // true = Start, false = Tutorial
 	int timer = 0;
 	AudioSource* ST = nullptr;

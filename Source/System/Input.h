@@ -33,8 +33,8 @@ public:
 
 	// 追加
 	int GetMouseWheel() const { return mouse->GetWheel(); }// マウスホイール値のゲッター
+
 private:
 	std::unique_ptr<GamePad>	gamePad;
 	std::unique_ptr<Mouse>		mouse;
-
 };
