@@ -13,7 +13,7 @@
 
 #include"kagu.h"
 #include <vector>
-
+#include"kagu2.h"
 
 // ゲームシーン
 //class SceneGame
@@ -85,13 +85,13 @@ private:
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
 	AudioSource* SGSe2 = nullptr;
-
+	std::vector<kagu2*> kagu2s;
 #if 0
 	float timeLimit = 180.0f;   // 制限時間（秒）
 	float currentTime = 180.0f; // 残り時間
 #else
-	float timeLimit = 10.0f;   // 制限時間（秒）
-	float currentTime = 10.0f; // 残り時間
+	float timeLimit = 30.0f;   // 制限時間（秒）
+	float currentTime = 30.0f; // 残り時間
 #endif
 	bool isTimeUp = false;
 	float garbageSpawnTimer = 0.0f;

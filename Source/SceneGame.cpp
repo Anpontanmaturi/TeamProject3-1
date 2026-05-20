@@ -50,7 +50,10 @@ void SceneGame::Initialize()
 	pause.Initialize();
 	//プレイヤー初期化
 	Player::Instance().Initialize();
-
+	kagu2* b = new kagu2();
+	b->Init({ -7.0f, 0.0f, 5.0f });
+	
+	kagu2s.push_back(b);
 	// UIの初期化
 	UIManager::Instance().Initialize();
 
@@ -203,7 +206,11 @@ void SceneGame::Finalize()
 	pause.Finalize();
 	//プレイヤー終了化
 	Player::Instance().Finalize();
-
+	for (auto& b : kagu2s)
+	{
+		delete b;
+	}
+	kagu2s.clear();
 	//カメラコントローラー終了化
 	if (cameraController != nullptr)
 	{
@@ -380,6 +387,9 @@ void SceneGame::Update(float elapsedTime)
 			}
 		}
 	}
+
+	
+
 	// UIの更新
 	UIManager::Instance().Update(scaledTime);
 
@@ -655,7 +665,53 @@ void SceneGame::Update(float elapsedTime)
 			}
 		}
 	}
+	for (auto& b : kagu2s)
+	{
+		b->Update(elapsedTime);
 
+		DirectX::XMFLOAT3 playerPos = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 bedPos = b->GetPosition();
+
+		const auto& legs = b->GetLegs();
+
+		float playerRadius = 0.7f;
+
+		for (const auto& leg : legs)
+		{
+			// 四隅のワールド座標
+			float cx = bedPos.x + leg.offsetX;
+			float cz = bedPos.z + leg.offsetZ;
+
+			DirectX::XMFLOAT3 legPos = { cx, 0.0f, cz };
+
+			// 距離判定（球コライダー）
+			float dist = GetDistance(playerPos, legPos);
+
+			if (dist < playerRadius + leg.radius)
+			{
+				// =========================
+				// 押し出し処理
+				// =========================
+
+				float dx = playerPos.x - cx;
+				float dz = playerPos.z - cz;
+
+				float length = sqrtf(dx * dx + dz * dz);
+				if (length > 0.0001f)
+				{
+					dx /= length;
+					dz /= length;
+				}
+
+				float push = (playerRadius + leg.radius) - dist;
+
+				playerPos.x += dx * push;
+				playerPos.z += dz * push;
+
+				Player::Instance().SetPosition(playerPos);
+			}
+		}
+	}
 
 
 
@@ -775,7 +831,38 @@ void SceneGame::Render()
 	{
 		g->Render(rc, modelRenderer);
 	}
-	
+	for (auto& b : kagu2s)
+	{
+		b->Render(rc, modelRenderer);
+	}
+	// =========================
+// ベッド脚の当たり判定表示
+// =========================
+	for (auto& b : kagu2s)
+	{
+		DirectX::XMFLOAT3 bedPos = b->GetPosition();
+		const auto& legs = b->GetLegs();
+
+		for (const auto& leg : legs)
+		{
+			float centerX = bedPos.x + leg.offsetX;
+			float centerZ = bedPos.z + leg.offsetZ;
+
+			shapeRenderer->RenderSphere(
+				rc,
+				{
+					centerX,
+					1.0f,      // 少し浮かせる
+					centerZ
+				},
+				0.3f,          // 球サイズ
+				{
+					1,0,0,1     // 赤
+				}
+			);
+		}
+	}
+
 	// ガラクタ描画
 	for (auto& g : garbages)
 	{

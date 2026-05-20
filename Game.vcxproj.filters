@@ -213,6 +213,9 @@
     <ClCompile Include="Source\Sceneplay.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\kagu2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui-docking\imconfig.h">
@@ -414,6 +417,9 @@
       <Filter>Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Sceneplay.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\kagu2.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
