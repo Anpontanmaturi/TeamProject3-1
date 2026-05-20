@@ -90,8 +90,8 @@ private:
 	float timeLimit = 180.0f;   // 制限時間（秒）
 	float currentTime = 180.0f; // 残り時間
 #else
-	float timeLimit = 180.0f;   // 制限時間（秒）
-	float currentTime = 180.0f; // 残り時間
+	float timeLimit = 5.0f;   // 制限時間（秒）
+	float currentTime = 5.0f; // 残り時間
 #endif
 	bool isTimeUp = false;
 	float garbageSpawnTimer = 0.0f;

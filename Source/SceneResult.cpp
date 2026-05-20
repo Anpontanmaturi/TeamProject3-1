@@ -12,7 +12,7 @@
 void SceneResult::Initialize()
 {
     // ”wŒi‰æ‘œ
-    sprite = new Sprite("Data/Sprite/gameclear.png");
+    sprite = new Sprite("Data/Sprite/Result.png");
 
     // BGM
     resultAu = Audio::Instance().LoadAudioSource("Data/Sound/tanoshiibouken.wav");
@@ -170,13 +170,13 @@ void SceneResult::Render()
         currentRank->Render(
             rc,
 
-            900,   // X
-            180,   // Y
+            855,   // X
+            255,   // Y
 
             0,
 
-            300,   // Width
-            300,   // Height
+            210,   // Width
+            210,   // Height
 
             0,
 
