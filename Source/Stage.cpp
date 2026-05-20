@@ -11,7 +11,7 @@ Stage& Stage::Instance()
 Stage::Stage()
 {
 	//ステージモデルを読み込み
-	model = new Model("Data/Model/Stage/map.mdl");
+	model = new Model("Data/Model/Stage/map_scale.mdl");
 	//model = new Model("Data/Model/ExampleStage/ExampleStage.mdl");
 }
 

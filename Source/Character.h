@@ -107,7 +107,7 @@ protected:
 
 	bool isGround = false;
 	float	slopeRate = 1.0f;
-	float	stepOffset = 0.0f;
+	float	stepOffset = 0.2f;
 
 	float height = 2.0f;
 

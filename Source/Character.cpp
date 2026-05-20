@@ -321,6 +321,10 @@ void Character::UpdateHorizontalVelocity(float elapsedTime)
 				velocity.x = vx * maxMoveSpeed;
 				velocity.z = vz * maxMoveSpeed;
 			}
+			if (isGround && slopeRate > 0.0f)
+			{
+				velocity.y -= length * slopeRate * elapsedTime;
+			}
 		}
 	}
 	//移動ベクトルをリセット
@@ -331,93 +335,49 @@ void Character::UpdateHorizontalVelocity(float elapsedTime)
 //水平移動更新処理
 void Character::UpdateHorizontalMove(float elapsedTime)
 {
+	
 	// 水平速力量計算
 	float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
 	if (velocityLengthXZ > 0.0f)
 	{
-		// 水平移動値
+		// 1フレーム分の純粋な移動値
 		float mx = velocity.x * elapsedTime;
 		float mz = velocity.z * elapsedTime;
 
-		//// レイとの開始位置と終点位置
-		//DirectX::XMFLOAT3 start = { position.x , position.y + stepOffset , position.z };
-		//DirectX::XMFLOAT3 end = { position.x + mx , position.y + stepOffset , position.z + mz };
-
-		// ───【ここから修正】プレイヤーの中心から進行方向へレイを伸ばす ───
 		DirectX::XMVECTOR MoveVec = DirectX::XMVectorSet(mx, 0.0f, mz, 0.0f);
 		DirectX::XMVECTOR MoveDir = DirectX::XMVector3Normalize(MoveVec);
+		DirectX::XMVECTOR BackOffset = DirectX::XMVectorScale(MoveDir, radius); // 自分の半径分のオフセット
 
-		// レイの長さを「1フレームの移動量 ＋ プレイヤーの半径(radius)」にする
-		// これにより、自分の体が壁にぶつかる瞬間の位置を「手前」で先制して検知できます
-		float checkLength = radius + 0.01f;
-		DirectX::XMVECTOR ExtraCheck = DirectX::XMVectorScale(MoveDir, checkLength);
-
-		// レイの開始位置（プレイヤーの現在位置中心 ＋ stepOffsetの高さ）
 		DirectX::XMFLOAT3 start = { position.x, position.y + stepOffset, position.z };
 
-		// レイの終了位置（移動量 ＋ 半径分の厚みを持たせて引き延ばす）
-		DirectX::XMFLOAT3 end;
-		DirectX::XMStoreFloat3(&end, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&start), DirectX::XMVectorAdd(MoveVec, ExtraCheck)));
+		DirectX::XMFLOAT3 end = { position.x + mx, position.y + stepOffset, position.z + mz };
 
 		// レイキャストによる壁判定
 		HitResult hit;
 		if (Stage::Instance().RayCast(start, end, hit))
 		{
-			//// 壁までのベクトル
-			//DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
-			//DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
-			//DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
-			//
-			//// 壁の法線
-			//DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
-			//
-			////入射ベクトルを法線に射影
-			//DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(DirectX::XMVectorNegate(Vec), Normal);
-			//
-			//// 補正位置の計算
-			//DirectX::XMVECTOR CollectPosition = DirectX::XMVectorMultiplyAdd(Normal, Dot, End);
-			//DirectX::XMFLOAT3 collectPosition;
-			//DirectX::XMStoreFloat3(&collectPosition, CollectPosition);
-			//
-			//// 壁ずり方向へレイキャスト
-			//HitResult hit2;
-			//if (!Stage::Instance().RayCast(hit.position, collectPosition, hit2))
-			//{
-			//	// 壁ずり方向で壁に当たらなかったら補正位置に移動
-			//	position.x = collectPosition.x;
-			//	position.z = collectPosition.z;
-			//}
-			//else
-			//{
-			//	position.x = hit2.position.x;
-			//	position.z = hit2.position.z;
-			//}
+			DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
+			DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
+			DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
 
-			// 壁の法線
-			DirectX::XMVECTOR Normal = XMLoadFloat3(&hit.normal);
-
-			// 壁ずりのスライド方向を安定させるため、法線のY（垂直）成分をカットして真横にします
+			// 壁の法線を取得し、斜めメッシュ対策で水平にする
+			DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
 			Normal = DirectX::XMVectorSetY(Normal, 0.0f);
 			Normal = DirectX::XMVector3Normalize(Normal);
 
-			// 1. 壁に衝突した瞬間にプレイヤーが止まるべき、壁の手前（半径分引いた）の正しい座標
-			DirectX::XMVECTOR HitPos = DirectX::XMLoadFloat3(&hit.position);
-			DirectX::XMVECTOR StoppedPos = DirectX::XMVectorSubtract(HitPos, DirectX::XMVectorScale(Normal, radius));
+			// 入射ベクトルを法線に射影
+			DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(DirectX::XMVectorNegate(Vec), Normal);
 
-			// 2. 壁に沿って滑る「壁ずりベクトル」の計算
-			DirectX::XMVECTOR OriginalMove = DirectX::XMVectorSet(mx, 0.0f, mz, 0.0f);
-			DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(OriginalMove, Normal);
-			DirectX::XMVECTOR SlideVec = DirectX::XMVectorSubtract(OriginalMove, DirectX::XMVectorMultiply(Normal, Dot)); // 壁に突き刺さる成分を相殺
+			// 補正位置の計算
+			DirectX::XMVECTOR CollectPosition = DirectX::XMVectorMultiplyAdd(Normal, Dot, End);
 
-			// 最終的な補正目標位置（壁の手前 ＋ 横滑り移動量）
-			DirectX::XMVECTOR TargetPos = DirectX::XMVectorAdd(StoppedPos, SlideVec);
 			DirectX::XMFLOAT3 collectPosition;
-			DirectX::XMStoreFloat3(&collectPosition, TargetPos);
+			DirectX::XMStoreFloat3(&collectPosition, CollectPosition);
 
-			// 壁ずり方向へセカンドレイキャスト（二重衝突チェック）
-			DirectX::XMFLOAT3 slideStart = { position.x, position.y + stepOffset, position.z };
+			// 壁ずり方向へセカンドレイキャスト
+			DirectX::XMFLOAT3 rayStart = { position.x, position.y + stepOffset, position.z };
 			HitResult hit2;
-			if (!Stage::Instance().RayCast(slideStart, collectPosition, hit2))
+			if (!Stage::Instance().RayCast(rayStart, collectPosition, hit2))
 			{
 				// 壁ずり方向で壁に当たらなかったら補正位置に移動
 				position.x = collectPosition.x;
@@ -425,17 +385,16 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 			}
 			else
 			{
-				// 二度目の衝突（部屋の隅など）があった場合は、その壁の手前でピタッと止める
+				// 二重衝突時は止める
 				DirectX::XMVECTOR HitPos2 = DirectX::XMLoadFloat3(&hit2.position);
 				DirectX::XMVECTOR Normal2 = DirectX::XMLoadFloat3(&hit2.normal);
 				Normal2 = DirectX::XMVectorSetY(Normal2, 0.0f);
 				Normal2 = DirectX::XMVector3Normalize(Normal2);
 
-				DirectX::XMVECTOR FinalPos = DirectX::XMVectorAdd(HitPos2, DirectX::XMVectorScale(Normal2, radius));
+				DirectX::XMVECTOR FinalPos = DirectX::XMVectorMultiplyAdd(Normal2, DirectX::XMVectorReplicate(radius), HitPos2);
 				position.x = DirectX::XMVectorGetX(FinalPos);
 				position.z = DirectX::XMVectorGetZ(FinalPos);
 			}
-
 		}
 		else
 		{
@@ -443,6 +402,6 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 			position.x += mx;
 			position.z += mz;
 		}
-
 	}
 }
+

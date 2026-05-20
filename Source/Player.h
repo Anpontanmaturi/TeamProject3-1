@@ -94,6 +94,7 @@ protected:
 private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
+
 	float turnSpeed = DirectX::XMConvertToRadians(720);
 
 	float hp = 100.0f;
