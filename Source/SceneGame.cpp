@@ -186,6 +186,34 @@ void SceneGame::Initialize()
 		{ 1.1f,  2.0f, -15.0f}
 		});
 
+	walls.push_back({
+		{ 5.0f, -1.0f, 7.5f},
+		{ 5.1f,  2.0f, 8.0f}
+		});
+	
+
+	
+	//walls.push_back({
+	//	{ 1.0f, -1.0f, -15.8f},
+	//	{ 1.1f,  2.0f, -15.0f}
+	//	});
+	//walls.push_back({
+	//	{ 1.0f, -1.0f, -15.8f},
+	//	{ 1.1f,  2.0f, -15.0f}
+	//	});
+	//walls.push_back({
+	//	{ 1.0f, -1.0f, -15.8f},
+	//	{ 1.1f,  2.0f, -15.0f}
+	//	});
+
+	//walls.push_back({
+	//	{ 1.0f, -1.0f, -15.8f},
+	//	{ 1.1f,  2.0f, -15.0f}
+	//	});
+	//walls.push_back({
+	//	{ 1.0f, -1.0f, -15.8f},
+	//	{ 1.1f,  2.0f, -15.0f}
+	//	});
 
 	// オブジェクト
 	// オブジェクト生成
@@ -1230,6 +1258,39 @@ void SceneGame::Render()
 		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 
+		// =========================
+// 透明壁デバッグ描画
+// =========================
+		for (const Wall& wall : walls)
+		{
+			// 中心位置
+			DirectX::XMFLOAT3 position;
+
+			position.x = (wall.min.x + wall.max.x) * 0.5f;
+			position.y = (wall.min.y + wall.max.y) * 0.5f;
+			position.z = (wall.min.z + wall.max.z) * 0.5f;
+
+			// 回転
+			DirectX::XMFLOAT3 angle = { 0,0,0 };
+
+			// サイズ
+			DirectX::XMFLOAT3 size;
+
+			size.x = wall.max.x - wall.min.x;
+			size.y = wall.max.y - wall.min.y;
+			size.z = wall.max.z - wall.min.z;
+
+			// 色（赤）
+			DirectX::XMFLOAT4 color = { 1,0,0,1 };
+
+			shapeRenderer->RenderBox(
+				rc,
+				position,
+				angle,
+				size,
+				color
+			);
+		}
 	}
 	// ゴミ描画
 	for (auto& g : gomis)
