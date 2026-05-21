@@ -21,6 +21,7 @@ std::vector<Object> objects;
 #include <System/Audio.h>
 #include "UiManager.h"
 #include "ScoreManager.h"
+#include <kagu2.h>
 
 
 // 距離計算
@@ -133,10 +134,12 @@ void SceneGame::Initialize()
 	kagus.clear();
 
 	kagu* k = new kagu();
-	k->Init({ 3.0f, 0.0f, 3.0f });
+	k->Init({ -9.0f, 0.0f, -15.1f });
 
 	kagus.push_back(k);
-
+	kagu2* b = new kagu2();
+	b->Init({ 12.0f, 0.0f, 8.5f });
+	kagu2s.push_back(b);
 
 	// ガラクタ生成
 	garbages.clear();
@@ -380,10 +383,90 @@ void SceneGame::Update(float elapsedTime)
 			}
 		}
 	}
+	// =========================
+// 敵と本棚の当たり判定
+// =========================
+	for (Enemy* enemy : EnemyManager::Instance().GetEnemies())
+	{
+		DirectX::XMFLOAT3 ep = enemy->GetPosition();
+
+		for (auto& b : kagu2s)
+		{
+			if (b->IsBroken())
+				continue;
+
+			DirectX::XMFLOAT3 bp = b->GetPosition();
+
+			float halfWidth = 2.8f;
+			float halfDepth = 1.5f;
+			float enemyRadius = 0.4f;
+
+			float minX = bp.x - halfWidth;
+			float maxX = bp.x + halfWidth;
+			float minZ = bp.z - halfDepth;
+			float maxZ = bp.z + halfDepth;
+
+			bool hit =
+				(ep.x + enemyRadius > minX) &&
+				(ep.x - enemyRadius < maxX) &&
+				(ep.z + enemyRadius > minZ) &&
+				(ep.z - enemyRadius < maxZ);
+
+			if (hit)
+			{
+				float left = fabs((ep.x + enemyRadius) - minX);
+				float right = fabs(maxX - (ep.x - enemyRadius));
+				float top = fabs(maxZ - (ep.z - enemyRadius));
+				float bottom = fabs((ep.z + enemyRadius) - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0:
+					ep.x = minX - enemyRadius;
+					break;
+
+				case 1:
+					ep.x = maxX + enemyRadius;
+					break;
+
+				case 2:
+					ep.z = maxZ + enemyRadius;
+					break;
+
+				case 3:
+					ep.z = minZ - enemyRadius;
+					break;
+				}
+
+				enemy->SetPosition(ep);
+			}
+		}
+	}
 	// UIの更新
 	UIManager::Instance().Update(scaledTime);
 
-
+	
 	//オブジェクト更新処理
 	for (auto& obj : objects)
 	{
@@ -657,6 +740,85 @@ void SceneGame::Update(float elapsedTime)
 	}
 
 
+	for (auto& b : kagu2s)
+	{
+		b->Update(elapsedTime);
+
+		DirectX::XMFLOAT3 p = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 bp = b->GetPosition();
+
+		// =========================
+		// 本棚の四角い当たり判定
+		// =========================
+
+		float halfWidth = 2.8f;   // 横幅
+		float halfDepth = 1.5f;   // 奥行き
+
+		float minX = bp.x - halfWidth;
+		float maxX = bp.x + halfWidth;
+
+		float minZ = bp.z - halfDepth;
+		float maxZ = bp.z + halfDepth;
+
+		bool hit =
+			(p.x > minX && p.x < maxX) &&
+			(p.z > minZ && p.z < maxZ);
+
+		if (!b->IsBroken() && hit)
+		{
+			// =========================
+			// ダッシュ中なら壊れる
+			// =========================
+			if (Player::Instance().IsBoost())
+			{
+				b->Break();
+			}
+			else
+			{
+				// =========================
+				// 押し戻し
+				// =========================
+
+				float left = abs(p.x - minX);
+				float right = abs(maxX - p.x);
+				float top = abs(maxZ - p.z);
+				float bottom = abs(p.z - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				float push = 0.05f;
+
+				switch (dir)
+				{
+				case 0: p.x = minX - push; break;
+				case 1: p.x = maxX + push; break;
+				case 2: p.z = maxZ + push; break;
+				case 3: p.z = minZ - push; break;
+				}
+
+				Player::Instance().SetPosition(p);
+			}
+		}
+	}
 
 
 
@@ -780,6 +942,10 @@ void SceneGame::Render()
 	for (auto& g : garbages)
 	{
 		g->Render(rc, modelRenderer);
+	}
+	for (auto& b : kagu2s)
+	{
+		b->Render(rc, modelRenderer);
 	}
 	// 電池描画 ← これ追加
 	for (auto& d : dentis)

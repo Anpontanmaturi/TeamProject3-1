@@ -1,38 +1,39 @@
-
-
-#include "kagu.h"
+#include "kagu2.h"
 #include <DirectXMath.h>
 
 using namespace DirectX;
 
 // コンストラクタ
-kagu::kagu()
+kagu2::kagu2()
 {
-    model = new Model("Data/Model/furniture/reizouko_no_tex.mdl");
+    model = new Model("Data/Model/kagu/tana.mdl");
 
-    scale = { 0.029f,0.03f,0.019f };
+    scale = { 0.02f,0.03f,0.02f };
 }
 
 // デストラクタ
-kagu::~kagu()
+kagu2::~kagu2()
 {
     delete model;
 }
 
 // 初期化
-void kagu::Init(const XMFLOAT3& pos)
+void kagu2::Init(const XMFLOAT3& pos)
 {
     position = pos;
-    rotation = { 0, XMConvertToRadians(270.0f), 0 }; // Y軸90度
-    collected = false;
+
+    // 角度（必要なら変える）
+    rotation = { 0, 298.45, 0 };
+
+    broken = false;
 
     UpdateTransform();
 }
 
 // 更新
-void kagu::Update(float elapsedTime)
+void kagu2::Update(float elapsedTime)
 {
-    if (collected) return;
+    if (broken) return;
 
     UpdateTransform();
 
@@ -43,17 +44,16 @@ void kagu::Update(float elapsedTime)
 }
 
 // 描画
-void kagu::Render(const RenderContext& rc, ModelRenderer* renderer)
+void kagu2::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-    if (collected) return;
-
+    if (broken) return;
     if (model == nullptr) return;
 
     renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
 
 // 行列更新
-void kagu::UpdateTransform()
+void kagu2::UpdateTransform()
 {
     XMMATRIX S = XMMatrixScaling(
         scale.x,
@@ -78,22 +78,26 @@ void kagu::UpdateTransform()
     XMStoreFloat4x4(&transform, world);
 }
 
-bool kagu::IsBroken() const
+// 壊れる
+void kagu2::Break()
 {
-    return collected;
+    broken = true;
 }
 
-DirectX::XMFLOAT3 kagu::GetPosition() const
+// 壊れてるか
+bool kagu2::IsBroken() const
+{
+    return broken;
+}
+
+// 位置取得
+DirectX::XMFLOAT3 kagu2::GetPosition() const
 {
     return position;
 }
 
-float kagu::GetRadius() const
+// 当たり判定半径
+float kagu2::GetRadius() const
 {
-    return 1.0f;
-}
-
-void kagu::Break()
-{
-    collected = true;
+    return 2.0f;
 }
