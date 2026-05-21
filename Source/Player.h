@@ -81,6 +81,9 @@ private:
 	//弾丸と敵の衝突処理
 	void CollisionProjectilesVsEnemies();
 
+	//追加
+	void ClampPosition();
+
 	//充電中動けないようにする
 	bool canMove = true;
 
@@ -123,9 +126,9 @@ public:
 	void SetCanMove(bool flag) { canMove = flag; }
 	bool CanMove() const { return canMove; }
 
-	AudioSource* PSE1 = nullptr;
-	AudioSource* PSE2 = nullptr;
-	AudioSource* PSE3 = nullptr;
+	AudioSource* PSE1 = nullptr;//ブースト音
+	AudioSource* PSE2 = nullptr;//ジャンプ音
+	AudioSource* PSE3 = nullptr;//攻撃音
 
 	//========================================
 	// 向き取得

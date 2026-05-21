@@ -72,6 +72,12 @@ public:
 	// ゲッター
 	float GetTimer() const { return currentTime; }
 
+	struct Wall
+	{
+		DirectX::XMFLOAT3 min;
+		DirectX::XMFLOAT3 max;
+	};
+
 private:
 	// ?? 追加
 	static SceneGame* instance;
@@ -111,7 +117,7 @@ private:
 
 	// ガラクタスポーンタイマー
 	std::vector<garakuta*> garbages;
-
+	std::vector<Wall> walls;
 
 public:
 	int score = 0;

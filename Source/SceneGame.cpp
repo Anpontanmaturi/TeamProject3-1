@@ -106,6 +106,34 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+	// =========================
+// 透明壁生成
+// =========================
+
+// 左壁
+	walls.push_back({
+		{-25.0f, -10.0f, -25.0f},
+		{-23.5f,  10.0f,  25.0f}
+		});
+
+	// 右壁
+	walls.push_back({
+		{23.0f, -10.0f, -25.0f},
+		{30.5f,  10.0f,  30.0f}
+		});
+
+	// 上壁
+	walls.push_back({
+		{-25.0f, -10.0f, 15.5f},
+		{ 25.0f,  10.0f, 25.0f}
+		});
+
+	// 下壁
+	walls.push_back({
+		{-25.0f, -10.0f, -22.0f},
+		{ 25.0f,  10.0f, -16.5f}
+		});
+
 	// オブジェクト
 	// オブジェクト生成
 
@@ -296,6 +324,157 @@ void SceneGame::Update(float elapsedTime)
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
 
+	// =========================
+// プレイヤー vs 透明壁
+// =========================
+	{
+		Player& player = Player::Instance();
+
+		DirectX::XMFLOAT3 p = player.GetPosition();
+
+		float radius = player.GetRadius();
+
+		for (const Wall& wall : walls)
+		{
+			bool hit =
+				(p.x + radius > wall.min.x) &&
+				(p.x - radius < wall.max.x) &&
+				(p.z + radius > wall.min.z) &&
+				(p.z - radius < wall.max.z);
+
+			if (hit)
+			{
+				float left =
+					fabs((p.x + radius) - wall.min.x);
+
+				float right =
+					fabs(wall.max.x - (p.x - radius));
+
+				float top =
+					fabs(wall.max.z - (p.z - radius));
+
+				float bottom =
+					fabs((p.z + radius) - wall.min.z);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0: // 左
+					p.x = wall.min.x - radius;
+					break;
+
+				case 1: // 右
+					p.x = wall.max.x + radius;
+					break;
+
+				case 2: // 上
+					p.z = wall.max.z + radius;
+					break;
+
+				case 3: // 下
+					p.z = wall.min.z - radius;
+					break;
+				}
+
+				player.SetPosition(p);
+			}
+		}
+	}
+	// =========================
+// 敵 vs 透明壁
+// =========================
+	for (Enemy* enemy : EnemyManager::Instance().GetEnemies())
+	{
+		DirectX::XMFLOAT3 ep = enemy->GetPosition();
+
+		float radius = 0.4f;
+
+		for (const Wall& wall : walls)
+		{
+			bool hit =
+				(ep.x + radius > wall.min.x) &&
+				(ep.x - radius < wall.max.x) &&
+				(ep.z + radius > wall.min.z) &&
+				(ep.z - radius < wall.max.z);
+
+			if (hit)
+			{
+				float left =
+					fabs((ep.x + radius) - wall.min.x);
+
+				float right =
+					fabs(wall.max.x - (ep.x - radius));
+
+				float top =
+					fabs(wall.max.z - (ep.z - radius));
+
+				float bottom =
+					fabs((ep.z + radius) - wall.min.z);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0: // 左
+					ep.x = wall.min.x - radius;
+					break;
+
+				case 1: // 右
+					ep.x = wall.max.x + radius;
+					break;
+
+				case 2: // 上
+					ep.z = wall.max.z + radius;
+					break;
+
+				case 3: // 下
+					ep.z = wall.min.z - radius;
+					break;
+				}
+
+				enemy->SetPosition(ep);
+			}
+		}
+	}
 
 	EnemyManager::Instance().Update(scaledTime);
 
@@ -769,6 +948,40 @@ void SceneGame::Render()
 
 		//エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+
+		// =========================
+		// 透明壁デバッグ描画
+		// =========================
+		for (const Wall& wall : walls)
+		{
+			// 中心位置
+			DirectX::XMFLOAT3 position;
+
+			position.x = (wall.min.x + wall.max.x) * 0.5f;
+			position.y = (wall.min.y + wall.max.y) * 0.5f;
+			position.z = (wall.min.z + wall.max.z) * 0.5f;
+
+			// 回転
+			DirectX::XMFLOAT3 angle = { 0,0,0 };
+
+			// サイズ
+			DirectX::XMFLOAT3 size;
+
+			size.x = wall.max.x - wall.min.x;
+			size.y = wall.max.y - wall.min.y;
+			size.z = wall.max.z - wall.min.z;
+
+			// 色（赤）
+			DirectX::XMFLOAT4 color = { 1,0,0,1 };
+
+			shapeRenderer->RenderBox(
+				rc,
+				position,
+				angle,
+				size,
+				color
+			);
+		}
 	}
 	// ゴミ描画
 	for (auto& g : gomis)
