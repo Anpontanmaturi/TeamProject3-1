@@ -2,6 +2,7 @@
 
 #include"System/ModelRenderer.h"
 #include"Character.h"
+#include"ProjectileManager.h"
 #include <System/AudioSource.h>
 
 //ƒvƒŒƒCƒ„[
@@ -80,6 +81,9 @@ private:
 	//’eŠÛ‚Æ“G‚ÌÕ“Ëˆ—
 	void CollisionProjectilesVsEnemies();
 
+	//’Ç‰Á
+	void ClampPosition();
+
 	//[“d’†“®‚¯‚È‚¢‚æ‚¤‚É‚·‚é
 	bool canMove = true;
 
@@ -106,6 +110,7 @@ private:
 	float boostLimit = 8.0f;
 	float energy = 1000.0f;
 	float maxenergy = 1000.0f;
+	ProjectileManager projectileManager;
 	
 	int garbageCount = 0; // ©‚±‚ê’Ç‰Á!!
 

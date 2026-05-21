@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "EnemyManager.h"
 #include "Collision.h"
+#include "ProjectileStraight.h"
+#include "ProjectileHoming.h"
 #include <SceneGame.h>
 #include <System/Audio.h>
 
@@ -78,6 +80,9 @@ void Player::Update(float elapsedTime)
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
+
+	//弾丸更新処理
+	projectileManager.Update(elapsedTime);
 
 	//プレイヤーとエネミーとの衝突処理
 	CollisionPlayerVsEnemies();
@@ -227,6 +232,9 @@ void Player::InputMove(float elapsedTime)
 void Player::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
+
+	//弾丸描画処理
+	projectileManager.Render(rc, renderer);
 }
 
 //デバッグプリミティブ描画
@@ -234,6 +242,9 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 {
 	//基底クラスの呼び出し
 	Character::RenderDebugPrimitive(rc, renderer);
+
+	//弾丸デバッグプリミティブ描画
+	projectileManager.RenderDebugPrimitive(rc, renderer);
 }
 
 // デバッグ用GUI描画

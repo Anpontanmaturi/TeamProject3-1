@@ -2,6 +2,7 @@
 
 #include "System/Model.h"
 #include "Enemy.h"
+#include "ProjectileManager.h"
 
 #define DEFAULT_SPEED 2.5f
 #define ENEMY_MAX 3 // “G‚ÌÅ‘å”
@@ -83,5 +84,6 @@ private:
 	float				turnSpeed = DirectX::XMConvertToRadians(360);
 	float				stateTimer = 0.0f;
 	float				searchRange = 5.0f; // ’Tõ”ÍˆÍ
+	ProjectileManager	projectileManager;
 };
 

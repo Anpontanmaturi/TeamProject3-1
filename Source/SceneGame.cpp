@@ -1224,10 +1224,10 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
-		//Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
-		//EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 
 	}
