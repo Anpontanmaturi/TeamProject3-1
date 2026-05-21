@@ -48,7 +48,7 @@
     dcl_texcoord3 v3  // vin<9,10,11,12>
     dcl_texcoord4 v4  // vin<13,14,15,16>
 
-#line 15 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Skinning.fxh"
+#line 15 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Skinning.fxh"
     mul r0, v3, c243.x
     mova a0, r0.yxzw
     mul r1, v4.y, c26[a0.x]
@@ -76,7 +76,7 @@
     dp3 r1.z, v1, r3  // ::Skin<2>
     dp4 r0.z, v0, r3  // Skin::vin<2>
 
-#line 56 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 56 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     dp3 r2.x, r1, c19
     dp3 r2.y, r1, c20
     dp3 r2.z, r1, c21
@@ -122,24 +122,24 @@
 #line 60
     dp4 oPos.z, r0, c24  // ::VSSkinnedOneLightFourBones<12>
 
-#line 11 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
+#line 11 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
     dp4 r1.x, r0, c14
     max r1.x, r1.x, c243.y
     min oT1.w, r1.x, c243.z  // ::VSSkinnedOneLightFourBones<7>
 
-#line 60 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 60 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     dp4 r1.x, r0, c22  // ::vout<0>
     dp4 r1.y, r0, c23  // ::vout<1>
     dp4 r0.x, r0, c25  // ::vout<3>
 
-#line 202 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
+#line 202 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
     mad oPos.xy, r0.x, c242, r1  // ::VSSkinnedOneLightFourBones<10,11>
     mov oPos.w, r0.x  // ::VSSkinnedOneLightFourBones<13>
 
-#line 43 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 43 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     mov oT0.w, c0.w  // ::VSSkinnedOneLightFourBones<3>
 
-#line 206 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
+#line 206 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\SkinnedEffect.fx"
     mov oT2.xy, v2  // ::VSSkinnedOneLightFourBones<8,9>
 
 // approximately 64 instruction slots used
@@ -219,10 +219,10 @@ ret
 
 const BYTE SkinnedEffect_VSSkinnedOneLightFourBones[] =
 {
-     68,  88,  66,  67, 232,  94, 
-     61,  47, 251,  96, 102, 234, 
-    188, 152, 163,  78, 247, 216, 
-    253,  51,   1,   0,   0,   0, 
+     68,  88,  66,  67,  21,  64, 
+     23, 227, 215, 103, 176, 190, 
+     56, 222, 181, 105,  15,  94, 
+    221, 160,   1,   0,   0,   0, 
       8,  23,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     176,  13,   0,   0, 188,  21, 
@@ -248,7 +248,7 @@ const BYTE SkinnedEffect_VSSkinnedOneLightFourBones[] =
       0,   4,   0,   0,  67,  58, 
      92,  85, 115, 101, 114, 115, 
      92,  50,  50,  52,  48,  48, 
-     52,  55,  92,  68, 101, 115, 
+     55,  48,  92,  68, 101, 115, 
     107, 116, 111, 112,  92,  84, 
     101,  97, 109,  80, 114, 111, 
     106, 101,  99, 116,  51,  45, 
@@ -262,8 +262,8 @@ const BYTE SkinnedEffect_VSSkinnedOneLightFourBones[] =
     110, 105, 110, 103,  46, 102, 
     120, 104,   0,  67,  58,  92, 
      85, 115, 101, 114, 115,  92, 
-     50,  50,  52,  48,  48,  52, 
-     55,  92,  68, 101, 115, 107, 
+     50,  50,  52,  48,  48,  55, 
+     48,  92,  68, 101, 115, 107, 
     116, 111, 112,  92,  84, 101, 
      97, 109,  80, 114, 111, 106, 
     101,  99, 116,  51,  45,  49, 
@@ -277,7 +277,7 @@ const BYTE SkinnedEffect_VSSkinnedOneLightFourBones[] =
     105, 110, 103,  46, 102, 120, 
     104,   0,  67,  58,  92,  85, 
     115, 101, 114, 115,  92,  50, 
-     50,  52,  48,  48,  52,  55, 
+     50,  52,  48,  48,  55,  48, 
      92,  68, 101, 115, 107, 116, 
     111, 112,  92,  84, 101,  97, 
     109,  80, 114, 111, 106, 101, 
@@ -292,7 +292,7 @@ const BYTE SkinnedEffect_VSSkinnedOneLightFourBones[] =
      46, 102, 120, 104,   0,  67, 
      58,  92,  85, 115, 101, 114, 
     115,  92,  50,  50,  52,  48, 
-     48,  52,  55,  92,  68, 101, 
+     48,  55,  48,  92,  68, 101, 
     115, 107, 116, 111, 112,  92, 
      84, 101,  97, 109,  80, 114, 
     111, 106, 101,  99, 116,  51, 

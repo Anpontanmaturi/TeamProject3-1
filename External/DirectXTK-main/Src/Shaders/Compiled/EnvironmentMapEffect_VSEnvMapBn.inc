@@ -47,16 +47,16 @@
     dcl_texcoord1 v1  // vin<4,5,6>
     dcl_texcoord2 v2  // vin<7,8>
 
-#line 11 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Utilities.fxh"
+#line 11 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Utilities.fxh"
     mad r0.xyz, v1, c22.x, c22.y  // ::BiasX2<0,1,2>
 
-#line 65 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
+#line 65 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
     dp3 r1.x, r0, c15
     dp3 r1.y, r0, c16
     dp3 r1.z, r0, c17
     nrm r0.xyz, r1  // ::worldNormal<0,1,2>
 
-#line 33 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 33 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     dp3 r1.x, -c4, r0  // ::dotL<0>
     dp3 r1.y, -c5, r0  // ::dotL<1>
     dp3 r1.z, -c6, r0  // ::dotL<2>
@@ -72,15 +72,15 @@
     mov r2.xyz, c2  // Parameters::DiffuseColor<0,1,2>
     mad oT0.xyz, r1, r2, c3  // ::VSEnvMapBn<0,1,2>
 
-#line 69 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
+#line 69 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
     dp4 oPos.z, v0, c20  // ::VSEnvMapBn<15>
 
-#line 11 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
+#line 11 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Common.fxh"
     dp4 r0.w, v0, c11
     max r0.w, r0.w, c22.z
     min oT1.w, r0.w, c22.w  // ::VSEnvMapBn<7>
 
-#line 63 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
+#line 63 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
     dp4 r1.x, v0, c12  // ::pos_ws<0>
     dp4 r1.y, v0, c13  // ::pos_ws<1>
     dp4 r1.z, v0, c14  // ::pos_ws<2>
@@ -101,10 +101,10 @@
     mad oPos.xy, r0.z, c0, r0  // ::VSEnvMapBn<13,14>
     mov oPos.w, r0.z  // ::VSEnvMapBn<16>
 
-#line 43 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
+#line 43 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\Lighting.fxh"
     mov oT0.w, c2.w  // ::VSEnvMapBn<3>
 
-#line 75 "C:\Users\2240047\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
+#line 75 "C:\Users\2240070\Desktop\TeamProject3-1\External\DirectXTK-main\Src\Shaders\EnvironmentMapEffect.fx"
     mov oT1.xyz, c1.x  // ::VSEnvMapBn<4,5,6>
 
 #line 189
@@ -163,10 +163,10 @@ ret
 
 const BYTE EnvironmentMapEffect_VSEnvMapBn[] =
 {
-     68,  88,  66,  67, 106, 198, 
-      4,  34, 210, 225,  35, 205, 
-    142,  50, 146, 224,  33, 155, 
-    156, 120,   1,   0,   0,   0, 
+     68,  88,  66,  67,  43, 165, 
+    219,   1,  24,   0, 245, 113, 
+    171, 181,   7,  51,  75, 147, 
+     96, 159,   1,   0,   0,   0, 
     184,  15,   0,   0,   4,   0, 
       0,   0,  48,   0,   0,   0, 
     152,   9,   0,   0, 160,  14, 
@@ -196,7 +196,7 @@ const BYTE EnvironmentMapEffect_VSEnvMapBn[] =
      56,   3,   0,   0,  67,  58, 
      92,  85, 115, 101, 114, 115, 
      92,  50,  50,  52,  48,  48, 
-     52,  55,  92,  68, 101, 115, 
+     55,  48,  92,  68, 101, 115, 
     107, 116, 111, 112,  92,  84, 
     101,  97, 109,  80, 114, 111, 
     106, 101,  99, 116,  51,  45, 
@@ -211,7 +211,7 @@ const BYTE EnvironmentMapEffect_VSEnvMapBn[] =
     102, 120, 104,   0,  67,  58, 
      92,  85, 115, 101, 114, 115, 
      92,  50,  50,  52,  48,  48, 
-     52,  55,  92,  68, 101, 115, 
+     55,  48,  92,  68, 101, 115, 
     107, 116, 111, 112,  92,  84, 
     101,  97, 109,  80, 114, 111, 
     106, 101,  99, 116,  51,  45, 
@@ -227,7 +227,7 @@ const BYTE EnvironmentMapEffect_VSEnvMapBn[] =
     102, 101,  99, 116,  46, 102, 
     120,   0,  67,  58,  92,  85, 
     115, 101, 114, 115,  92,  50, 
-     50,  52,  48,  48,  52,  55, 
+     50,  52,  48,  48,  55,  48, 
      92,  68, 101, 115, 107, 116, 
     111, 112,  92,  84, 101,  97, 
     109,  80, 114, 111, 106, 101, 
@@ -242,7 +242,7 @@ const BYTE EnvironmentMapEffect_VSEnvMapBn[] =
     110, 103,  46, 102, 120, 104, 
       0,  67,  58,  92,  85, 115, 
     101, 114, 115,  92,  50,  50, 
-     52,  48,  48,  52,  55,  92, 
+     52,  48,  48,  55,  48,  92, 
      68, 101, 115, 107, 116, 111, 
     112,  92,  84, 101,  97, 109, 
      80, 114, 111, 106, 101,  99, 

@@ -71,6 +71,8 @@ public:
 
 	// ƒQƒbƒ^[
 	float GetTimer() const { return currentTime; }
+	const Stage* GetStage() const { return stage; }
+	Stage* GetStage() { return stage; }
 
 private:
 	// ?? ’Ç‰Á

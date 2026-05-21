@@ -81,6 +81,9 @@ private:
 	//弾丸と敵の衝突処理
 	void CollisionProjectilesVsEnemies();
 
+	// プレイヤーとステージモデルとの衝突処理
+	void CollisionPlayerVsStage(const Model* stageModel, const DirectX::XMFLOAT4X4& stageWorldTransform);
+
 	//充電中動けないようにする
 	bool canMove = true;
 
@@ -91,6 +94,7 @@ protected:
 private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
+
 	float turnSpeed = DirectX::XMConvertToRadians(720);
 
 	float hp = 100.0f;

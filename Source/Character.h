@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include "System/ShapeRenderer.h"
+#include "System/Model.h"
 
 //キャラクター
 class Character
@@ -105,6 +106,8 @@ protected:
 	DirectX::XMFLOAT3 velocity = { 0 ,0, 0 };
 
 	bool isGround = false;
+	float	slopeRate = 1.0f;
+	float	stepOffset = 0.2f;
 
 	float height = 2.0f;
 

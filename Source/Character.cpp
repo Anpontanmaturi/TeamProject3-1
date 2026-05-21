@@ -1,4 +1,6 @@
 #include "Character.h"
+#include "Collision.h"
+#include "Stage.h"
 
 //行列更新処理
 void Character::UpdateTransform()
@@ -195,12 +197,12 @@ void Character::UpdateVerticalMove(float elapsedTime)
 {
 	//移動処理
 	position.y += velocity.y * elapsedTime;
-
+	
 	//地面判定
 	if (position.y < 0.0f)
 	{
 		position.y = 0.0f;
-
+	
 		//着地した
 		if (!isGround)
 		{
@@ -213,6 +215,52 @@ void Character::UpdateVerticalMove(float elapsedTime)
 	{
 		isGround = false;
 	}
+
+	/*
+	float my = velocity.y * elapsedTime;
+	slopeRate = 0.0f;
+
+	// 落下中
+	if (my < 0.0f)
+	{
+		// レイの開始位置は足元より少し上
+		DirectX::XMFLOAT3 start = { position.x,position.y + stepOffset , position.z };
+		// レイの終了位置は移動後の位置
+		DirectX::XMFLOAT3 end = { position.x,position.y + my , position.z };
+
+		// レイキャストによる地面判定
+		HitResult hit;
+		if (Stage::Instance().RayCast(start, end, hit))
+		{
+			// 地面に接地している
+			position.y = hit.position.y;
+
+			// 傾斜率の計算
+			float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+			slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+
+			// 着地した
+			if (!isGround)
+			{
+				OnLanding();
+			}
+			isGround = true;
+			velocity.y = 0.0f;
+		}
+		else
+		{
+			// 空中に浮いている
+			position.y += my;
+			isGround = false;
+		}
+	}
+	// 上昇中
+	else if (my > 0.0f)
+	{
+		position.y += my;
+		isGround = false;
+	}
+	*/
 }
 
 //水平速力更新処理
@@ -273,6 +321,10 @@ void Character::UpdateHorizontalVelocity(float elapsedTime)
 				velocity.x = vx * maxMoveSpeed;
 				velocity.z = vz * maxMoveSpeed;
 			}
+			if (isGround && slopeRate > 0.0f)
+			{
+				velocity.y -= length * slopeRate * elapsedTime;
+			}
 		}
 	}
 	//移動ベクトルをリセット
@@ -283,7 +335,73 @@ void Character::UpdateHorizontalVelocity(float elapsedTime)
 //水平移動更新処理
 void Character::UpdateHorizontalMove(float elapsedTime)
 {
-	//移動処理
-	position.x += velocity.x * elapsedTime;
-	position.z += velocity.z * elapsedTime;
+	
+	// 水平速力量計算
+	float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+	if (velocityLengthXZ > 0.0f)
+	{
+		// 1フレーム分の純粋な移動値
+		float mx = velocity.x * elapsedTime;
+		float mz = velocity.z * elapsedTime;
+
+		DirectX::XMVECTOR MoveVec = DirectX::XMVectorSet(mx, 0.0f, mz, 0.0f);
+		DirectX::XMVECTOR MoveDir = DirectX::XMVector3Normalize(MoveVec);
+		DirectX::XMVECTOR BackOffset = DirectX::XMVectorScale(MoveDir, radius); // 自分の半径分のオフセット
+
+		DirectX::XMFLOAT3 start = { position.x, position.y + stepOffset, position.z };
+
+		DirectX::XMFLOAT3 end = { position.x + mx, position.y + stepOffset, position.z + mz };
+
+		// レイキャストによる壁判定
+		HitResult hit;
+		if (Stage::Instance().RayCast(start, end, hit))
+		{
+			DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
+			DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
+			DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
+
+			// 壁の法線を取得し、斜めメッシュ対策で水平にする
+			DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
+			Normal = DirectX::XMVectorSetY(Normal, 0.0f);
+			Normal = DirectX::XMVector3Normalize(Normal);
+
+			// 入射ベクトルを法線に射影
+			DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(DirectX::XMVectorNegate(Vec), Normal);
+
+			// 補正位置の計算
+			DirectX::XMVECTOR CollectPosition = DirectX::XMVectorMultiplyAdd(Normal, Dot, End);
+
+			DirectX::XMFLOAT3 collectPosition;
+			DirectX::XMStoreFloat3(&collectPosition, CollectPosition);
+
+			// 壁ずり方向へセカンドレイキャスト
+			DirectX::XMFLOAT3 rayStart = { position.x, position.y + stepOffset, position.z };
+			HitResult hit2;
+			if (!Stage::Instance().RayCast(rayStart, collectPosition, hit2))
+			{
+				// 壁ずり方向で壁に当たらなかったら補正位置に移動
+				position.x = collectPosition.x;
+				position.z = collectPosition.z;
+			}
+			else
+			{
+				// 二重衝突時は止める
+				DirectX::XMVECTOR HitPos2 = DirectX::XMLoadFloat3(&hit2.position);
+				DirectX::XMVECTOR Normal2 = DirectX::XMLoadFloat3(&hit2.normal);
+				Normal2 = DirectX::XMVectorSetY(Normal2, 0.0f);
+				Normal2 = DirectX::XMVector3Normalize(Normal2);
+
+				DirectX::XMVECTOR FinalPos = DirectX::XMVectorMultiplyAdd(Normal2, DirectX::XMVectorReplicate(radius), HitPos2);
+				position.x = DirectX::XMVectorGetX(FinalPos);
+				position.z = DirectX::XMVectorGetZ(FinalPos);
+			}
+		}
+		else
+		{
+			// 移動
+			position.x += mx;
+			position.z += mz;
+		}
+	}
 }
+

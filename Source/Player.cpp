@@ -20,6 +20,9 @@ void Player::Initialize()
 	energy = 1000.0f;
 
 	position = { 0.0f,0.0f,0.0f };
+
+	stepOffset = 0.01f;
+
 	Reset();
 
 	PSE1 = Audio::Instance().LoadAudioSource("Data/Sound/runba.wav");
