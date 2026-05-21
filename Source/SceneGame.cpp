@@ -135,13 +135,27 @@ void SceneGame::Initialize()
 		{ 25.0f,  10.0f, -16.5f}
 		});
 
+
+	// 左側
+	walls.push_back({
+		{-0.9f, -1.0f, -15.8f},
+		{-0.8f,  2.0f, -15.0f}
+		});
+
+	// 右側
+	walls.push_back({
+		{ 1.0f, -1.0f, -15.8f},
+		{ 1.1f,  2.0f, -15.0f}
+		});
+
+
 	// オブジェクト
 	// オブジェクト生成
 
 	objects.emplace_back(); // ← これが必要！！
 
 	// 位置など設定
-	objects[0].SetPosition(0, 0, 0);
+	objects[0].SetPosition(0, 0, -15.2);
 
 	garbages.clear();
 	dentis.clear();
@@ -538,6 +552,8 @@ void SceneGame::Update(float elapsedTime)
 				}
 
 				enemy->SetPosition(ep);
+
+				enemy->OnHitWall();
 			}
 		}
 	}
@@ -708,7 +724,7 @@ void SceneGame::Update(float elapsedTime)
 	// UIの更新
 	UIManager::Instance().Update(scaledTime);
 
-	
+
 	//オブジェクト更新処理
 	for (auto& obj : objects)
 	{
@@ -724,6 +740,7 @@ void SceneGame::Update(float elapsedTime)
 		float distance = GetDistance(playerPos, objPos);
 
 		float radius = 1.0f;
+
 
 		if (distance < radius && Player::Instance().GetEnergy() < 1000.0f)
 		{
@@ -1065,7 +1082,7 @@ void SceneGame::Update(float elapsedTime)
 
 
 
-	
+
 
 	// =========================
 	// ゴミ削除
@@ -1174,46 +1191,14 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
-		// =========================
-		// 透明壁デバッグ描画
-		// =========================
-		for (const Wall& wall : walls)
-		{
-			// 中心位置
-			DirectX::XMFLOAT3 position;
 
-			position.x = (wall.min.x + wall.max.x) * 0.5f;
-			position.y = (wall.min.y + wall.max.y) * 0.5f;
-			position.z = (wall.min.z + wall.max.z) * 0.5f;
-
-			// 回転
-			DirectX::XMFLOAT3 angle = { 0,0,0 };
-
-			// サイズ
-			DirectX::XMFLOAT3 size;
-
-			size.x = wall.max.x - wall.min.x;
-			size.y = wall.max.y - wall.min.y;
-			size.z = wall.max.z - wall.min.z;
-
-			// 色（赤）
-			DirectX::XMFLOAT4 color = { 1,0,0,1 };
-
-			shapeRenderer->RenderBox(
-				rc,
-				position,
-				angle,
-				size,
-				color
-			);
-		}
 	}
 	// ゴミ描画
 	for (auto& g : gomis)
 	{
 		g->Render(rc, modelRenderer);
 	}
-	
+
 	// ガラクタ描画
 	for (auto& g : garbages)
 	{
@@ -1300,13 +1285,9 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("Time");
 
-	if (isTimeUp)
+	if(ImGui::Button("EndGame"))
 	{
-		ImGui::Text("Time Up!");
-	}
-	else
-	{
-		ImGui::Text("Time : %.1f", currentTime);
+		currentTime = 0.0f;
 	}
 
 	ImGui::End();
@@ -1315,19 +1296,19 @@ void SceneGame::DrawGUI()
 	ImGui::Begin("Score");
 	ImGui::Text("Score : %d", score);
 	ImGui::Text("Combo : %d", SceneGame::Instance().GetCombo());
-	if(ImGui::Button("Add Score 100"))
+	if (ImGui::Button("Add Score 100"))
 	{
 		SceneGame::Instance().AddScore(100);
 	}
-	if(ImGui::Button("Add Score 1000"))
+	if (ImGui::Button("Add Score 1000"))
 	{
 		SceneGame::Instance().AddScore(1000);
 	}
-	if(ImGui::Button("Add Score 10000"))
+	if (ImGui::Button("Add Score 10000"))
 	{
 		SceneGame::Instance().AddScore(10000);
 	}
-	if(ImGui::Button("Add Combo"))
+	if (ImGui::Button("Add Combo"))
 	{
 		SceneGame::Instance().AddCombo();
 	}

@@ -21,6 +21,9 @@ void SceneResult::Initialize()
     // ランキングUI
     rankingUI = std::make_unique<UiRanking>();
 
+    inputLockFrame = 0;
+    canInput = false;
+
     //========================
     // ランク画像読み込み
     //========================
@@ -77,15 +80,34 @@ void SceneResult::Update(float elapsedTime)
         rankingUI->Update(elapsedTime);
     }
 
+    //====================
+      // 3秒ロック（180F）
+      //====================
+    if (!canInput)
+    {
+        inputLockFrame++;
+
+        if (inputLockFrame >= 180)
+        {
+            canInput = true;
+        }
+    }
+
+    // SPACE入力
+    if (canInput)
+    {
+        if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+        {
+            SceneManager::Instance().ChangeScene(
+                new SceneTitle()
+            );
+        }
+    }
+
     // 入力
     GamePad& gamePad = Input::Instance().GetGamePad();
 
-    if ((GetAsyncKeyState(VK_SPACE) & 0x8000))
-    {
-        SceneManager::Instance().ChangeScene(
-            new SceneTitle()
-        );
-    }
+    
 }
 
 void SceneResult::Render()
@@ -132,6 +154,9 @@ void SceneResult::Render()
     {
         rankingUI->Render(rc);
     }
+
+   
+
 
     //========================
     // スコア取得

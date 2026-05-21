@@ -29,4 +29,8 @@ private:
     std::unique_ptr<Sprite> rankC;
 
     Sprite* currentRank = nullptr;
+
+    int inputLockFrame = 0;
+    bool canInput = false;
+ 
 };
