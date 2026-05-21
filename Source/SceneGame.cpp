@@ -74,13 +74,51 @@ void SceneGame::Initialize()
 	);
 
 	//エネミー初期化
+	//エネミー初期化
 	EnemyManager& enemyManager = EnemyManager::Instance();
+
+	std::vector<DirectX::XMFLOAT3> usedPositions;
+
 	for (int i = 0; i < ENEMY_MAX; ++i)
 	{
 		EnemySlime* slime = new EnemySlime();
-		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
 
-		slime->SetTerritory(slime->GetPosition(), 15.0f);
+		DirectX::XMFLOAT3 pos;
+		bool overlap;
+
+		do
+		{
+			overlap = false;
+
+			pos =
+			{
+				GetRandom(-20.0f, 20.0f),  // X
+				0.0f,
+				GetRandom(-15.0f, 15.0f)   // Z
+			};
+
+			// 他の敵と近すぎないかチェック
+			for (const auto& p : usedPositions)
+			{
+				float dx = pos.x - p.x;
+				float dz = pos.z - p.z;
+				float distSq = dx * dx + dz * dz;
+
+				if (distSq < 9.0f) // 3m以内ならやり直し
+				{
+					overlap = true;
+					break;
+				}
+			}
+
+		} while (overlap);
+
+		usedPositions.push_back(pos);
+
+		slime->SetPosition(pos);
+
+		// その位置を縄張りの中心にする
+		slime->SetTerritory(pos, 15.0f);
 
 		enemyManager.Register(slime);
 	}
