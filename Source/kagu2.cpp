@@ -6,9 +6,9 @@ using namespace DirectX;
 // コンストラクタ
 kagu2::kagu2()
 {
-    model = new Model("Data/Model/kagu/tana.mdl");
+    model = new Model("Data/Model/kagu/honndana_solo (3).mdl");
 
-    scale = { 0.02f,0.03f,0.02f };
+    scale = { 0.025f,0.03f,0.025f };
 }
 
 // デストラクタ
@@ -23,7 +23,7 @@ void kagu2::Init(const XMFLOAT3& pos)
     position = pos;
 
     // 角度（必要なら変える）
-    rotation = { 0, 298.45, 0 };
+    rotation = { 0, 0, 0 };
 
     broken = false;
 
