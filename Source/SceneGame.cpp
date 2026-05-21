@@ -45,6 +45,7 @@ float GetRandom(float min, float max)
 void SceneGame::Initialize()
 {
 	srand((unsigned int)time(nullptr));
+
 	//ステージ初期化
 	stage = new Stage();
 	instance = this;
@@ -1253,10 +1254,10 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
-		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+		//Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
-		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+		//EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
 
 		// =========================

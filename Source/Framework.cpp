@@ -33,6 +33,17 @@ Framework::Framework(HWND hWnd)
 	// IMGUI初期化
 	ImGuiRenderer::Initialize(hWnd, Graphics::Instance().GetDevice(), Graphics::Instance().GetDeviceContext());
 
+
+	// IMGUIのマウスカーソル変更無効化
+	if (ImGui::GetCurrentContext() != nullptr)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+	}
+
+	// マウスカーソル非表示
+	while (ShowCursor(FALSE) >= 0);
+
 	// シーン初期化
 	//sceneGame.Initialize();
 	SceneManager::Instance().ChangeScene(new SceneTitle);
@@ -44,6 +55,9 @@ Framework::Framework(HWND hWnd)
 // デストラクタ
 Framework::~Framework()
 {
+	// マウスカーソル表示
+	while (ShowCursor(TRUE) < 0);
+
 	// シーン終了化
 	//sceneGame.Finalize();
 	SceneManager::Instance().Clear();
@@ -128,7 +142,7 @@ void Framework::Render(float elapsedTime)
 	SceneManager::Instance().Render();
 
 	// シーンGUI描画処理
-	SceneManager::Instance().DrawGUI();
+	//SceneManager::Instance().DrawGUI();
 
 #if 0
 	// IMGUIデモウインドウ描画（IMGUI機能テスト用）

@@ -46,9 +46,6 @@ public:
 	//void DrawGUI();
 	void DrawGUI()override;
 
-	
-
-
 
 	
 	float dentiSpawnTimer = 0.0f;
