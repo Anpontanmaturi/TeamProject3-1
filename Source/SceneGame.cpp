@@ -878,7 +878,7 @@ void SceneGame::Update(float elapsedTime)
 		{
 			g->Collect();
 			gomiCount++;
-			score += 5;
+			AddScore(5);
 			SGSe2->Play(false);
 		}
 	}
@@ -1362,6 +1362,7 @@ void SceneGame::StartHitStop(float time)
 void SceneGame::AddScore(int value)
 {
 	score += value;
+	lastAddedScore = value;
 }
 
 void SceneGame::AddCombo()
