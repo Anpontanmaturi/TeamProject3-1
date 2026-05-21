@@ -52,6 +52,13 @@ void SceneLoading::Render()
 	Graphics& graphics = Graphics::Instance();
 	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
 	RenderState* renderState = graphics.GetRenderState();
+	{
+		float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; //load”wŒiF
+		dc->ClearRenderTargetView(
+			graphics.GetRenderTargetView(),
+			color);
+	}
+					
 
 	//•`‰æ‹——£
 	RenderContext rc;
