@@ -13,7 +13,7 @@
 
 #include"kagu.h"
 #include <vector>
-
+#include"kagu2.h"
 
 // ÉQÅ[ÉÄÉVÅ[Éì
 //class SceneGame
@@ -88,6 +88,7 @@ private:
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
 	std::vector<kagu*> kagus;
+	std::vector<kagu2*> kagu2s;
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
 	AudioSource* SGSe2 = nullptr;
