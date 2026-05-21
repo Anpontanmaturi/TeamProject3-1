@@ -538,6 +538,8 @@ void SceneGame::Update(float elapsedTime)
 				}
 
 				enemy->SetPosition(ep);
+
+				enemy->OnHitWall();
 			}
 		}
 	}

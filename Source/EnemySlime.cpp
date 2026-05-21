@@ -282,3 +282,16 @@ void EnemySlime::UpdateEscepeState(float elapsedTime)
 	//目標地点へ移動
 	MoveToTarget(elapsedTime, 1.0f, 1.0f);
 }
+
+// 壁にぶつかった時の処理
+void EnemySlime::OnHitWall()
+{
+	// 逃走中でプレイヤーを見失っていないなら、目標地点を再設定しない
+	if (state == State::Escepe && SearchPlayer())
+	{
+		return;
+	}
+
+	// それ以外なら目的地を再設定
+	SetRandomTargetPosition();
+}
