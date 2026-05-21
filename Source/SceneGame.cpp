@@ -1180,9 +1180,10 @@ void SceneGame::Render()
 
 	// 3Dモデル描画
 	{
+		//ステージ描画
+		stage->Render(rc, modelRenderer);
+
 		// 空描画
-		if (modelSky)
-		{
 			DirectX::XMFLOAT3 cameraPos = cameraController->GetPosition();
 
 			auto& nodes = modelSky->GetNodes();
@@ -1198,10 +1199,6 @@ void SceneGame::Render()
 			modelRenderer->Render(rc, nodes[0].globalTransform, modelSky, ShaderId::Basic);
 
 			dc->RSSetState(rc.renderState->GetRasterizerState(RasterizerState::SolidCullBack));
-		}
-
-		//ステージ描画
-		stage->Render(rc, modelRenderer);
 
 		//プレイヤー描画
 		Player::Instance().Render(rc, modelRenderer);
