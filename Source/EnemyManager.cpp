@@ -92,6 +92,17 @@ void EnemyManager::Update(float elapsedTime)
 	if (enemies.size() < maxEnemies) {
 		while (enemies.size() < maxEnemies)
 		{
+			float minX = -7.5f;
+			float maxX = 7.5f;
+			float spawnX = minX + (float)rand() / RAND_MAX * (maxX - minX);
+
+			float minZ = -1.0f;
+			float maxZ = 1.2f;
+			float spawnZ = minZ + (float)rand() / RAND_MAX * (maxZ - minZ);
+
+			// 座標をまとめる
+			respawnPoint = { spawnX, 5.0f, spawnZ };
+
 			Enemy* newEnemy = new EnemySlime(); // 例としてEnemySlimeを生成
 			newEnemy->SetPosition(respawnPoint); // 再出現位置に配置
 			Register(newEnemy); // エネミーマネージャーに登録

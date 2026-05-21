@@ -102,6 +102,11 @@ void UIManager::DrawDebugGUI()
 		if (ImGui::DragFloat2("DustCountUI Font Offset", fontOffsetArr, 1.0f)) {
 			dustCount->SetFontOffset(fontOffsetArr[0], fontOffsetArr[1]);
 		}
+		DirectX::XMFLOAT2 addedScoreOffset = dustCount->GetAddedScoreOffset();
+		float addedScoreOffsetArr[2] = { addedScoreOffset.x, addedScoreOffset.y };
+		if (ImGui::DragFloat2("DustCountUI Added Score Offset", addedScoreOffsetArr, 1.0f)) {
+			dustCount->SetAddedScoreOffset(addedScoreOffsetArr[0], addedScoreOffsetArr[1]);
+		}
 	}
 	ImGui::Separator();
 	{

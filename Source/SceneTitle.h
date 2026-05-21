@@ -25,6 +25,8 @@ public:
 	// GUI•`‰æ
 	void DrawGUI() override;
 
+	bool changingScene = false;
+	float sceneChangeTimer = 0;
 private:
 	Sprite* spriteBG = nullptr;
 	Sprite* spriteStart = nullptr;
@@ -33,5 +35,6 @@ private:
 	bool choice = true; // true = Start, false = Tutorial
 	int timer = 0;
 	AudioSource* ST = nullptr;
-
+	AudioSource* selectSE = nullptr;  // ‘I‘ðSE
+	AudioSource* enterSE = nullptr;   // Œˆ’èSE
 };

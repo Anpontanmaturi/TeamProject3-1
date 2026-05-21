@@ -906,7 +906,7 @@ void SceneGame::Update(float elapsedTime)
 		{
 			g->Collect();
 			gomiCount++;
-			score += 5;
+			AddScore(5);
 			SGSe2->Play(false);
 		}
 	}
@@ -1249,6 +1249,7 @@ void SceneGame::Render()
 		//エネミー描画
 		EnemyManager::Instance().Render(rc, modelRenderer);
 	}
+
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ
@@ -1292,7 +1293,8 @@ void SceneGame::Render()
 			);
 		}
 	}
-	// ゴミ描画
+
+
 	for (auto& g : gomis)
 	{
 		g->Render(rc, modelRenderer);
@@ -1357,61 +1359,7 @@ void SceneGame::AddGomi(const DirectX::XMFLOAT3& pos)
 // GUI描画
 void SceneGame::DrawGUI()
 {
-	//プレイヤーデバッグ描画
-	Player::Instance().DrowDebugGUI();
-
-	// UI用デバッグGUI描画
-	UIManager::Instance().DrawDebugGUI();
-
-	//エネミーデバッグ描画
-	//EnemyManager::Instance().DrawDebugGUI();
-
-	ImGui::Begin("UI");
-	ImGui::Text("Gomi : %d", gomiCount);
-	ImGui::Separator();
-	ImGui::Text("Garbage : %d", garbages.size());
-	if (ImGui::Button("Spawn Garbage (Player Front)"))
-	{
-		// プレイヤーの前にスポーンさせる
-		DirectX::XMFLOAT3 pos = Player::Instance().GetPosition();
-		pos.x += 2.0f;
-		garakuta* g = new garakuta();
-		g->Init(pos);
-		garbages.push_back(g);
-	}
-	ImGui::End();
-
-
-	ImGui::Begin("Time");
-
-	if(ImGui::Button("EndGame"))
-	{
-		currentTime = 0.0f;
-	}
-
-	ImGui::End();
-
-
-	ImGui::Begin("Score");
-	ImGui::Text("Score : %d", score);
-	ImGui::Text("Combo : %d", SceneGame::Instance().GetCombo());
-	if (ImGui::Button("Add Score 100"))
-	{
-		SceneGame::Instance().AddScore(100);
-	}
-	if (ImGui::Button("Add Score 1000"))
-	{
-		SceneGame::Instance().AddScore(1000);
-	}
-	if (ImGui::Button("Add Score 10000"))
-	{
-		SceneGame::Instance().AddScore(10000);
-	}
-	if (ImGui::Button("Add Combo"))
-	{
-		SceneGame::Instance().AddCombo();
-	}
-	ImGui::End();
+	
 }
 void SceneGame::StartHitStop(float time)
 {
@@ -1423,6 +1371,7 @@ void SceneGame::StartHitStop(float time)
 void SceneGame::AddScore(int value)
 {
 	score += value;
+	lastAddedScore = value;
 }
 
 void SceneGame::AddCombo()

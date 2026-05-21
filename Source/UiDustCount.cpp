@@ -30,8 +30,9 @@ void UIDustCount::Update(float elapsedTime)
 {
     // 準備
     int count = SceneGame::Instance().GetGomiCount();
+    int addedScore = SceneGame::Instance().GetLastAddedScore();
 
-	// カウントが変わったときだけテキストを更新
+    // カウントが変わったときだけテキストを更新
     if (count != lastCount)
     {
         lastCount = count;
@@ -49,6 +50,17 @@ void UIDustCount::Update(float elapsedTime)
 
         fontPos.x = position.x + (FontOffset.x * scale.x) - actualWidth;
         fontPos.y = position.y + (FontOffset.y * scale.y);
+    }
+
+    if (addedScore != addedScoreLastValue)
+    {
+        addedScoreLastValue = addedScore;
+        ScoreText = L"+" + std::to_wstring(addedScore);
+        // フォントの拡大率をUIのスケールに合わせる
+        AddedScoreFontScale = { scale.x * scaleMag, scale.y * scaleMag };
+
+        AddedScorePos.x = position.x + (AddedScoreOffset.x * scale.x);
+        AddedScorePos.y = position.y + (AddedScoreOffset.y * scale.y);
     }
 }
 
@@ -73,6 +85,16 @@ void UIDustCount::Render(const RenderContext& rc)
         0.0f,                   // 回転
         DirectX::XMFLOAT2(0, 0), // 原点
         fontScale       // スケールを画像に合わせる
+    );
+
+    spriteFont->DrawString(
+        spriteBatch.get(),
+        ScoreText.c_str(),
+        AddedScorePos,
+        AddedScoreFontColor,
+        0.0f,                   // 回転
+        DirectX::XMFLOAT2(0, 0), // 原点
+        AddedScoreFontScale       // スケールを画像に合わせる
     );
 
     spriteBatch->End();
