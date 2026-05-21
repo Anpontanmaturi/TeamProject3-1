@@ -552,6 +552,8 @@ void SceneGame::Update(float elapsedTime)
 				}
 
 				enemy->SetPosition(ep);
+
+				enemy->OnHitWall();
 			}
 		}
 	}
@@ -1283,13 +1285,9 @@ void SceneGame::DrawGUI()
 
 	ImGui::Begin("Time");
 
-	if (isTimeUp)
+	if(ImGui::Button("EndGame"))
 	{
-		ImGui::Text("Time Up!");
-	}
-	else
-	{
-		ImGui::Text("Time : %.1f", currentTime);
+		currentTime = 0.0f;
 	}
 
 	ImGui::End();

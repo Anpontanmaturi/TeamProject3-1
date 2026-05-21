@@ -25,4 +25,6 @@ public:
 
 	//描画処理
 	virtual void Render(const RenderContext& rc, ModelRenderer* renderer) = 0;
+
+	virtual void OnHitWall() {}// 壁に当たったときの処理（必要に応じてオーバーライド）
 };
