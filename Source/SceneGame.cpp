@@ -169,52 +169,115 @@ void SceneGame::Initialize()
 // 終了化
 void SceneGame::Finalize()
 {
-	//エネミー終了化
+	// =========================
+// BGM / SE 停止
+// =========================
+	if (SGAu)
+	{
+		SGAu->Stop();
+		SGAu = nullptr;
+	}
+
+	if (SGSe)
+	{
+		SGSe->Stop();
+		SGSe = nullptr;
+	}
+
+	if (SGSe2)
+	{
+		SGSe2->Stop();
+		SGSe2 = nullptr;
+	}
+
+	// =========================
+	// Enemy
+	// =========================
 	EnemyManager::Instance().Clear();
 
-	//ステージ終了化
+	// =========================
+	// Stage
+	// =========================
 	if (stage != nullptr)
 	{
 		delete stage;
 		stage = nullptr;
 	}
-	// ゴミ解放（重要）
+
+	// =========================
+	// Gomi
+	// =========================
 	for (auto& g : gomis)
 	{
 		delete g;
 	}
 	gomis.clear();
-	//家具解放
+
+	// =========================
+	// Denti
+	// =========================
+	for (auto& d : dentis)
+	{
+		delete d;
+	}
+	dentis.clear();
+
+	// =========================
+	// Garakuta
+	// =========================
+	for (auto& g : garbages)
+	{
+		delete g;
+	}
+	garbages.clear();
+
+	// =========================
+	// kagu (冷蔵庫)
+	// =========================
 	for (auto& k : kagus)
 	{
 		delete k;
 	}
-
 	kagus.clear();
 
-	// 電池の解放
-	for (auto& b : dentis)
+	// =========================
+	// kagu2 (本棚)
+	// =========================
+	for (auto& b : kagu2s)
 	{
 		delete b;
 	}
-	dentis.clear();
+	kagu2s.clear();
 
-	//オブジェクト終了化
+	// =========================
+	// Object
+	// =========================
 	objects.clear();
-	for (auto& g : garbages) delete g;
-	garbages.clear();
+
+	// =========================
+	// Pause
+	// =========================
 	pause.Finalize();
-	//プレイヤー終了化
+
+	// =========================
+	// Player
+	// =========================
 	Player::Instance().Finalize();
 
-	//カメラコントローラー終了化
+	// =========================
+	// CameraController
+	// =========================
 	if (cameraController != nullptr)
 	{
 		delete cameraController;
 		cameraController = nullptr;
 	}
-	// 音楽停止
-	SGAu->Stop();
+
+
+	// =========================
+	// singleton
+	// =========================
+	instance = nullptr;
 }
 
 // 更新処理
@@ -300,7 +363,7 @@ void SceneGame::Update(float elapsedTime)
 	EnemyManager::Instance().Update(scaledTime);
 
 
-	EnemyManager::Instance().Update(scaledTime);
+
 
 	// =========================
 	// 敵と冷蔵庫の当たり判定
