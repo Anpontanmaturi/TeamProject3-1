@@ -1263,36 +1263,36 @@ void SceneGame::Render()
 		// =========================
 // 透明壁デバッグ描画
 // =========================
-		for (const Wall& wall : walls)
-		{
-			// 中心位置
-			DirectX::XMFLOAT3 position;
+		//for (const Wall& wall : walls)
+		//{
+		//	// 中心位置
+		//	DirectX::XMFLOAT3 position;
 
-			position.x = (wall.min.x + wall.max.x) * 0.5f;
-			position.y = (wall.min.y + wall.max.y) * 0.5f;
-			position.z = (wall.min.z + wall.max.z) * 0.5f;
+		//	position.x = (wall.min.x + wall.max.x) * 0.5f;
+		//	position.y = (wall.min.y + wall.max.y) * 0.5f;
+		//	position.z = (wall.min.z + wall.max.z) * 0.5f;
 
-			// 回転
-			DirectX::XMFLOAT3 angle = { 0,0,0 };
+		//	// 回転
+		//	DirectX::XMFLOAT3 angle = { 0,0,0 };
 
-			// サイズ
-			DirectX::XMFLOAT3 size;
+		//	// サイズ
+		//	DirectX::XMFLOAT3 size;
 
-			size.x = wall.max.x - wall.min.x;
-			size.y = wall.max.y - wall.min.y;
-			size.z = wall.max.z - wall.min.z;
+		//	size.x = wall.max.x - wall.min.x;
+		//	size.y = wall.max.y - wall.min.y;
+		//	size.z = wall.max.z - wall.min.z;
 
-			// 色（赤）
-			DirectX::XMFLOAT4 color = { 1,0,0,1 };
+		//	// 色（赤）
+		//	DirectX::XMFLOAT4 color = { 1,0,0,1 };
 
-			shapeRenderer->RenderBox(
-				rc,
-				position,
-				angle,
-				size,
-				color
-			);
-		}
+		//	shapeRenderer->RenderBox(
+		//		rc,
+		//		position,
+		//		angle,
+		//		size,
+		//		color
+		//	);
+		//}
 	}
 
 
