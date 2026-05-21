@@ -12,7 +12,6 @@ Stage::Stage()
 {
 	//ステージモデルを読み込み
 	model = new Model("Data/Model/Stage/map_scale.mdl");
-	//model = new Model("Data/Model/ExampleStage/ExampleStage.mdl");
 }
 
 //デストラクタ
@@ -33,7 +32,6 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 
 	// 拡大率
-	//float scale = 0.025f;
 	float scale = 1.00f;
 
 	// 位置

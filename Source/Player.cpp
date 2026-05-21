@@ -21,7 +21,7 @@ void Player::Initialize()
 
 	position = { 0.0f,0.0f,0.0f };
 
-	stepOffset = 0.01f;
+	stepOffset = 0.02f;
 
 	Reset();
 

@@ -29,8 +29,8 @@ private:
 	float screenHeight = 720; //画面高さ
 
 	// 画面中央座標
-	int centerX = screenWidth / 2;
-	int centerY = screenHeight / 2;
+	float centerX = screenWidth / 2;
+	float centerY = screenHeight / 2;
 
 	bool isCursorLocked = true; // カーソルのロック状態
 	bool prevKeyTab = false;    // 前フレームのキー状態

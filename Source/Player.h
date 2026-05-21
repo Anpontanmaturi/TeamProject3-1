@@ -81,9 +81,6 @@ private:
 	//弾丸と敵の衝突処理
 	void CollisionProjectilesVsEnemies();
 
-	// プレイヤーとステージモデルとの衝突処理
-	void CollisionPlayerVsStage(const Model* stageModel, const DirectX::XMFLOAT4X4& stageWorldTransform);
-
 	//充電中動けないようにする
 	bool canMove = true;
 

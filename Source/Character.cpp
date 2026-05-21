@@ -107,29 +107,6 @@ void Character::UpdateVelocity(float elapsedTime)
 
 	//水平移動更新処理
 	UpdateHorizontalMove(elapsedTime);
-
-	/*//重力処理
-	velocity.y += gravity * elapsedTime;
-
-	//移動処理
-	position.y += velocity.y * elapsedTime;
-
-	//地面判定
-	if (position.y < 0.0f)
-	{
-		position.y = 0.0f;
-		velocity.y = 0.0f;
-		//着地した
-		if (!isGround)
-		{
-			OnLanding();
-		}
-		isGround = true;
-	}
-	else
-	{
-		isGround = false;
-	}*/
 }
 
 //ダメージを与える
@@ -170,8 +147,6 @@ bool Character::ApplyDamage(int damage,float invincibleTime)
 //デバッグプリミティブ描画
 void Character::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)
 {
-	////衝突判定用のデバッグ球を描画
-	//renderer->RenderSphere(rc, position, radius, DirectX::XMFLOAT4(0, 0, 0, 1));
 	//衝突判定用のデバッグ円柱を描画
 	renderer->RenderCylinder(rc, position, radius, height, DirectX::XMFLOAT4(0, 0, 0, 1));
 }
@@ -195,15 +170,12 @@ void Character::UpdateVerticalVelocity(float elapsedTime)
 //垂直移動更新処理
 void Character::UpdateVerticalMove(float elapsedTime)
 {
-	//移動処理
 	position.y += velocity.y * elapsedTime;
-	
-	//地面判定
+
 	if (position.y < 0.0f)
 	{
 		position.y = 0.0f;
-	
-		//着地した
+
 		if (!isGround)
 		{
 			OnLanding();
@@ -215,52 +187,6 @@ void Character::UpdateVerticalMove(float elapsedTime)
 	{
 		isGround = false;
 	}
-
-	/*
-	float my = velocity.y * elapsedTime;
-	slopeRate = 0.0f;
-
-	// 落下中
-	if (my < 0.0f)
-	{
-		// レイの開始位置は足元より少し上
-		DirectX::XMFLOAT3 start = { position.x,position.y + stepOffset , position.z };
-		// レイの終了位置は移動後の位置
-		DirectX::XMFLOAT3 end = { position.x,position.y + my , position.z };
-
-		// レイキャストによる地面判定
-		HitResult hit;
-		if (Stage::Instance().RayCast(start, end, hit))
-		{
-			// 地面に接地している
-			position.y = hit.position.y;
-
-			// 傾斜率の計算
-			float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
-			slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
-
-			// 着地した
-			if (!isGround)
-			{
-				OnLanding();
-			}
-			isGround = true;
-			velocity.y = 0.0f;
-		}
-		else
-		{
-			// 空中に浮いている
-			position.y += my;
-			isGround = false;
-		}
-	}
-	// 上昇中
-	else if (my > 0.0f)
-	{
-		position.y += my;
-		isGround = false;
-	}
-	*/
 }
 
 //水平速力更新処理
@@ -344,13 +270,9 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 		float mx = velocity.x * elapsedTime;
 		float mz = velocity.z * elapsedTime;
 
-		DirectX::XMVECTOR MoveVec = DirectX::XMVectorSet(mx, 0.0f, mz, 0.0f);
-		DirectX::XMVECTOR MoveDir = DirectX::XMVector3Normalize(MoveVec);
-		DirectX::XMVECTOR BackOffset = DirectX::XMVectorScale(MoveDir, radius); // 自分の半径分のオフセット
-
 		DirectX::XMFLOAT3 start = { position.x, position.y + stepOffset, position.z };
 
-		DirectX::XMFLOAT3 end = { position.x + mx, position.y + stepOffset, position.z + mz };
+		DirectX::XMFLOAT3 end = { position.x + mx * 2.0f, position.y + stepOffset, position.z + mz * 2.0f };
 
 		// レイキャストによる壁判定
 		HitResult hit;
