@@ -18,7 +18,7 @@ private:
 	HWND hWnd_;
 	WINDOWPLACEMENT windowPlacement_ = { };
 	LONG windowStyle_ = 0;
-	bool isFullScreen_ = false;
+	bool isFullScreen_ = true;
 
 public:
 	int Run();

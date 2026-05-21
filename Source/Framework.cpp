@@ -125,7 +125,7 @@ void Framework::Render(float elapsedTime)
 	SceneManager::Instance().Render();
 
 	// シーンGUI描画処理
-	SceneManager::Instance().DrawGUI();
+	//SceneManager::Instance().DrawGUI();
 
 #if 0
 	// IMGUIデモウインドウ描画（IMGUI機能テスト用）
@@ -156,7 +156,7 @@ void Framework::CalculateFrameStats()
 		float mspf = 1000.0f / fps;
 		std::ostringstream outs;
 		outs.precision(6);
-		outs << "FPS : " << fps << " / " << "Frame Time : " << mspf << " (ms)";
+		outs << "ゴミゲッチュ";
 		SetWindowTextA(hWnd, outs.str().c_str());
 
 		// Reset for next average.

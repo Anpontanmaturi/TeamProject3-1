@@ -1,7 +1,6 @@
 #include "EnemySlime.h"
 #include "MathUtils.h"
 #include "Player.h"
-#include "ProjectileStraight.h"
 #include <EnemyManager.h>
 #include <random>
 //コンストラクタ
@@ -75,9 +74,6 @@ void EnemySlime::Update(float elapsedTime)
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
-	
-	//弾丸更新処理
-	projectileManager.Update(elapsedTime);
 
 	//無敵時間更新
 	UpdateInvincibleTimer(elapsedTime);
@@ -93,9 +89,6 @@ void EnemySlime::Update(float elapsedTime)
 void EnemySlime::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
-
-	//弾丸描画処理
-	projectileManager.Render(rc, renderer);
 }
 
 //デバッグプリミティブ描画
