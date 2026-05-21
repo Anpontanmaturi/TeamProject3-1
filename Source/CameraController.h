@@ -15,6 +15,16 @@ public:
 		target = t;
 	}
 
+	//カメラ位置取得
+	DirectX::XMFLOAT3 GetPosition() const
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMStoreFloat3(&pos, Transform.r[3]);
+		return pos;
+	}
+
+
+
 private:
 	DirectX::XMFLOAT3	target = { 0,0,0 };//注視点
 	DirectX::XMFLOAT3	angle = { 0,0,0 }; //回転角度

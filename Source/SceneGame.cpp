@@ -47,6 +47,8 @@ void SceneGame::Initialize()
 	srand((unsigned int)time(nullptr));
 	//ステージ初期化
 	stage = new Stage();
+	modelSky = new Model("Data/Model/SkyDome/skydome.mdl");
+
 	instance = this;
 	pause.Initialize();
 	//プレイヤー初期化
@@ -245,6 +247,10 @@ void SceneGame::Finalize()
 		delete stage;
 		stage = nullptr;
 	}
+	// =========================
+	// Sky
+	// =========================
+	if (modelSky!=nullptr) { delete modelSky; modelSky = nullptr; }
 
 	// =========================
 	// Gomi
@@ -1174,6 +1180,26 @@ void SceneGame::Render()
 
 	// 3Dモデル描画
 	{
+		// 空描画
+		if (modelSky)
+		{
+			DirectX::XMFLOAT3 cameraPos = cameraController->GetPosition();
+
+			auto& nodes = modelSky->GetNodes();
+			if (!nodes.empty())
+			{
+				nodes[0].translate = cameraPos;
+				nodes[0].scale = { 100.0f, 100.0f, 100.0f };
+			}
+			modelSky->UpdateTransform();
+
+			dc->RSSetState(rc.renderState->GetRasterizerState(RasterizerState::SolidCullNone));
+
+			modelRenderer->Render(rc, nodes[0].globalTransform, modelSky, ShaderId::Basic);
+
+			dc->RSSetState(rc.renderState->GetRasterizerState(RasterizerState::SolidCullBack));
+		}
+
 		//ステージ描画
 		stage->Render(rc, modelRenderer);
 

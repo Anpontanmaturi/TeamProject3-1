@@ -82,6 +82,7 @@ private:
 	// ?? ’Ç‰Á
 	static SceneGame* instance;
 	Stage* stage = nullptr;
+	Model* modelSky = nullptr;
 	//Player* player = nullptr;
 	CameraController* cameraController = nullptr;
 	std::vector<Gomi*> gomis; // ƒSƒ~‚ÌƒŠƒXƒg
