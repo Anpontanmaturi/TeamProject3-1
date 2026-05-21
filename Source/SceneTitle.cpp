@@ -20,12 +20,21 @@ void SceneTitle::Initialize()
 
 	// BGM
 	ST = Audio::Instance().LoadAudioSource("Data/Sound/tai.wav");
+	// SE
+	selectSE = Audio::Instance().LoadAudioSource("Data/Sound/select.wav");
+	enterSE = Audio::Instance().LoadAudioSource("Data/Sound/enter.wav");
 
 	choice = true;
 	timer = 0;
 
 	// ループ再生
 	ST->Play(true);
+	// 初回再生準備
+	selectSE->Stop();
+	selectSE->Play(false);
+
+	enterSE->Play(false);
+	enterSE->Stop();
 }
 
 // 終了処理
@@ -45,6 +54,12 @@ void SceneTitle::Finalize()
 
 	delete ST;
 	ST = nullptr;
+
+	delete selectSE;
+	selectSE = nullptr;
+
+	delete enterSE;
+	enterSE = nullptr;
 }
 
 // 更新処理
@@ -63,37 +78,63 @@ void SceneTitle::Update(float elapsedTime)
 	// 上入力
 	if (nowUp && !prevUp)
 	{
-		choice = true;
+		if (!choice)
+		{
+			choice = true;
+
+			selectSE->Stop();
+			selectSE->Play(false);
+		}
 	}
 
 	// 下入力
 	if (nowDown && !prevDown)
 	{
-		choice = false;
+		if (choice)
+		{
+			choice = false;
+
+			selectSE->Stop();
+			selectSE->Play(false);
+		}
 	}
 
 	// 決定
 	if (nowSpace && !prevSpace)
 	{
+		enterSE->Stop();
+		enterSE->Play(false);
+
 		ST->Stop();
 
-		if (choice)
-		{
-			SceneManager::Instance().ChangeScene(
-				new SceneLoading(new SceneGame)
-			);
-		}
-		else
-		{
-			SceneManager::Instance().ChangeScene(
-				new SceneLoading(new ScenePlay)
-			);
-		}
+		changingScene = true;
+		sceneChangeTimer = 0.0f;
 	}
 
 	prevUp = nowUp;
 	prevDown = nowDown;
 	prevSpace = nowSpace;
+	// シーン切り替え待機
+	if (changingScene)
+	{
+		sceneChangeTimer += elapsedTime;
+
+		if (sceneChangeTimer >= 0.6f)
+		{
+			if (choice)
+			{
+				SceneManager::Instance().ChangeScene(
+					new SceneLoading(new SceneGame)
+				);
+			}
+			else
+			{
+				SceneManager::Instance().ChangeScene(
+					new SceneLoading(new ScenePlay)
+				);
+			}
+		}
+	}
 }
 
 // 描画処理
