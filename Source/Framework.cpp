@@ -113,6 +113,8 @@ void Framework::Update(float elapsedTime)
 // •`‰æˆ—
 void Framework::Render(float elapsedTime)
 {
+	std::lock_guard<std::mutex> lock(Graphics::Instance().GetMutex());
+
 	ID3D11DeviceContext* dc = Graphics::Instance().GetDeviceContext();
 
 	// ‰æ–ÊƒNƒŠƒA
