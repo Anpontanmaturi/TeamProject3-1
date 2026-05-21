@@ -68,8 +68,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;xinput.lib;winmm.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Debug;%(AdditionalLibraryDirectories);.\External\Effekseer170e\lib\vs2022\MT\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;xinput.lib;winmm.lib;DirectXTK.lib;Effekseer.lib;EffekseerRendererDX11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Debug;%(AdditionalLibraryDirectories);.\External\Effekseer170e\lib\vs2022\MD\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -105,8 +105,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;xinput.lib;winmm.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Release;%(AdditionalLibraryDirectories);.\External\Effekseer170e\lib\vs2022\MT\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;xinput.lib;winmm.lib;DirectXTK.lib;Effekseer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\External\DirectXTK-main\Bin\Desktop_2022\x64\Release;%(AdditionalLibraryDirectories);.\External\Effekseer170e\lib\vs2022\MD\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>

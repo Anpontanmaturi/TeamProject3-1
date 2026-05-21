@@ -7,20 +7,43 @@
 #include "SceneGame.h"
 void Pause::Initialize()
 {
-    sprite = new Sprite("Data/Sprite/ポーズ画面.png");
+    spriteBG = new Sprite("Data/Sprite/menu.png");
+    spriteTai = new Sprite("Data/Sprite/titlereturn.png");
+    spriteModo = new Sprite("Data/Sprite/return.png");
+    spriteSentaku = new Sprite("Data/Sprite/yazirusi.png");
 
     isPaused = false;
     keyPrev = false;
+    timer = 0;
 }
 void Pause::Finalize()
 {
-    delete sprite;
-    sprite = nullptr;
+    delete spriteBG;
+    spriteBG = nullptr;
+
+    delete spriteTai;
+    spriteTai = nullptr;
+
+    delete spriteModo;
+    spriteModo = nullptr;
+
+    delete spriteSentaku;
+    spriteSentaku = nullptr;
+   
 }
 void Pause::Update()
 {
+    timer++;
     // Pキーでポーズ切替
     bool now = (GetAsyncKeyState('P') & 0x8000) != 0;
+
+    static bool prevUp = false;
+    static bool prevDown = false;
+    static bool prevSpace = false;
+
+    bool nowUp = (GetAsyncKeyState('W') & 0x8000) != 0;
+    bool nowDown = (GetAsyncKeyState('S') & 0x8000) != 0;
+    bool nowSpace = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
 
     if (now && !keyPrev)
     {
@@ -31,50 +54,110 @@ void Pause::Update()
     // ★ ポーズ中だけ操作可能
     if (!isPaused) return;
 
-    static bool prevT = false;
-    static bool prevR = false;
-
-    bool nowT = (GetAsyncKeyState('T') & 0x8000) != 0;
-    bool nowR = (GetAsyncKeyState('R') & 0x8000) != 0;
-
-    // タイトルへ
-    if (nowT && !prevT)
+    // 上入力
+    if (nowUp && !prevUp)
     {
-        SceneManager::Instance().ChangeScene(
-            new SceneLoading(new SceneTitle)
-        );
+        choice = true;
     }
 
-    // 再開
-    if (nowR && !prevR)
+    // 下入力
+    if (nowDown && !prevDown)
     {
-        isPaused = false;
+        choice = false;
     }
 
-    prevT = nowT;
-    prevR = nowR;
+    // 決定
+    if (nowSpace && !prevSpace)
+    {
+
+
+        if (choice)
+        {
+            SceneManager::Instance().ChangeScene(
+                new SceneLoading(new SceneTitle)
+            );
+        }
+        else
+        {
+            isPaused = false;
+        }
+    }
+
+    prevUp = nowUp;
+    prevDown = nowDown;
+    prevSpace = nowSpace;
 }
 
 void Pause::Render()
 {
-    if (!isPaused || !sprite) return;
+    if (!isPaused) return;
 
     Graphics& graphics = Graphics::Instance();
+	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
 
-    RenderContext rc;
-    rc.deviceContext = graphics.GetDeviceContext();
-    rc.renderState = graphics.GetRenderState();
+	RenderContext rc;
+	rc.deviceContext = dc;
+	rc.renderState = graphics.GetRenderState();
 
-    float w = graphics.GetScreenWidth();
-    float h = graphics.GetScreenHeight();
+	float screenWidth = (float)graphics.GetScreenWidth();
+	float screenHeight = (float)graphics.GetScreenHeight();
 
-    // 画面全体に表示
-    sprite->Render(
+	// 背景
+	spriteBG->Render(
+		rc,
+		0, 0, 0,
+		screenWidth, screenHeight,
+		0,
+		1, 1, 1, 1
+	);
+
+	// 選択中は拡大
+	
+
+	float width = 475.0f;
+	float height = 200.0f;
+
+	// START
+	spriteTai->Render(
+		rc,
+		510, 125, 0,
+		width,
+		height,
+		0,
+		1, 1, 1, 1
+	);
+
+	// TUTORIAL
+	spriteModo->Render(
+		rc,
+		510, 375, 0,
+		width,
+		height,
+		0,
+		1, 1, 1, 1
+	);
+	
+
+    // 矢印サイズ
+    float arrowSize = 90.0f;
+
+    // 左側に配置
+    float arrowBaseX = 420.0f;
+
+    // 選択項目の中央Y
+    float arrowY = choice ? 200.0f : 475.0f;
+
+    // 左右にふわふわ
+    float arrowX = arrowBaseX + sinf(timer * 0.1f) * 10.0f;
+
+    spriteSentaku->Render(
         rc,
-        0, 0,
-        0.0f,
-        w, h,
-        0.0f,
+        arrowX,
+        arrowY,
+        0,
+        arrowSize,
+        arrowSize,
+        0,
         1, 1, 1, 1
     );
 }

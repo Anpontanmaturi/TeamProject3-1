@@ -14,7 +14,13 @@ public:
 private:
     bool isPaused = false;
     bool keyPrev = false;
-    bool keyPrevT = false;
+  
 
-    Sprite* sprite = nullptr;
+    bool choice = true; // true = Start, false = Tutorial
+
+    Sprite* spriteBG = nullptr;
+    Sprite* spriteTai = nullptr;
+    Sprite* spriteModo = nullptr;
+    Sprite* spriteSentaku = nullptr;
+    int timer = 0;
 };
