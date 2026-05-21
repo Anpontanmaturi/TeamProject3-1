@@ -78,6 +78,8 @@ public:
 		DirectX::XMFLOAT3 max;
 	};
 
+	int GetLastAddedScore() const { return lastAddedScore; } // 最後に加算されたスコアを取得
+
 private:
 	// ?? 追加
 	static SceneGame* instance;
@@ -119,6 +121,8 @@ private:
 	// ガラクタスポーンタイマー
 	std::vector<garakuta*> garbages;
 	std::vector<Wall> walls;
+
+	int lastAddedScore = 0; // 最後に加算されたスコア（UI表示用）
 
 public:
 	int score = 0;
