@@ -13,7 +13,7 @@
 
 #include"kagu.h"
 #include <vector>
-
+#include"kagu2.h"
 
 // ゲームシーン
 //class SceneGame
@@ -74,6 +74,12 @@ public:
 	const Stage* GetStage() const { return stage; }
 	Stage* GetStage() { return stage; }
 
+	struct Wall
+	{
+		DirectX::XMFLOAT3 min;
+		DirectX::XMFLOAT3 max;
+	};
+
 private:
 	// ?? 追加
 	static SceneGame* instance;
@@ -84,6 +90,7 @@ private:
 	std::vector<Denti*> dentis;
 	int gomiCount = 0;
 	std::vector<kagu*> kagus;
+	std::vector<kagu2*> kagu2s;
 	AudioSource* SGAu = nullptr;
 	AudioSource* SGSe = nullptr;
 	AudioSource* SGSe2 = nullptr;
@@ -113,7 +120,7 @@ private:
 
 	// ガラクタスポーンタイマー
 	std::vector<garakuta*> garbages;
-
+	std::vector<Wall> walls;
 
 public:
 	int score = 0;

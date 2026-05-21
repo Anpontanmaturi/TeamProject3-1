@@ -44,6 +44,9 @@ void Player::AddEnergy(float value)
 //終了化
 void Player::Finalize()
 {
+	PSE1->Stop();
+	PSE2->Stop();
+	PSE3->Stop();
 	delete model;
 }
 
@@ -86,7 +89,7 @@ void Player::Update(float elapsedTime)
 
 	//弾丸と敵の衝突処理
 	CollisionProjectilesVsEnemies();
-	
+
 	//オブジェクト行列を更新
 	UpdateTransform();
 
@@ -462,3 +465,4 @@ void Player::InputProjectile()
 void Player::CollisionProjectilesVsEnemies()
 {
 }
+

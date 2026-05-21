@@ -21,6 +21,7 @@ std::vector<Object> objects;
 #include <System/Audio.h>
 #include "UiManager.h"
 #include "ScoreManager.h"
+#include <kagu2.h>
 
 
 // 距離計算
@@ -106,6 +107,34 @@ void SceneGame::Initialize()
 
 		gomis.push_back(g);
 	}
+	// =========================
+// 透明壁生成
+// =========================
+
+// 左壁
+	walls.push_back({
+		{-25.0f, -10.0f, -25.0f},
+		{-23.5f,  10.0f,  25.0f}
+		});
+
+	// 右壁
+	walls.push_back({
+		{23.0f, -10.0f, -25.0f},
+		{30.5f,  10.0f,  30.0f}
+		});
+
+	// 上壁
+	walls.push_back({
+		{-25.0f, -10.0f, 15.5f},
+		{ 25.0f,  10.0f, 25.0f}
+		});
+
+	// 下壁
+	walls.push_back({
+		{-25.0f, -10.0f, -22.0f},
+		{ 25.0f,  10.0f, -16.5f}
+		});
+
 	// オブジェクト
 	// オブジェクト生成
 
@@ -133,10 +162,12 @@ void SceneGame::Initialize()
 	kagus.clear();
 
 	kagu* k = new kagu();
-	k->Init({ 3.0f, 0.0f, 3.0f });
+	k->Init({ -9.0f, 0.0f, -15.1f });
 
 	kagus.push_back(k);
-
+	kagu2* b = new kagu2();
+	b->Init({ 12.0f, 0.0f, 8.5f });
+	kagu2s.push_back(b);
 
 	// ガラクタ生成
 	garbages.clear();
@@ -166,52 +197,115 @@ void SceneGame::Initialize()
 // 終了化
 void SceneGame::Finalize()
 {
-	//エネミー終了化
+	// =========================
+// BGM / SE 停止
+// =========================
+	if (SGAu)
+	{
+		SGAu->Stop();
+		SGAu = nullptr;
+	}
+
+	if (SGSe)
+	{
+		SGSe->Stop();
+		SGSe = nullptr;
+	}
+
+	if (SGSe2)
+	{
+		SGSe2->Stop();
+		SGSe2 = nullptr;
+	}
+
+	// =========================
+	// Enemy
+	// =========================
 	EnemyManager::Instance().Clear();
 
-	//ステージ終了化
+	// =========================
+	// Stage
+	// =========================
 	if (stage != nullptr)
 	{
 		delete stage;
 		stage = nullptr;
 	}
-	// ゴミ解放（重要）
+
+	// =========================
+	// Gomi
+	// =========================
 	for (auto& g : gomis)
 	{
 		delete g;
 	}
 	gomis.clear();
-	//家具解放
+
+	// =========================
+	// Denti
+	// =========================
+	for (auto& d : dentis)
+	{
+		delete d;
+	}
+	dentis.clear();
+
+	// =========================
+	// Garakuta
+	// =========================
+	for (auto& g : garbages)
+	{
+		delete g;
+	}
+	garbages.clear();
+
+	// =========================
+	// kagu (冷蔵庫)
+	// =========================
 	for (auto& k : kagus)
 	{
 		delete k;
 	}
-
 	kagus.clear();
 
-	// 電池の解放
-	for (auto& b : dentis)
+	// =========================
+	// kagu2 (本棚)
+	// =========================
+	for (auto& b : kagu2s)
 	{
 		delete b;
 	}
-	dentis.clear();
+	kagu2s.clear();
 
-	//オブジェクト終了化
+	// =========================
+	// Object
+	// =========================
 	objects.clear();
-	for (auto& g : garbages) delete g;
-	garbages.clear();
+
+	// =========================
+	// Pause
+	// =========================
 	pause.Finalize();
-	//プレイヤー終了化
+
+	// =========================
+	// Player
+	// =========================
 	Player::Instance().Finalize();
 
-	//カメラコントローラー終了化
+	// =========================
+	// CameraController
+	// =========================
 	if (cameraController != nullptr)
 	{
 		delete cameraController;
 		cameraController = nullptr;
 	}
-	// 音楽停止
-	SGAu->Stop();
+
+
+	// =========================
+	// singleton
+	// =========================
+	instance = nullptr;
 }
 
 // 更新処理
@@ -296,8 +390,159 @@ void SceneGame::Update(float elapsedTime)
 	Player::Instance().Update(scaledTime);
 	EnemyManager::Instance().Update(scaledTime);
 
+	// =========================
+// プレイヤー vs 透明壁
+// =========================
+	{
+		Player& player = Player::Instance();
 
-	EnemyManager::Instance().Update(scaledTime);
+		DirectX::XMFLOAT3 p = player.GetPosition();
+
+		float radius = player.GetRadius();
+
+		for (const Wall& wall : walls)
+		{
+			bool hit =
+				(p.x + radius > wall.min.x) &&
+				(p.x - radius < wall.max.x) &&
+				(p.z + radius > wall.min.z) &&
+				(p.z - radius < wall.max.z);
+
+			if (hit)
+			{
+				float left =
+					fabs((p.x + radius) - wall.min.x);
+
+				float right =
+					fabs(wall.max.x - (p.x - radius));
+
+				float top =
+					fabs(wall.max.z - (p.z - radius));
+
+				float bottom =
+					fabs((p.z + radius) - wall.min.z);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0: // 左
+					p.x = wall.min.x - radius;
+					break;
+
+				case 1: // 右
+					p.x = wall.max.x + radius;
+					break;
+
+				case 2: // 上
+					p.z = wall.max.z + radius;
+					break;
+
+				case 3: // 下
+					p.z = wall.min.z - radius;
+					break;
+				}
+
+				player.SetPosition(p);
+			}
+		}
+	}
+	// =========================
+// 敵 vs 透明壁
+// =========================
+	for (Enemy* enemy : EnemyManager::Instance().GetEnemies())
+	{
+		DirectX::XMFLOAT3 ep = enemy->GetPosition();
+
+		float radius = 0.4f;
+
+		for (const Wall& wall : walls)
+		{
+			bool hit =
+				(ep.x + radius > wall.min.x) &&
+				(ep.x - radius < wall.max.x) &&
+				(ep.z + radius > wall.min.z) &&
+				(ep.z - radius < wall.max.z);
+
+			if (hit)
+			{
+				float left =
+					fabs((ep.x + radius) - wall.min.x);
+
+				float right =
+					fabs(wall.max.x - (ep.x - radius));
+
+				float top =
+					fabs(wall.max.z - (ep.z - radius));
+
+				float bottom =
+					fabs((ep.z + radius) - wall.min.z);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0: // 左
+					ep.x = wall.min.x - radius;
+					break;
+
+				case 1: // 右
+					ep.x = wall.max.x + radius;
+					break;
+
+				case 2: // 上
+					ep.z = wall.max.z + radius;
+					break;
+
+				case 3: // 下
+					ep.z = wall.min.z - radius;
+					break;
+				}
+
+				enemy->SetPosition(ep);
+			}
+		}
+	}
+
+
 
 	// =========================
 	// 敵と冷蔵庫の当たり判定
@@ -380,10 +625,90 @@ void SceneGame::Update(float elapsedTime)
 			}
 		}
 	}
+	// =========================
+// 敵と本棚の当たり判定
+// =========================
+	for (Enemy* enemy : EnemyManager::Instance().GetEnemies())
+	{
+		DirectX::XMFLOAT3 ep = enemy->GetPosition();
+
+		for (auto& b : kagu2s)
+		{
+			if (b->IsBroken())
+				continue;
+
+			DirectX::XMFLOAT3 bp = b->GetPosition();
+
+			float halfWidth = 2.8f;
+			float halfDepth = 1.5f;
+			float enemyRadius = 0.4f;
+
+			float minX = bp.x - halfWidth;
+			float maxX = bp.x + halfWidth;
+			float minZ = bp.z - halfDepth;
+			float maxZ = bp.z + halfDepth;
+
+			bool hit =
+				(ep.x + enemyRadius > minX) &&
+				(ep.x - enemyRadius < maxX) &&
+				(ep.z + enemyRadius > minZ) &&
+				(ep.z - enemyRadius < maxZ);
+
+			if (hit)
+			{
+				float left = fabs((ep.x + enemyRadius) - minX);
+				float right = fabs(maxX - (ep.x - enemyRadius));
+				float top = fabs(maxZ - (ep.z - enemyRadius));
+				float bottom = fabs((ep.z + enemyRadius) - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				switch (dir)
+				{
+				case 0:
+					ep.x = minX - enemyRadius;
+					break;
+
+				case 1:
+					ep.x = maxX + enemyRadius;
+					break;
+
+				case 2:
+					ep.z = maxZ + enemyRadius;
+					break;
+
+				case 3:
+					ep.z = minZ - enemyRadius;
+					break;
+				}
+
+				enemy->SetPosition(ep);
+			}
+		}
+	}
 	// UIの更新
 	UIManager::Instance().Update(scaledTime);
 
-
+	
 	//オブジェクト更新処理
 	for (auto& obj : objects)
 	{
@@ -657,6 +982,85 @@ void SceneGame::Update(float elapsedTime)
 	}
 
 
+	for (auto& b : kagu2s)
+	{
+		b->Update(elapsedTime);
+
+		DirectX::XMFLOAT3 p = Player::Instance().GetPosition();
+		DirectX::XMFLOAT3 bp = b->GetPosition();
+
+		// =========================
+		// 本棚の四角い当たり判定
+		// =========================
+
+		float halfWidth = 2.8f;   // 横幅
+		float halfDepth = 1.5f;   // 奥行き
+
+		float minX = bp.x - halfWidth;
+		float maxX = bp.x + halfWidth;
+
+		float minZ = bp.z - halfDepth;
+		float maxZ = bp.z + halfDepth;
+
+		bool hit =
+			(p.x > minX && p.x < maxX) &&
+			(p.z > minZ && p.z < maxZ);
+
+		if (!b->IsBroken() && hit)
+		{
+			// =========================
+			// ダッシュ中なら壊れる
+			// =========================
+			if (Player::Instance().IsBoost())
+			{
+				b->Break();
+			}
+			else
+			{
+				// =========================
+				// 押し戻し
+				// =========================
+
+				float left = abs(p.x - minX);
+				float right = abs(maxX - p.x);
+				float top = abs(maxZ - p.z);
+				float bottom = abs(p.z - minZ);
+
+				float minDist = left;
+				int dir = 0;
+
+				if (right < minDist)
+				{
+					minDist = right;
+					dir = 1;
+				}
+
+				if (top < minDist)
+				{
+					minDist = top;
+					dir = 2;
+				}
+
+				if (bottom < minDist)
+				{
+					minDist = bottom;
+					dir = 3;
+				}
+
+				float push = 0.05f;
+
+				switch (dir)
+				{
+				case 0: p.x = minX - push; break;
+				case 1: p.x = maxX + push; break;
+				case 2: p.z = maxZ + push; break;
+				case 3: p.z = minZ - push; break;
+				}
+
+				Player::Instance().SetPosition(p);
+			}
+		}
+	}
 
 
 
@@ -769,6 +1173,40 @@ void SceneGame::Render()
 
 		//エネミーデバッグプリミティブ描画
 		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+
+		// =========================
+		// 透明壁デバッグ描画
+		// =========================
+		for (const Wall& wall : walls)
+		{
+			// 中心位置
+			DirectX::XMFLOAT3 position;
+
+			position.x = (wall.min.x + wall.max.x) * 0.5f;
+			position.y = (wall.min.y + wall.max.y) * 0.5f;
+			position.z = (wall.min.z + wall.max.z) * 0.5f;
+
+			// 回転
+			DirectX::XMFLOAT3 angle = { 0,0,0 };
+
+			// サイズ
+			DirectX::XMFLOAT3 size;
+
+			size.x = wall.max.x - wall.min.x;
+			size.y = wall.max.y - wall.min.y;
+			size.z = wall.max.z - wall.min.z;
+
+			// 色（赤）
+			DirectX::XMFLOAT4 color = { 1,0,0,1 };
+
+			shapeRenderer->RenderBox(
+				rc,
+				position,
+				angle,
+				size,
+				color
+			);
+		}
 	}
 	// ゴミ描画
 	for (auto& g : gomis)
@@ -780,6 +1218,10 @@ void SceneGame::Render()
 	for (auto& g : garbages)
 	{
 		g->Render(rc, modelRenderer);
+	}
+	for (auto& b : kagu2s)
+	{
+		b->Render(rc, modelRenderer);
 	}
 	// 電池描画 ← これ追加
 	for (auto& d : dentis)
